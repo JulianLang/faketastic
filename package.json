@@ -1,0 +1,39 @@
+{
+  "name": "faketastic",
+  "version": "0.0.15",
+  "description": "A small library to help you building mock objects.",
+  "main": "./dist/index.js",
+  "private": false,
+  "scripts": {
+    "build": "npx rimraf ./dist && npx tsc -p .",
+    "start": "ts-node ./example.ts",
+    "test": "jasmine-ts --reporter=jasmine-console-reporter --config=jasmine.json",
+    "test:watch": "nodemon --quiet --ext ts --exec 'jasmine-ts --reporter=jasmine-console-reporter --config=jasmine.json'"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "keywords": [
+    "mock data",
+    "fake data",
+    "generator"
+  ],
+  "author": "jlang",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jasmine": "^3.3.16",
+    "@types/lodash": "^4.14.142",
+    "@types/node": "^12.6.8",
+    "jasmine": "^3.4.0",
+    "jasmine-console-reporter": "^3.1.0",
+    "jasmine-ts": "^0.3.0",
+    "nodemon": "^1.19.3",
+    "rimraf": "^3.0.0",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "object-as-tree": "0.0.152"
+  }
+}

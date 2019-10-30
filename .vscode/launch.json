@@ -1,0 +1,28 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "${workspaceRoot}/node_modules/ts-node/dist/bin.js",
+      "args": ["./example.ts"],
+      "env": {
+        "NODE_PATH": "."
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jasmine Debug Tests",
+      "program": "${workspaceRoot}/node_modules/jasmine-ts/lib/index.js",
+      "args": ["--reporter=jasmine-console-reporter", "--config=jasmine.json"],
+      "env": {
+        "NODE_PATH": "."
+      }
+    }
+  ]
+}

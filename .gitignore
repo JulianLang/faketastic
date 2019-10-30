@@ -1,0 +1,9 @@
+# node modules
+**/node_modules
+**/dist
+**/*.js
+
+# testing
+**/*.test.js
+src/.DS_Store
+**/.DS_Store
