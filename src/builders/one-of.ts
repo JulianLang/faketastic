@@ -7,7 +7,7 @@ import {
   randomInt,
 } from '../core';
 
-export function oneOf(values: any[], ...processorFns: Function[]): Buildable<Function> {
+export function oneOf(values: any[], ...processorFns: Function[]): Buildable<Function | any> {
   const oneOfBuilderFn = createBuilderFn(chooseRandomItem);
 
   /* In normal conditions, oneOf will not directly return a value,
