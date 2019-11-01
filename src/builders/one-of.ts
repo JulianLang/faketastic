@@ -16,7 +16,9 @@ export function oneOf(values: any[], ...processorFns: Function[]): Buildable<Fun
 
      However if oneOf gets an array consisting of Buildable templates only,
      it will instantly choose one of those template, so that this random template
-     gets built in "build"-stage, rather than being randomly chosen then.
+     gets built in "build"-stage. This enables the user to randomly select templates.
+
+     e.g.: pet: oneOf([DogTemplate, CatTemplate]) // template is randomly chosen
    */
   return isArrayOfBuildables(values)
     ? chooseRandomItem()
