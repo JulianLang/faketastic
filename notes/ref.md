@@ -1,15 +1,6 @@
-```ts
-type SearchStrategy = (node, onNext) => void;
-type RefRestrictorFn<T = any> = (itemCandidate: T, availableItems?: any[]): T | any;
+# Referencing
 
-interface RefOptions {
-  searchStrategy?: SearchStrategy,
-  restrictions?: RefRestrictorFn[],
-  provideAs: string
-}
-
-function ref(path: string, opts: RefOptions): Function;
-```
+References are what drive semantics in data.
 
 ## Case A (TopDown)
 
@@ -18,16 +9,11 @@ function ref(path: string, opts: RefOptions): Function;
 
 const Company = template({
   name: oneOf(CompanyNames, provideAs('companyName')),
-  ceo: ref('employee', { searchStrategy: SearchSelf, provideAs: '#ceo' }), // SearchSelf = SiblingsWithChildrenStrategy
-  mail: combine(values => `${values.firstName}.${values.lastName}@${values.companyName}.de`, {
-    firstName: ref('#ceo.firstName'),
-    lastName: ref('#ceo.lastName'),
-    company: ref('companyName'),
-  }),
-  employees: use(Employee, quantity(2), provideAs('employee')),
+  ceo: ref('employee.id'),
+  employees: use(Employee, quantity(20), provideAs('employee')),
 });
 
-build(Company, () => randomInt(1, 3));
+build(Company);
 ```
 
 ## Case B (BottomUp)
@@ -49,4 +35,25 @@ const Resident = extend(Person, {
 });
 
 build(Company, () => randomInt(1, 3));
+```
+
+### Case: Self
+
+```ts
+const Person = template({
+  name: oneOf(Names),
+});
+
+const Company = template({
+  name: oneOf(CompanyNames),
+  employees: use(Person, quantity(2)),
+  ceo: ref('employee'),
+  // this will need processor priorization, since combine must be evaluated last (after ref to "ceo").
+  mail: combine(refs => `${refs.name}@${refs.companyName}.de`, {
+    name: ref('ceo.firstName'),
+    companyName: ref('name'),
+  }),
+});
+
+build(Company);
 ```
