@@ -14,7 +14,7 @@ export function isArrayOfBuildables(value: any[]): value is Buildable[] {
     return false;
   }
 
-  return value.every(v => isBuildable(v));
+  return value.length > 0 && value.every(v => isBuildable(v));
 }
 
 export function clone(value: any): any {
