@@ -19,6 +19,7 @@ const Senior = extend(Person, {
 });
 
 const Example = template({
+  a: oneOf([Senior, Person, Address]),
   array: [
     use(Person, quantity(2, 'useParentArray')),
     use(Senior, quantity(2, 'useParentArray')),

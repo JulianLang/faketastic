@@ -9,6 +9,14 @@ export function isBuildable(value: any): value is Buildable<any> {
   return isDefined(value) && isDefined(value[BuildableSymbol]);
 }
 
+export function isArrayOfBuildables(value: any[]): value is Buildable[] {
+  if (!isDefined(value)) {
+    return false;
+  }
+
+  return value.every(v => isBuildable(v));
+}
+
 export function clone(value: any): any {
   return cloneDeep(value);
 }
