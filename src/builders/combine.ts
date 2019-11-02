@@ -1,4 +1,5 @@
 import { ObjectTreeNode } from 'object-tree';
+import { ProcessorPriorities } from '../constants/processor.priorities';
 import {
   Buildable,
   BuildableSymbol,
@@ -13,7 +14,11 @@ export function combine<T>(
   props: PureObject<T>,
   map: (props: PureObject<T>) => any,
 ): Buildable<any> {
-  const extractValuesProcessor = createProcessorFn(extractValues, 'finalizer');
+  const extractValuesProcessor = createProcessorFn(
+    extractValues,
+    'finalizer',
+    ProcessorPriorities.combineValueExtract,
+  );
 
   return {
     [BuildableSymbol]: 'value',

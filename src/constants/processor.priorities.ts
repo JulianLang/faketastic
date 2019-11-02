@@ -1,5 +1,3 @@
-import { Dictionary } from '../core';
-
 /**
  * **Contains priorities for processor functions.**
  *
@@ -24,12 +22,12 @@ import { Dictionary } from '../core';
  * function. The priority will have no effects on other build-cycles than
  * the one of the respective processor function.
  */
-export const ProcessorPriorities: Dictionary<number> = {
+export const ProcessorPriorities = {
   // initializer
   // preprocessors
   // postprocessors
   // finalizer
-  combineValueExtract: 20,
+  combineValueExtract: 4005,
   ref: 4000,
   map: 4010,
 } as const;
