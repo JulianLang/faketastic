@@ -46,12 +46,15 @@ function buildMultiple<T>(buildable: Buildable<T>, count: number): any {
  * });
  * ```
  * @param buildable The buildable that got dynamically added to the tree by a builder function
- * @param node The node which will become the new host to the template
+ * @param hostNode The node which will become the new host to the template
  */
-export function buildDynamicTemplate(buildable: Buildable<any>, node: ObjectTreeNode<any>): void {
+export function buildDynamicTemplate(
+  buildable: Buildable<any>,
+  hostNode: ObjectTreeNode<any>,
+): void {
   const dynamicTemplate = clone(buildable.value);
   const dynamicTemplateBuilt = buildInstance(dynamicTemplate);
-  setValue(dynamicTemplateBuilt, node);
+  setValue(dynamicTemplateBuilt, hostNode);
 }
 
 function buildInstance<T>(buildable: Buildable<T>) {
