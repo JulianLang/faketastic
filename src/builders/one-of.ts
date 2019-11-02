@@ -4,10 +4,11 @@ import {
   createBuilderFn,
   isArrayOfBuildables,
   isDefined,
+  ProcessorFn,
   randomInt,
 } from '../core';
 
-export function oneOf(values: any[], ...processorFns: Function[]): Buildable<Function | any> {
+export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<Function | any> {
   const oneOfBuilderFn = createBuilderFn(chooseRandomItem);
 
   /* In normal conditions, oneOf will not directly return a value,
