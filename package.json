@@ -34,6 +34,6 @@
   },
   "dependencies": {
     "lodash": "^4.17.15",
-    "object-as-tree": "0.0.152"
+    "object-tree": "file:../object-tree"
   }
 }

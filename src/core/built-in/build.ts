@@ -1,4 +1,4 @@
-import { nodeTypeOf, ObjectTreeNode, treeOf } from 'object-as-tree';
+import { nodeTypeOf, ObjectTreeNode, treeOf } from 'object-tree';
 import { Buildable } from '../types';
 import { ProcessorType } from '../types/processor.types';
 import { Quantity } from '../types/quantity';

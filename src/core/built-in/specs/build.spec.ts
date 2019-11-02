@@ -1,4 +1,4 @@
-import { ObjectTreeNode } from 'object-as-tree';
+import { ObjectTreeNode } from 'object-tree';
 import { createBuilderFn, createProcessorFn } from '../../util';
 import { build } from '../build';
 import { createBuildable } from './shared/spec.helper';

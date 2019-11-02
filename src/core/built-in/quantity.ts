@@ -1,4 +1,4 @@
-import { ObjectTreeNode, replace } from 'object-as-tree';
+import { ObjectTreeNode, replace } from 'object-tree';
 import { QuantityInsertMode } from '../types';
 import { Quantity } from '../types/quantity';
 import { clone, createProcessorFn, isDefined } from '../util';
