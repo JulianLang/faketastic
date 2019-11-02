@@ -32,27 +32,5 @@ describe('oneOf BuilderFn', () => {
     expect(result).toBe(undefined);
   });
 
-  // it('should return instantly when only Buildables are passed', () => {
-  //   // arrange
-  //   const tmpl = createBuildable({});
-
-  //   // act
-  //   const buildable = oneOf([tmpl]);
-
-  //   // assert
-  //   expect(buildable).toBe(tmpl);
-  // });
-
-  // it('should not return instantly when both, Buildables and values are passed', () => {
-  //   // arrange
-  //   const tmpl = createBuildable({});
-
-  //   // act
-  //   const buildable = oneOf([tmpl, 12]);
-
-  //   // assert
-  //   expect(buildable).not.toBe(tmpl);
-  // });
-
   includeBuilderFnSpecs(oneOf, []);
 });
