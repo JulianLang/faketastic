@@ -2,7 +2,7 @@ import { build } from '../../core';
 import { includeStatementFnSpecs } from '../../core/built-in/specs/shared/shared-specs';
 import { combine } from '../combine';
 
-fdescribe('combine statement function', () => {
+describe('combine statement function', () => {
   it('should return a buildable with the given properties as value', () => {
     // arrange
     const template = { a: 1, b: false, c: 'str' };
