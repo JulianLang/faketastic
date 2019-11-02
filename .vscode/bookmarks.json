@@ -1,0 +1,12 @@
+[
+	{
+		"path": "$ROOTPATH$/notes/ref.md",
+		"bookmarks": [
+			{
+				"line": 77,
+				"column": 18,
+				"label": "TODO: Build quantity will probably break tree search"
+			}
+		]
+	}
+]
