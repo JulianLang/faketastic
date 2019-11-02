@@ -1,3 +1,4 @@
+import { Dictionary } from '../core';
 /**
  * Defines priorities for processor functions represented as a number.
  * The higher the priority number, the earlier the processor gets executed.
@@ -12,7 +13,7 @@
  * function. The priority will have no effects on other build-cycles than
  * the cycle of the function.
  */
-export const ProcessorPriorities = {
+export const ProcessorPriorities: Dictionary<number> = {
   // initializer
   // preprocessors
   // postprocessors
