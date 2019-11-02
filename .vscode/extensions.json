@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "alefragnani.bookmarks",
+    "lannonbr.vscode-js-annotations",
+    "esbenp.prettier-vscode",
+    "Gruntfuggly.todo-tree",
+    "ms-vscode.vscode-typescript-tslint-plugin"
+  ]
+}
