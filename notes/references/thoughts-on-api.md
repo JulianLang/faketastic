@@ -20,7 +20,9 @@ const Person = template({
       // clones the value of a random, matching node and sets this clone as its value
       // combine will then strip away the `Buildable` part and only leaves the value over.
       // All properties defined here, must be children of the combine-node, so that
-      // they get built too.
+      // they get built too. The children will then be removed, to avoid that they
+      // gets part of the actual node's value in the end. The value should be the
+      // result of the second parameter (map function).
       name: ref('name'),
     },
     refs => `${refs.name}@domain.de`,
