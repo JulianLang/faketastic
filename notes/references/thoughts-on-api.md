@@ -2,25 +2,42 @@
 
 ## Key-Findings yet
 
-### Reference nodes, not values
+### Reference the value of a node, not the node itself
 
-`ref` method should rather reference the taregted node(s), than setting its node's value to the value(s) of the referenced node(s):
+> `ref` method should rather copy over the targeted node's value (to be explicit: the value gets cloned), than referencing the node itself. This will simplify the understanding as it avoids any possible side-effects on/from the original node. It allows to safely manipulate the value in any way, without having to worry about side-effects to the original node.
+
+When referencing the node, it should `clone()` its value, so that further manipulations (such as `map()`-ing) can be done on it, without doing the same on the original (referenced) node's value. This implies, that the earliest time of referencing can be the `finalizer`-build cycle, since doing it earlier may cause deviations from the original node (e.g. by postprocessors changing the value differently).
+
+Thus it seems **crucial** that the `ref()` method gets called as the **last** (processor-)function in the whole build cycle, only followed by the `map()` that must be executed afterwards. This will ensure that the original value really equals the cloned one.
 
 ```ts
 const Person = template({
   name: oneOf(Names),
-  worksAt: ref('name', { onType: Company, mode: 'one' }), // replaces itself with a random matching node
+  // clones the value of a random, matching node and sets this clone as its value
+  nickname: ref('name', map(toNickName)),
   email: combine(
     {
-      // ref replaces itself with the "name" node on finalize
-      // combine() then strips away the `Buildable` part
-      // so that `refs.name` just becomes the correct value.
+      // clones the value of a random, matching node and sets this clone as its value
+      // combine will then strip away the `Buildable` part and only leaves the value over.
+      // All properties defined here, must be children of the combine-node, so that
+      // they get built too.
       name: ref('name'),
     },
     refs => `${refs.name}@domain.de`,
   ),
 });
+
+/*
+  Expected Tree:
+
+   Person: Node id-1
+    |- name: Node id-2
+    |- nickname: Node id-3 (equals Node id-2), but adds map(toNickName) to the finalizers. 
+    |- email: Node id-3 (has the map-finalizer)
+       |- name: Node id-4 (equals Node id-2)
+*/
 ```
+
 ---
 
 ## Quantity-Semantics
