@@ -118,6 +118,55 @@ describe('build function', () => {
     build(buildable);
   });
 
+  it('should respect processor function priorities in all build cycles', () => {
+    // arrange
+    const higherPrio = 1;
+    const lowerPrio = 0;
+
+    const initalizerOrder: number[] = [];
+    const preprocessorOrder: number[] = [];
+    const postprocessorOrder: number[] = [];
+    const finalizerOrder: number[] = [];
+    const expectedOrder = [1, 2];
+
+    const processors: ProcessorFn[] = [
+      // initializers
+      createProcessorFn(() => initalizerOrder.push(2), 'initializer', lowerPrio),
+      createProcessorFn(() => initalizerOrder.push(1), 'initializer', higherPrio),
+      // preprocessors
+      createProcessorFn(() => preprocessorOrder.push(2), 'preprocessor', lowerPrio),
+      createProcessorFn(() => preprocessorOrder.push(1), 'preprocessor', higherPrio),
+      // postprocessors
+      createProcessorFn(() => postprocessorOrder.push(2), 'postprocessor', lowerPrio),
+      createProcessorFn(() => postprocessorOrder.push(1), 'postprocessor', higherPrio),
+      // finalizers
+      createProcessorFn(() => finalizerOrder.push(2), 'finalizer', lowerPrio),
+      createProcessorFn(() => finalizerOrder.push(1), 'finalizer', higherPrio),
+    ];
+    const buildable = createBuildable({}, processors);
+
+    // negative test: arrange
+    const negativeTestOrder: number[] = [];
+    const negativeTestExpectedOrder = [2, 1];
+    const negativeTestProcessors: ProcessorFn[] = [
+      // have same prio, so the order in array should define execution order:
+      createProcessorFn(() => negativeTestOrder.push(2), 'initializer', lowerPrio),
+      createProcessorFn(() => negativeTestOrder.push(1), 'initializer', lowerPrio),
+    ];
+    const negativeTestBuildable = createBuildable({}, negativeTestProcessors);
+
+    // act
+    build(buildable);
+    build(negativeTestBuildable);
+
+    // assert
+    expect(initalizerOrder).toEqual(expectedOrder);
+    expect(preprocessorOrder).toEqual(expectedOrder);
+    expect(postprocessorOrder).toEqual(expectedOrder);
+    expect(finalizerOrder).toEqual(expectedOrder);
+    expect(negativeTestOrder).toEqual(negativeTestExpectedOrder);
+  });
+
   it('should call builder functions and assign their result as value', () => {
     // arrange
     let wasCalled = false;
