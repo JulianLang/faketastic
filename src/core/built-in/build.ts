@@ -30,21 +30,10 @@ function buildMultiple<T>(buildable: Buildable<T>, count: number): any {
 }
 
 /**
- * Builds a `Buildable` (a.k.a. "template") that got dynamically added to the object-tree
- * by a `BuilderFn` for example. The built value will than be assigned to the given `ObjectTreeNode`
- * as the new host.
+ * Builds a `Buildable` (a.k.a. "template") and assigns the built value
+ * to the given `ObjectTreeNode` as its value. The given node should be
+ * located on a `ObjectTree` that gets built via the `build()` method.
  *
- * `BuilderFn`, like `oneOf`, can not only return static values like strings or numbers,
- * but also again `Buildable`s that define templates for example. This behavior enables the
- * user to randomly select templates.
- *
- * Example:
- * ```ts
- * const Person = template({
- *   // template is randomly chosen.
- *   pet: oneOf([DogTemplate, CatTemplate]),
- * });
- * ```
  * @param buildable The buildable that got dynamically added to the tree by a builder function
  * @param hostNode The node which will become the new host to the template
  */
@@ -137,6 +126,12 @@ function buildNode(node: ObjectTreeNode): void {
   }
 
   if (isBuildable(buildable.value)) {
+    /*
+     * Builder Functions like "oneOf", can not only return static values like strings or numbers,
+     * but also again Buildables defining templates, that need to get built as well.
+     * This behavior enables the user to randomly select templates.
+     * That's why we call the `buildDynamicTemplate`-method here.
+     */
     buildDynamicTemplate(buildable, node);
   }
 }
