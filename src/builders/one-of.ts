@@ -2,33 +2,19 @@ import {
   Buildable,
   BuildableSymbol,
   createBuilderFn,
-  isArrayOfBuildables,
   isDefined,
   ProcessorFn,
   randomInt,
 } from '../core';
 
-export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<Function | any> {
+export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<Function> {
   const oneOfBuilderFn = createBuilderFn(chooseRandomItem);
 
-  /* In normal conditions, oneOf will not directly return a value,
-     but rather a function that will be called in the "build"-stage,
-     which will then return a random value.
-
-     However if oneOf gets an array consisting of Buildable templates only,
-     it will instantly choose one of those template, so that this random template
-     gets built in "build"-stage. This enables the user to randomly select templates.
-
-     e.g.: pet: oneOf([DogTemplate, CatTemplate]) // template is randomly chosen
-   */
-  return isArrayOfBuildables(values)
-    ? chooseRandomItem()
-    : {
-        [BuildableSymbol]: 'value',
-        value: oneOfBuilderFn,
-        processors: processorFns,
-        properties: {},
-      };
+  return {
+    [BuildableSymbol]: 'value',
+    value: oneOfBuilderFn,
+    processors: processorFns,
+  };
 
   function chooseRandomItem() {
     if (!isDefined(values)) {

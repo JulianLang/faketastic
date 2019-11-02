@@ -1,4 +1,5 @@
 import { ObjectTreeNode } from 'object-tree';
+import { oneOf } from '../../../builders';
 import { ProcessorFn } from '../../types';
 import { createBuilderFn, createProcessorFn } from '../../util';
 import { build } from '../build';
@@ -187,5 +188,26 @@ describe('build function', () => {
     expect(result.a).toBeDefined();
     expect(result.a).toEqual(value);
     expect(wasCalled).toBe(true);
+  });
+
+  it('should call builder functions and build their return value when it is a Buildable itself', () => {
+    // arrange
+    const value = 'value';
+    const valueTemplate = { b: oneOf([value]) };
+    const buildableValue = createBuildable(valueTemplate);
+    const builderFn = createBuilderFn(() => buildableValue);
+
+    const buildable = createBuildable({
+      a: createBuildable(builderFn),
+    });
+
+    // act
+    const result = build(buildable);
+
+    // assert
+    expect(result).toBeDefined();
+    expect(result.a).toBeDefined();
+    expect(result.a).toEqual({ b: value });
+    expect(result.a).not.toBe(valueTemplate);
   });
 });
