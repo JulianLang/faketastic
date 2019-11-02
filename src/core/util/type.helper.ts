@@ -9,8 +9,8 @@ export function isBuildable(value: any): value is Buildable<any> {
   return isDefined(value) && isDefined(value[BuildableSymbol]);
 }
 
-export function isArrayOfBuildables(value: any[]): value is Buildable[] {
-  if (!isDefined(value)) {
+export function isArrayOfBuildables(value: any): value is Buildable[] {
+  if (!isDefined(value) || !Array.isArray(value)) {
     return false;
   }
 
