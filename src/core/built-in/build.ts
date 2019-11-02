@@ -1,5 +1,5 @@
 import { nodeTypeOf, ObjectTreeNode, treeOf } from 'object-tree';
-import { Buildable } from '../types';
+import { Buildable, PrioritySymbol, ProcessorFn } from '../types';
 import { ProcessorType } from '../types/processor.types';
 import { Quantity } from '../types/quantity';
 import { clone, isBuildable, isBuilderFunction, isDefined, isProcessorFn } from '../util';
@@ -76,6 +76,7 @@ function runProcessors(type: ProcessorType, node: ObjectTreeNode): void {
     const buildable: Buildable = node.value;
     buildable.processors
       .filter(fn => isProcessorFn(fn, type))
+      .sort(sortDescendingByPriority)
       .forEach(processorFn => {
         processorFn(node);
         updateType(node);
@@ -115,6 +116,21 @@ function traverse<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) 
   if (isRootNode) {
     onNext(node);
   }
+}
+
+function sortDescendingByPriority(a: ProcessorFn, b: ProcessorFn): number {
+  let result = 0;
+  const priorityA = a[PrioritySymbol];
+  const priorityB = b[PrioritySymbol];
+
+  if (priorityA > priorityB) {
+    // because descending, we set -1
+    result = -1;
+  } else {
+    result = 1;
+  }
+
+  return result;
 }
 
 /**

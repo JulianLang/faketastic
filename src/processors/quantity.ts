@@ -1,8 +1,8 @@
 import { ObjectTreeNode, replace } from 'object-tree';
-import { QuantityInsertMode } from '../types';
-import { Quantity } from '../types/quantity';
-import { clone, createProcessorFn, isDefined } from '../util';
-import { getQuantity } from '../util/get-quantity';
+import { QuantityInsertMode } from '../core/types';
+import { Quantity } from '../core/types/quantity';
+import { clone, createProcessorFn, isDefined } from '../core/util';
+import { getQuantity } from '../core/util/get-quantity';
 
 export function quantity(
   quantity: Quantity = 1,

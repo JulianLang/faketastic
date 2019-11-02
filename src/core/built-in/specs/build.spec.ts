@@ -1,4 +1,5 @@
 import { ObjectTreeNode } from 'object-tree';
+import { ProcessorFn } from '../../types';
 import { createBuilderFn, createProcessorFn } from '../../util';
 import { build } from '../build';
 import { createBuildable } from './shared/spec.helper';
@@ -73,15 +74,13 @@ describe('build function', () => {
     // arrange
     const order: number[] = [];
     const expectedOrder: number[] = [0, 1, 2, 3];
-    const buildable = createBuildable({});
-    const processors: Function[] = [
+    const processors: ProcessorFn[] = [
       createProcessorFn(() => order.push(0), 'initializer'),
       createProcessorFn(() => order.push(1), 'preprocessor'),
       createProcessorFn(() => order.push(2), 'postprocessor'),
       createProcessorFn(() => order.push(3), 'finalizer'),
     ];
-
-    buildable.processors = processors;
+    const buildable = createBuildable({}, processors);
 
     // act
     build(buildable);
@@ -104,7 +103,7 @@ describe('build function', () => {
     };
 
     // ... arrange (continuation)
-    const processors: Function[] = [
+    const processors: ProcessorFn[] = [
       createProcessorFn(assertCorrectNodeFn, 'initializer'),
       createProcessorFn(assertCorrectNodeFn, 'preprocessor'),
       createProcessorFn(assertCorrectNodeFn, 'postprocessor'),
@@ -115,6 +114,55 @@ describe('build function', () => {
 
     // act
     build(buildable);
+  });
+
+  it('should respect processor function priorities in all build cycles', () => {
+    // arrange
+    const higherPrio = 1;
+    const lowerPrio = 0;
+
+    const initalizerOrder: number[] = [];
+    const preprocessorOrder: number[] = [];
+    const postprocessorOrder: number[] = [];
+    const finalizerOrder: number[] = [];
+    const expectedOrder = [1, 2];
+
+    const processors: ProcessorFn[] = [
+      // initializers
+      createProcessorFn(() => initalizerOrder.push(2), 'initializer', lowerPrio),
+      createProcessorFn(() => initalizerOrder.push(1), 'initializer', higherPrio),
+      // preprocessors
+      createProcessorFn(() => preprocessorOrder.push(2), 'preprocessor', lowerPrio),
+      createProcessorFn(() => preprocessorOrder.push(1), 'preprocessor', higherPrio),
+      // postprocessors
+      createProcessorFn(() => postprocessorOrder.push(2), 'postprocessor', lowerPrio),
+      createProcessorFn(() => postprocessorOrder.push(1), 'postprocessor', higherPrio),
+      // finalizers
+      createProcessorFn(() => finalizerOrder.push(2), 'finalizer', lowerPrio),
+      createProcessorFn(() => finalizerOrder.push(1), 'finalizer', higherPrio),
+    ];
+    const buildable = createBuildable({}, processors);
+
+    // negative test: arrange
+    const negativeTestOrder: number[] = [];
+    const negativeTestExpectedOrder = [2, 1];
+    const negativeTestProcessors: ProcessorFn[] = [
+      // have same prio, so the order in array should define execution order:
+      createProcessorFn(() => negativeTestOrder.push(2), 'initializer', lowerPrio),
+      createProcessorFn(() => negativeTestOrder.push(1), 'initializer', lowerPrio),
+    ];
+    const negativeTestBuildable = createBuildable({}, negativeTestProcessors);
+
+    // act
+    build(buildable);
+    build(negativeTestBuildable);
+
+    // assert
+    expect(initalizerOrder).toEqual(expectedOrder);
+    expect(preprocessorOrder).toEqual(expectedOrder);
+    expect(postprocessorOrder).toEqual(expectedOrder);
+    expect(finalizerOrder).toEqual(expectedOrder);
+    expect(negativeTestOrder).toEqual(negativeTestExpectedOrder);
   });
 
   it('should call builder functions and assign their result as value', () => {
