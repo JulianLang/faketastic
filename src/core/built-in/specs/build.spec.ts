@@ -1,4 +1,5 @@
 import { ObjectTreeNode } from 'object-tree';
+import { ProcessorFn } from '../../types';
 import { createBuilderFn, createProcessorFn } from '../../util';
 import { build } from '../build';
 import { createBuildable } from './shared/spec.helper';
@@ -74,7 +75,7 @@ describe('build function', () => {
     const order: number[] = [];
     const expectedOrder: number[] = [0, 1, 2, 3];
     const buildable = createBuildable({});
-    const processors: Function[] = [
+    const processors: ProcessorFn[] = [
       createProcessorFn(() => order.push(0), 'initializer'),
       createProcessorFn(() => order.push(1), 'preprocessor'),
       createProcessorFn(() => order.push(2), 'postprocessor'),
@@ -104,7 +105,7 @@ describe('build function', () => {
     };
 
     // ... arrange (continuation)
-    const processors: Function[] = [
+    const processors: ProcessorFn[] = [
       createProcessorFn(assertCorrectNodeFn, 'initializer'),
       createProcessorFn(assertCorrectNodeFn, 'preprocessor'),
       createProcessorFn(assertCorrectNodeFn, 'postprocessor'),

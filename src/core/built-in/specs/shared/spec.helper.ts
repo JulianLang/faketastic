@@ -1,5 +1,5 @@
 import { ObjectTreeNode } from 'object-tree';
-import { Buildable, BuildableSymbol } from '../../../types';
+import { Buildable, BuildableSymbol, ProcessorFn } from '../../../types';
 
 const dummyNode: ObjectTreeNode<any> = {
   children: [],
@@ -33,7 +33,7 @@ export function createParentTreeNode(): ObjectTreeNode<any> {
   return node;
 }
 
-export function createBuildable<T>(tmpl: T, processors: Function[] = []): Buildable<T> {
+export function createBuildable<T>(tmpl: T, processors: ProcessorFn[] = []): Buildable<T> {
   const buildable: Buildable<any> = {
     [BuildableSymbol]: 'template',
     processors,
