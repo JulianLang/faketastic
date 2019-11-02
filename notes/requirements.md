@@ -14,6 +14,6 @@
 
 ---
 
-**Not required:**
+**Not required (yet):**
 
 - ES6 classes support (only plain old JS objects)
