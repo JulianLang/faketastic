@@ -1,5 +1,28 @@
 # Thoughts on reference API
 
+## Key-Findings yet
+
+### Reference nodes, not values
+
+`ref` method should rather reference the taregted node(s), than setting its node's value to the value(s) of the referenced node(s):
+
+```ts
+const Person = template({
+  name: oneOf(Names),
+  worksAt: ref('name', { onType: Company, mode: 'one' }), // replaces itself with a random matching node
+  email: combine(
+    {
+      // ref replaces itself with the "name" node on finalize
+      // combine() then strips away the `Buildable` part
+      // so that `refs.name` just becomes the correct value.
+      name: ref('name'),
+    },
+    refs => `${refs.name}@domain.de`,
+  ),
+});
+```
+---
+
 ## Quantity-Semantics
 
 ```ts
@@ -81,12 +104,15 @@ friends: ref('name', {
   refStrategy: ParentsSiblings,
   directionality: 'unidirectional',
   refType: Person,
-  // filterFn selects only persons, that are friends with me and vice versa
-  filterFn: (name: ObjectTreeNode, self: ObjectTreeNode) => {
-    const theirFriends = findNode(name, n => n.name === 'friends');
-    const myName = findNode(self, n => n.name === 'name');
+  refMode: 'some' | 'all' | 'one',
+  filterFn: (refMatches: ObjectTreeNode[], self: ObjectTreeNode) => {
+    // filterFn selects only persons, that are friends with me and vice versa
+    const myName = findNode(self.parent, n => n.name === 'name');
 
-    return theirFriends.value.includes(myName.value);
+     return refMatches.filter(match => {
+       const theirFriends = findNode(match.parent, n => n.name === 'friends');
+       return theirFriends.value.includes(myName.value);
+     });
   }
 }),
 ```
@@ -133,6 +159,7 @@ build(Person, 20, { ruleSet: rules });
 ```
 
 ### Child References
+
 ```ts
 const Company = template({
   name: oneOf(CompanyNames),
