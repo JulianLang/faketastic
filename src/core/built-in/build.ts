@@ -53,8 +53,8 @@ export function buildDynamicTemplate(
   hostNode: ObjectTreeNode<any>,
 ): void {
   const dynamicTemplate = clone(buildable.value);
-  const dynamicTemplateBuilt = buildInstance(dynamicTemplate);
-  setValue(dynamicTemplateBuilt, hostNode);
+  const builtTemplate = buildInstance(dynamicTemplate);
+  setValue(builtTemplate, hostNode);
 }
 
 function buildInstance<T>(buildable: Buildable<T>) {
