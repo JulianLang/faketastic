@@ -74,15 +74,13 @@ describe('build function', () => {
     // arrange
     const order: number[] = [];
     const expectedOrder: number[] = [0, 1, 2, 3];
-    const buildable = createBuildable({});
     const processors: ProcessorFn[] = [
       createProcessorFn(() => order.push(0), 'initializer'),
       createProcessorFn(() => order.push(1), 'preprocessor'),
       createProcessorFn(() => order.push(2), 'postprocessor'),
       createProcessorFn(() => order.push(3), 'finalizer'),
     ];
-
-    buildable.processors = processors;
+    const buildable = createBuildable({}, processors);
 
     // act
     build(buildable);
