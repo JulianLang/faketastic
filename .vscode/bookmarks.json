@@ -8,5 +8,15 @@
 				"label": "TODO: Build quantity will probably break tree search"
 			}
 		]
+	},
+	{
+		"path": "$ROOTPATH$/src/core/built-in/build.ts",
+		"bookmarks": [
+			{
+				"line": 40,
+				"column": 26,
+				"label": "TODO: Test this method?"
+			}
+		]
 	}
 ]
