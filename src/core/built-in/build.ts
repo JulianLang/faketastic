@@ -30,18 +30,20 @@ function buildMultiple<T>(buildable: Buildable<T>, count: number): any {
 }
 
 /**
- * Builds a `Buildable` (a.k.a. "template") and assigns the built value
+ * Builds (and clones per default) a `Buildable` (a.k.a. "template") and assigns the built value
  * to the given `ObjectTreeNode` as its value. The given node should be
  * located on a `ObjectTree` that gets built via the `build()` method.
  *
  * @param buildable The buildable that got dynamically added to the tree by a builder function
  * @param hostNode The node which will become the new host to the template
+ * @param cloneBeforeBuild Defines whether the value of the buildable should be cloned before building. Default is `true`
  */
 export function buildDynamicTemplate(
   buildable: Buildable<any>,
   hostNode: ObjectTreeNode<any>,
+  cloneBeforeBuild = true,
 ): void {
-  const dynamicTemplate = clone(buildable.value);
+  const dynamicTemplate = cloneBeforeBuild ? clone(buildable.value) : buildable.value;
   const builtTemplate = buildInstance(dynamicTemplate);
   setValue(builtTemplate, hostNode);
 }
