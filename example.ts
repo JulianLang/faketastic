@@ -21,7 +21,7 @@ const Senior = extend(Person, {
 });
 
 const Example = template({
-  random: oneOf([Senior, Person, Address]),
+  random: oneOf([Senior, Person, Address, true, false, 'string']),
   // array: [
   //   use(Person, quantity(2, 'useParentArray')),
   //   insertItemsOf(Senior, 2),
