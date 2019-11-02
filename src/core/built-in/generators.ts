@@ -18,6 +18,18 @@ export function randomInt(min = 1, max = 10): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// TODO: test this
+export function randomItem(values: any[]): any {
+  const index = randomIndex(values);
+
+  return values[index];
+}
+
+// TODO: test this
+export function randomIndex(values: any[]): number {
+  return randomInt(0, values.length);
+}
+
 export function probability(n: number): boolean {
   if (n === 1) {
     return true;
