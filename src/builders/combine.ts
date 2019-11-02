@@ -4,14 +4,14 @@ import {
   BuildableSymbol,
   buildDynamicTemplate,
   createProcessorFn,
+  isBuildable,
   PureObject,
-  unwrapIfBuildable,
 } from '../core';
 import { createBuildable } from '../core/built-in/specs/shared/spec.helper';
 
-export function combine<T extends PureObject<any>>(
-  props: T,
-  map: (props: T) => any,
+export function combine<T>(
+  props: PureObject<T>,
+  map: (props: PureObject<T>) => any,
 ): Buildable<any> {
   const extractValuesProcessor = createProcessorFn(extractValues, 'finalizer');
 
@@ -22,11 +22,11 @@ export function combine<T extends PureObject<any>>(
   };
 
   function extractValues(node: ObjectTreeNode<T>) {
-    const unwrapped = unwrapIfBuildable(node.value);
-    const buildable = createBuildable(unwrapped, []);
+    const builtValues = node.value;
+    const buildable = isBuildable(builtValues) ? builtValues : createBuildable(builtValues, []);
     buildDynamicTemplate(buildable, node);
 
-    const builtProps = node.value;
+    const builtProps = node.value as PureObject<T>;
     const mappedValue = map(builtProps);
 
     // remove children

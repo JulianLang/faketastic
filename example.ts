@@ -30,10 +30,11 @@ const Example = template({
   random: oneOf([Senior, Person, Address, true, false, 'string']),
   computed: combine(
     {
-      nickname: oneOf(['CoolBoii', 'NiceDuude', 'Allen{FrEsh}', 'Andy RaceR\\\\']),
-      someNumber: range(20, 30),
+      nickname: oneOf(['CoolBoYY', 'NiceDuude', 'Allen{FrEsh}', '.:|Andy RaceR|:.']),
+      separator: oneOf([':', '?!', '_', '||']),
+      someNumber: range(20, 99),
     },
-    props => toCoolNickname(`${props.nickname}${props.someNumber}`),
+    props => toCoolNickname(`${props.nickname}${props.separator}${props.someNumber}`),
   ),
 });
 
