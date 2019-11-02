@@ -29,6 +29,34 @@ function buildMultiple<T>(buildable: Buildable<T>, count: number): any {
   return result;
 }
 
+/**
+ * Builds a `Buildable` (a.k.a. "template") that got dynamically added to the object-tree
+ * by a `BuilderFn` for example. The built value will than be assigned to the given `ObjectTreeNode`
+ * as the new host.
+ *
+ * `BuilderFn`, like `oneOf`, can not only return static values like strings or numbers,
+ * but also again `Buildable`s that define templates for example. This behavior enables the
+ * user to randomly select templates.
+ *
+ * Example:
+ * ```ts
+ * const Person = template({
+ *   // template is randomly chosen.
+ *   pet: oneOf([DogTemplate, CatTemplate]),
+ * });
+ * ```
+ * @param buildable The buildable that got dynamically added to the tree by a builder function
+ * @param hostNode The node which will become the new host to the template
+ */
+export function buildDynamicTemplate(
+  buildable: Buildable<any>,
+  hostNode: ObjectTreeNode<any>,
+): void {
+  const dynamicTemplate = clone(buildable.value);
+  const builtTemplate = buildInstance(dynamicTemplate);
+  setValue(builtTemplate, hostNode);
+}
+
 function buildInstance<T>(buildable: Buildable<T>) {
   const root = treeOf(buildable, childSelector);
 
@@ -111,31 +139,6 @@ function buildNode(node: ObjectTreeNode): void {
   if (isBuildable(buildable.value)) {
     buildDynamicTemplate(buildable, node);
   }
-}
-
-/**
- * Builds a `Buildable` (a.k.a. "template") that got dynamically added to the object-tree
- * by a `BuilderFn` for example. The built value will than be assigned to the given `ObjectTreeNode`
- * as the new host.
- *
- * `BuilderFn`, like `oneOf`, can not only return static values like strings or numbers,
- * but also again `Buildable`s that define templates for example. This behavior enables the
- * user to randomly select templates.
- *
- * Example:
- * ```ts
- * const Person = template({
- *   // template is randomly chosen.
- *   pet: oneOf([DogTemplate, CatTemplate]),
- * });
- * ```
- * @param buildable The buildable that got dynamically added to the tree by a builder function
- * @param node The node which will become the new host to the template
- */
-function buildDynamicTemplate(buildable: Buildable<any>, node: ObjectTreeNode<any>) {
-  const dynamicTemplate = clone(buildable.value);
-  const dynamicTemplateBuilt = buildInstance(dynamicTemplate);
-  setValue(dynamicTemplateBuilt, node);
 }
 
 function traverse<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) => void): void {
