@@ -1,3 +1,12 @@
+// ------------------------------------------------------------
+// |      ADVISE: DO NOT CARELESSLY CHANGE PRIORITIES!        |
+// |                                                          |
+// |  Be careful when (re-)priorizing processor functions and |
+// |  try to keep their dependencies as clear as possible, as |
+// |  changes could easily break functionality of other pro-  |
+// |  cessor functions.                                       |
+// ------------------------------------------------------------
+
 /**
  * **Contains priorities for processor functions.**
  *
@@ -23,11 +32,37 @@
  * the one of the respective processor function.
  */
 export const ProcessorPriorities = {
+  // -------------------------------------------------------
   // initializer
+  // -------------------------------------------------------
+
+  // -------------------------------------------------------
   // preprocessors
+  // -------------------------------------------------------
+
+  // -------------------------------------------------------
   // postprocessors
+  // -------------------------------------------------------
+
+  // -------------------------------------------------------
   // finalizer
-  combineValueExtract: 4005,
+  // -------------------------------------------------------
+  /**
+   * **Dependencies**
+   *
+   * *run-after:* `unpriorized processors`
+   */
   ref: 4000,
-  map: 4010,
+  /**
+   * **Dependencies**
+   *
+   * *run-after:* `ref()`
+   */
+  combineValueExtract: 4010,
+  /**
+   * **Dependencies**
+   *
+   * *run-after:* `ref()`, `combineValueExtract()`
+   */
+  map: 4015,
 } as const;
