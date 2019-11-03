@@ -37,8 +37,9 @@ export function combine<T>(
     const builtProps = node.value as PureObject<T>;
     const mappedValue = map(builtProps);
 
-    // remove children
+    // remove children as they should not get merged into the final value:
     node.children = [];
+
     node.value = mappedValue;
   }
 }
