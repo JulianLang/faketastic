@@ -5,6 +5,8 @@ import { Quantity } from '../types/quantity';
 import { clone, isBuildable, isBuilderFunction, isDefined, isProcessorFn } from '../util';
 import { getQuantity } from '../util/get-quantity';
 
+const dynamicRootIdentifier = '$dynamic-root';
+
 /**
  * Builds a buildable and outputs the generated mock data. The amount of objects
  * being built can be configured via the second parameter.
@@ -38,15 +40,32 @@ function buildMultiple<T>(buildable: Buildable<T>, count: number): any {
  * @param hostNode The node which will become the new host to the template
  * @param cloneBeforeBuild Defines whether the value of the buildable should be cloned before building. Default is `true`
  */
-export function buildDynamicTemplate(buildable: Buildable<any>, cloneBeforeBuild = true): any {
+export function buildDynamicTemplate(
+  buildable: Buildable<any>,
+  hostNode?: ObjectTreeNode<any>,
+  cloneBeforeBuild = true,
+): any {
   const dynamicTemplate = cloneBeforeBuild ? clone(buildable.value) : buildable.value;
-  const builtTemplate = buildInstance(dynamicTemplate);
+  const builtTemplate = buildInstance(dynamicTemplate, hostNode);
 
   return builtTemplate;
 }
 
-function buildInstance<T>(buildable: Buildable<T>) {
+function buildInstance<T>(buildable: Buildable<T>, asChildOf?: ObjectTreeNode) {
   const root = treeOf(buildable, childSelector);
+
+  if (isDefined(asChildOf)) {
+    /*
+     * Note: unidirectional relationship: root --> parent.
+     *
+     * This is intentionally because we want only the dynamic template to be able to see the object-tree,
+     * but not vice versa, because the dynamic template gets build in for its own, decoupled of the rest
+     * of the tree. Still it may need access to the rest of the tree to resolve references for example.
+     * This is why we attach the tree to the template as parent here:
+     */
+    root.parent = asChildOf;
+    root.name = dynamicRootIdentifier;
+  }
 
   traverse(root, node => runProcessors('initializer', node));
   traverse(root, node => runProcessors('preprocessor', node));
@@ -131,7 +150,7 @@ function buildNode(node: ObjectTreeNode): void {
      * This behavior enables the user to randomly select templates.
      * That's why we call the `buildDynamicTemplate`-method here.
      */
-    const builtTemplate = buildDynamicTemplate(buildable);
+    const builtTemplate = buildDynamicTemplate(buildable, node);
     setValue(builtTemplate, node);
   }
 }
@@ -142,8 +161,8 @@ function traverse<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) 
     onNext(child);
   }
 
-  // TODO: langju: this criteria does not work for dynamic templates!
-  const isRootNode = !isDefined(node.parent);
+  // TODO: langju: the naming-criteria is too arbitrary, think of other marker for being a root node of a dynamic template
+  const isRootNode = !isDefined(node.parent) || node.name === dynamicRootIdentifier;
   if (isRootNode) {
     onNext(node);
   }
