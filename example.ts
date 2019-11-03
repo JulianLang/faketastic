@@ -1,6 +1,6 @@
 import { Names, Streets } from './resources';
 import { combine, oneOf, range } from './src/builders';
-import { build, extend, probability, quantity, randomInt, template, use } from './src/core';
+import { build, extend, probability, quantity, template, use } from './src/core';
 
 // const insertItemsOf = (tmpl: Buildable, q: number) => use(tmpl, quantity(q, 'useParentArray'));
 const toCoolNickname = (nickname: string) =>
@@ -27,8 +27,8 @@ const Senior = extend(Person, {
 });
 
 const Example = template({
-  multiple: oneOf([1, true, 'hi there', null], quantity(() => randomInt(0, 3))),
-  randomTemplate: oneOf([Senior, Person, Address, true, false, 'string']),
+  // multiple: oneOf([1, true, 'hi there', null], quantity(() => randomInt(0, 3))),
+  // randomTemplate: oneOf([Senior, Person, Address, true, false, 'string']),
   computed: combine(
     {
       nickname: oneOf(['CoolBoYY', 'NiceDuude', 'Allen{FrEsh}', '.:|Andy RaceR|:.']),
@@ -39,9 +39,11 @@ const Example = template({
       const nickname = `${props.nickname}${props.separator}${props.someNumber}`;
       return probability(0.5) ? toCoolNickname(nickname) : nickname;
     },
-    quantity(() => randomInt(0, 3)),
+    quantity(2),
   ),
 });
 
-const output = build(Example, 5);
+const output = build(Example);
 console.log(JSON.stringify(output, null, 2));
+
+Senior;
