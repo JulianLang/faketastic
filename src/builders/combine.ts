@@ -24,8 +24,8 @@ export function combine<T>(
   return {
     [BuildableSymbol]: 'value',
     // TODO: langju: should `props` be cloned? Wait for bug until August 2020. Then remove this todo.
-    value: null,
-    processors: [extractValuesProcessor],
+    value: props,
+    processors: [...processors, extractValuesProcessor],
   };
 
   function extractValues(node: ObjectTreeNode<Buildable<T>>) {
