@@ -8,6 +8,7 @@ import {
   ProcessorFn,
   PureObject,
 } from '../core';
+import { createBuildable } from '../core/built-in/specs/shared/spec.helper';
 
 export function combine<T>(
   props: PureObject<T>,
@@ -23,12 +24,12 @@ export function combine<T>(
   return {
     [BuildableSymbol]: 'value',
     // TODO: langju: should `props` be cloned? Wait for bug until August 2020. Then remove this todo.
-    value: props,
-    processors: [...processors, extractValuesProcessor],
+    value: null,
+    processors: [extractValuesProcessor],
   };
 
   function extractValues(node: ObjectTreeNode<Buildable<T>>) {
-    const buildable: Buildable<T> = node.value;
+    const buildable: Buildable<T> = createBuildable(props, processors);
     const builtTemplate = buildDynamicTemplate(buildable, node);
     const mappedValue = map(builtTemplate);
 

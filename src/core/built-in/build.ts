@@ -141,17 +141,17 @@ function buildNode(node: ObjectTreeNode): void {
   if (isBuilderFunction(buildable.value)) {
     const builderFn = buildable.value;
     buildable.value = builderFn();
+  }
 
-    /*
-     * Builder Functions like "oneOf", can not only return static values like strings or numbers,
-     * but also again Buildables defining templates, that need to get built as well.
-     * This behavior enables the user to randomly select templates.
-     * That's why we call the `buildDynamicTemplate`-method here.
-     */
-    if (isBuildable(buildable.value)) {
-      const builtTemplate = buildDynamicTemplate(buildable, node);
-      setValue(builtTemplate, node);
-    }
+  /*
+   * Builder Functions like "oneOf", can not only return static values like strings or numbers,
+   * but also again Buildables defining templates, that need to get built as well.
+   * This behavior enables the user to randomly select templates.
+   * That's why we call the `buildDynamicTemplate`-method here.
+   */
+  if (isBuildable(buildable.value)) {
+    const builtTemplate = buildDynamicTemplate(buildable, node);
+    setValue(builtTemplate, node);
   }
 }
 
