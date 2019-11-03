@@ -42,7 +42,7 @@ function buildMultiple<T>(buildable: Buildable<T>, count: number): any {
  */
 export function buildDynamicTemplate(
   buildable: Buildable<any>,
-  hostNode?: ObjectTreeNode<any>,
+  hostNode: ObjectTreeNode<any>,
   cloneBeforeBuild = true,
 ): any {
   const dynamicTemplate = cloneBeforeBuild ? clone(buildable.value) : buildable.value;
