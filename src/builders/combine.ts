@@ -5,11 +5,9 @@ import {
   BuildableSymbol,
   buildDynamicTemplate,
   createProcessorFn,
-  isBuildable,
   ProcessorFn,
   PureObject,
 } from '../core';
-import { createBuildable } from '../core/built-in/specs/shared/spec.helper';
 
 export function combine<T>(
   props: PureObject<T>,
@@ -29,9 +27,8 @@ export function combine<T>(
     processors: [...processors, extractValuesProcessor],
   };
 
-  function extractValues(node: ObjectTreeNode<T>) {
-    const builtValues = node.value;
-    const buildable = isBuildable(builtValues) ? builtValues : createBuildable(builtValues, []);
+  function extractValues(node: ObjectTreeNode<Buildable<T>>) {
+    const buildable: Buildable<T> = node.value;
     const builtTemplate = buildDynamicTemplate(buildable, node);
     const mappedValue = map(builtTemplate);
 
