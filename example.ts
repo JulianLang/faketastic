@@ -1,6 +1,7 @@
 import { Names, Streets } from './resources';
 import { combine, oneOf, range } from './src/builders';
 import { build, extend, probability, quantity, template, use } from './src/core';
+import { map } from './src/processors';
 
 // const insertItemsOf = (tmpl: Buildable, q: number) => use(tmpl, quantity(q, 'useParentArray'));
 const toCoolNickname = (nickname: string) =>
@@ -40,6 +41,7 @@ const Example = template({
       return probability(0.5) ? toCoolNickname(nickname) : nickname;
     },
     quantity(2),
+    map<string>(str => str.toUpperCase()),
   ),
 });
 

@@ -6,6 +6,7 @@ export function map<T = any, K = any>(mapFn: (param: T) => K): ProcessorFn {
   return createProcessorFn(mapImpl, 'finalizer', ProcessorPriorities.map);
 
   function mapImpl(node: ObjectTreeNode) {
-    console.log(node);
+    const mapped = mapFn(node.value);
+    node.value = mapped;
   }
 }
