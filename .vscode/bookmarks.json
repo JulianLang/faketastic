@@ -13,9 +13,9 @@
 		"path": "$ROOTPATH$/src/builders/combine.ts",
 		"bookmarks": [
 			{
-				"line": 24,
-				"column": 0,
-				"label": "TODO [Aug 2020]: Should this be cloned?"
+				"line": 26,
+				"column": 61,
+				"label": "TODO [Aug 2020]: Should props be cloned?"
 			}
 		]
 	},
