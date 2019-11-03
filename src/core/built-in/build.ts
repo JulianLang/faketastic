@@ -38,14 +38,11 @@ function buildMultiple<T>(buildable: Buildable<T>, count: number): any {
  * @param hostNode The node which will become the new host to the template
  * @param cloneBeforeBuild Defines whether the value of the buildable should be cloned before building. Default is `true`
  */
-export function buildDynamicTemplate(
-  buildable: Buildable<any>,
-  hostNode: ObjectTreeNode<any>,
-  cloneBeforeBuild = true,
-): void {
+export function buildDynamicTemplate(buildable: Buildable<any>, cloneBeforeBuild = true): any {
   const dynamicTemplate = cloneBeforeBuild ? clone(buildable.value) : buildable.value;
   const builtTemplate = buildInstance(dynamicTemplate);
-  setValue(builtTemplate, hostNode);
+
+  return builtTemplate;
 }
 
 function buildInstance<T>(buildable: Buildable<T>) {
@@ -134,7 +131,8 @@ function buildNode(node: ObjectTreeNode): void {
      * This behavior enables the user to randomly select templates.
      * That's why we call the `buildDynamicTemplate`-method here.
      */
-    buildDynamicTemplate(buildable, node);
+    const builtTemplate = buildDynamicTemplate(buildable);
+    setValue(builtTemplate, node);
   }
 }
 
@@ -144,6 +142,7 @@ function traverse<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) 
     onNext(child);
   }
 
+  // TODO: langju: this criteria does not work for dynamic templates!
   const isRootNode = !isDefined(node.parent);
   if (isRootNode) {
     onNext(node);

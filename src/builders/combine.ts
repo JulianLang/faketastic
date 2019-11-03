@@ -32,10 +32,8 @@ export function combine<T>(
   function extractValues(node: ObjectTreeNode<T>) {
     const builtValues = node.value;
     const buildable = isBuildable(builtValues) ? builtValues : createBuildable(builtValues, []);
-    buildDynamicTemplate(buildable, node);
-
-    const builtProps = node.value as PureObject<T>;
-    const mappedValue = map(builtProps);
+    const builtTemplate = buildDynamicTemplate(buildable);
+    const mappedValue = map(builtTemplate);
 
     // remove children as they should not get merged into the final value:
     node.children = [];
