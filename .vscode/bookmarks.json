@@ -13,9 +13,9 @@
 		"path": "$ROOTPATH$/src/builders/combine.ts",
 		"bookmarks": [
 			{
-				"line": 26,
-				"column": 61,
-				"label": "TODO [Aug 2020]: Should props be cloned?"
+				"line": 24,
+				"column": 42,
+				"label": "TODO [Aug 2020]: Should Props be cloned?"
 			}
 		]
 	},
@@ -23,9 +23,9 @@
 		"path": "$ROOTPATH$/src/core/built-in/build.ts",
 		"bookmarks": [
 			{
-				"line": 40,
-				"column": 26,
-				"label": "TODO: Test this method?"
+				"line": 42,
+				"column": 37,
+				"label": "TODO: Test this?"
 			}
 		]
 	}
