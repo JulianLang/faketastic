@@ -52,17 +52,17 @@ export const ProcessorPriorities = {
    *
    * *run-after:* `unpriorized processors`
    */
-  ref: 4000,
+  ref: -4000,
   /**
    * **Dependencies**
    *
    * *run-after:* `ref()`
    */
-  combineValueExtract: 4010,
+  combineValueExtract: -4010,
   /**
    * **Dependencies**
    *
    * *run-after:* `ref()`, `combineValueExtract()`
    */
-  map: 4015,
+  map: -4015,
 } as const;
