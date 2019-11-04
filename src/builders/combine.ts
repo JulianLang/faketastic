@@ -4,6 +4,7 @@ import {
   Buildable,
   BuildableSymbol,
   buildDynamicTemplate,
+  clone,
   createProcessorFn,
   ProcessorFn,
   PureObject,
@@ -23,8 +24,7 @@ export function combine<T>(
 
   return {
     [BuildableSymbol]: 'value',
-    // TODO: langju: should `props` be cloned? Wait for bug until August 2020. Then remove this todo.
-    value: props,
+    value: clone(props),
     processors: [...processors, extractValuesProcessor],
   };
 

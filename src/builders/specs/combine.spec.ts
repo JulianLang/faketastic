@@ -1,5 +1,5 @@
 import { build } from '../../core';
-import { includeStatementFnSpecs } from '../../core/built-in/specs/shared/shared-specs';
+import { includeTemplateFnSpecs } from '../../core/built-in/specs/shared/shared-specs';
 import { combine } from '../combine';
 
 describe('combine statement function', () => {
@@ -12,7 +12,7 @@ describe('combine statement function', () => {
     const buildable = combine(template, mapFn);
 
     // assert
-    expect(buildable.value).toBe(template);
+    expect(buildable.value).toEqual(template);
   });
 
   it('should call the map function', () => {
@@ -29,5 +29,5 @@ describe('combine statement function', () => {
     expect(spy).toHaveBeenCalledWith(template);
   });
 
-  includeStatementFnSpecs(combine, {}, () => {});
+  includeTemplateFnSpecs(combine, {}, () => {});
 });

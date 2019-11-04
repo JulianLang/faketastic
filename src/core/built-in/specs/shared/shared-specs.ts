@@ -25,8 +25,6 @@ export function includeDirectiveFnSpecs(directiveFn: Function, ...params: any[])
     // assert
     expect(buildable.processors).toEqual(processorFns);
   });
-
-  includeStatementFnSpecs(directiveFn, ...params);
 }
 
 export function includeTemplateFnSpecs(templateFn: Function, ...additionalParams: any[]) {
@@ -54,13 +52,11 @@ export function includeTemplateFnSpecs(templateFn: Function, ...additionalParams
     // functions do not get cloned
     expect(clonedB === tmpl.b).toBe(true);
   });
-}
 
-export function includeStatementFnSpecs(statementFn: Function, ...params: any[]) {
   it('should return a buildable', () => {
     // arrange
     // act
-    const buildable = statementFn(...params);
+    const buildable = templateFn(...additionalParams);
 
     // assert
     expect(buildable).toBeDefined();
