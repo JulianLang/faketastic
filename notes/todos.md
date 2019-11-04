@@ -1,5 +1,9 @@
 # Questions
 
+## Should `extend` be really a `DirectiveFn` or rather a `TemplateFn`?
+
+For more details on function naming, have a look [here](./naming.md). If it should rather be a `TemplateFn`, remove test cases for `DirectiveFn`s.
+
 ## What happens if a ref() references another ref()?
 
 If this is necessary, _might_ be a design/architectural error, since I could not come up with a valid scenario yet. Has to be proven, though. Tried with something like that (which does not need a ref to a ref):
