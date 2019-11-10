@@ -2,7 +2,7 @@
 
 ## Next
 
-- [Concept for Basic Referencing](./references/scope-1.md)
+- [Concept for Basic Referencing](../references/scope-1.md)
 
 ## Done
 
