@@ -14,7 +14,7 @@ References are what drive semantics in data.
 2. **number of product tests <= number of products.** Some products haven't been tested yet.
 3. **number of product tests >= number of products.** Some products have been tested multiple times.
 4. **number of product tests is ranged.** There is a range of quantities possible, that deviate from the referenced quantity.
-   - Example: There are `+/- 5 <number-of-products> instances of ProductTest`
+   - Example: There are `+/- 5 instances of ProductTest relative to <number-of-products>`
 5. **number of product tests is arbitrary.** There is no restriction / any situation is possible.
 
 [API Drafts: Quantity Semantics](./thoughts-on-api.md#quantity-semantics)
