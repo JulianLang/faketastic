@@ -1,11 +1,14 @@
-# Template Functions
+# Roadmap
 
+## Next
 
-## Planned Template Functions
+- [Concept for Basic Referencing](./references/scope-1.md)
 
-## `extend`-function
+## Done
 
-- [x] \*implemented in v0.0.15\*\*
+### `extend`-function
+
+- [x] **implemented in v0.0.15**
 
 Dynamically adds or overrides properties to/on a given Template.
 
