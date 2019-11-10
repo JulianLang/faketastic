@@ -1,8 +1,5 @@
 # Template Functions
 
-Template functions are functions that creates `Buildable` templates for faketastic. They take arbitrary input and convert it into Buildables that can then be built. Template functions have a signature like this:
-
-`(...arbitraryInput: any[]) => Buildable<any>`
 
 ## Planned Template Functions
 
