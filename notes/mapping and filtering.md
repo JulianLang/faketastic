@@ -2,22 +2,17 @@
 
 ## What
 
-Generated data can be mapped so that the template author has more control about the shape and context of the generated data. Mapping is interesting when it comes to computed properties, like shown as `email`-property in this example:
+Mapping data is interesting when it comes to computed properties, like shown as `email`-property in this example:
 
 ```ts
 const Person = template({
   name: oneOf(Names),
   // email is computed from the Person's name.
-  email: combine(
-    {
-      name: ref('name'),
-      domain: oneOf(Domains),
-    },
-    // mapping is built-in here
-    v => v.name + '@' + v.domain + '.de',
-  ),
+  email: ref('name', map(name => `${name}@centigrade.de`))
 });
 ```
+
+The advantage here is the easy reuse of already generated data, which helps a lot to create inner data semantics for realistic data sets.
 
 # Filtering (experimental)
 

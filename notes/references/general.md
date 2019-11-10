@@ -45,7 +45,7 @@ We can specify more things here, for example:
 
 - **Bidirectionality:** In most cases friend-relationships are bidirectional. [API Drafts: Bidirectionality](./thoughts-on-api.md#bidirectionality)
 
-* **Alternative Ref Strategies:** How to traverse the object-tree in order to find the correct node(s). Also you may want to narrow the allowed reference-targets to a specific type, since the `name` property is common to many types [API Drafts: Ref-Strategies](./thoughts-on-api.md#alternative-ref-strategies)
+* **Alternative Ref Strategies:** How to traverse the object-tree in order to find the correct node(s). Also you may want to narrow the allowed reference-targets to a specific type, since the `name` property is common to many types [API Drafts: Ref-Strategies](./thoughts-on-api.md#alternative-ref-strategies). Some more ideas about type narrowing can be found [here](../mapping-and-filtering.md).
 
 - **Quantity of items to select:** Depending on the situation, the reference should possibly include **_all_**, **_some_** (on a random basis or by filterFn) or **_one_** finding into its value. [API Drafts: Quantity Selection Mode](./thoughts-on-api.md#quantity-selection-mode)
 
