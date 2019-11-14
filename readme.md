@@ -2,39 +2,27 @@
 
 ## Installation
 
-Please note: `faketastic` depends on [`object-tree` library](https://gitlab.centigrade.de/julian.lang/object-tree), which is currently linked in the `package.json` **as a file-path**. To get faketastic up and running, **follow these instructions**:
-
-1. Download **both projects**, `object-tree` and `faketastic`
-2. Move both project-folders, so that they are located **side-by-side**.
-3. Install dependencies in `object-tree` via `$ npm install`
-4. Build the `object-tree` project via `$ npm run build` or test it with `$ npm test`
-5. Install dependencies in `faketastic` via `$ npm install`
-6. Start the `faketastic` project via `$ npm start` or test it with `$ npm test`
-
-> Note: When starting faketastic, it automatically runs the code in `example.ts`, which is located in the project's root folder. This file is meant as a **playground** which you can use without to worry about anything. It is also checked into git with a basic example; so if you mess up, just revert your changes. ;)
+`$ npm install faketastic`
 
 ## What is faketastic?
 
-Faketastic is a small library giving you tools to generate your mock data on a random basis. With it you can define templates for your mock objects, that gets filled with random data while respecting your data restrictions.
+Faketastic is a library giving you tools to model your entities and generate randomized data from it. This way you get any number of random data, while still respecting your data restrictions specified in your model. The main difference to well-known mock data generators out there is that faketastic don't want to feed you with _just some random data_, but it _lets you define what data_ to use and in what shape to deliver. It also strives to add semantics to it. The vision is to allow users to design data models of arbitrary complexity and instantly generate _valid and meaningful_ data.
+
+Thus the main purpose of faketastic (for now) is the combination of defining data models and generating valid sample data from it.
 
 > **API is in Concept State**
 > Please note: faketastic's API is currently in concept state and may be subject to changes in the future.
+> If you like the idea of this project, please feel free to get in touch and/or contribute :)
 
 ## Quick Example
 
 ```ts
-import {
-  template,
-  use,
-  oneOf,
-  range,
-  quantity,
-  build
-} from 'faketastic';
+import { template, use, oneOf, range, quantity, build } from 'faketastic';
 
-// simple array with a bunch of different street names
+// simple array we can define with a bunch of made-up street names
 import { StreetNames } from './resources.ts';
-// same here
+// same here for Names, could be possibly split up into any
+// category of names (first-names, surnames, male, female, ...)
 import { Names } from './resources.ts';
 
 const Address = template({
@@ -47,27 +35,41 @@ const Address = template({
 const Person = template({
   name: oneOf(Names),
   age: range(1, 99),
-  // gives you 5 (built) instances of the Address template
-  address: use(Address, quantity(5)),
+  // gives you 3 (built) instances of the Address template
+  address: use(Address, quantity(3)),
 });
 
-const output = build(Person);
+// simple string transform function for use in Employee
+const toMailName = (name: string) => name.replace(' ', '.').toLowerCase();
+
+const Employee = extend(Person, {
+  age: range(16, 62),
+  email: combine(
+    {
+      name: ref(Employee, 'name', map(toMailName)),
+      domain: oneOf(Domains),
+    },
+    values => `${values.name}@${values.domain}.de`,
+  ),
+});
+
+const output = build(Employee, 3);
 /*
   "output" will be something like:
-  {
-    "name": "Marnie Banuelos",
-    "age": 85,
-    "address": [
-      {
-        "street": "Alfred Street",
-        "zip": 221996
-      },
-      {
-        "street": "Woodside Close",
-        "zip": 455372
-      },
-      // 3 more ...
-    ]
-  }
+  [
+    {
+      "name": "Daniel Banuelos",
+      "age": 54,
+      "email": "daniel.banuelos@hotmail.de",
+      "address": [
+        {
+          "street": "Eldow Street",
+          "zip": 221996
+        },
+        // 2 more addresses ...
+      ]
+    },
+    // 2 more employees ...
+  ]
 */
 ```
