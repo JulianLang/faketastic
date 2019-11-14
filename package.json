@@ -1,6 +1,6 @@
 {
-  "name": "@faketastic/core",
-  "version": "0.0.1",
+  "name": "faketastic",
+  "version": "0.0.2",
   "description": "A library to help you with modelling data entities and generate them as mock data.",
   "main": "./dist/index.js",
   "private": false,
@@ -16,7 +16,11 @@
   "keywords": [
     "mock data",
     "fake data",
-    "generator"
+    "generator",
+    "data modelling",
+    "data specification",
+    "randomized data",
+    "modeller"
   ],
   "author": "jlang",
   "license": "ISC",
