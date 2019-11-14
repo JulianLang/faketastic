@@ -1,7 +1,7 @@
 {
-  "name": "faketastic",
-  "version": "0.0.15",
-  "description": "A small library to help you building mock objects.",
+  "name": "@faketastic/core",
+  "version": "0.0.1",
+  "description": "A library to help you with modelling data entities and generate them as mock data.",
   "main": "./dist/index.js",
   "private": false,
   "scripts": {
