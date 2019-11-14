@@ -3,6 +3,9 @@
 **/dist
 **/*.js
 
+# notes
+**/notes
+
 # testing
 **/*.test.js
 src/.DS_Store
