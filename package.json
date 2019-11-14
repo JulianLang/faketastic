@@ -16,7 +16,10 @@
   "keywords": [
     "mock data",
     "fake data",
-    "generator"
+    "generator",
+    "data modelling",
+    "data specification",
+    "randomized data"
   ],
   "author": "jlang",
   "license": "ISC",

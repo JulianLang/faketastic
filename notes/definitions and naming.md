@@ -2,13 +2,13 @@
 
 **All following functions returns a `Buildable` which is why they are all `TemplateFn` or a subtype of them:**
 
-> **TemplateFn**: 
+> **TemplateFn**:
 > - Returns a buildable
 > - clone the template
 > - maybe include their own hidden processors
 > - **does not accept** (externally given) ProcessorFns
 >
-> **DirectiveFn**: 
+> **DirectiveFn**:
 > - conceptually extends a `TemplateFn` but:
 > - **does accept** (externally given) processors as input
 >
@@ -40,3 +40,9 @@ Template functions are functions that creates `Buildable` templates for faketast
   - adds custom, hidden processor
 
 > **Question** What makes `combine` different from `use`?
+
+## ActionFn (concept)
+
+Functions that gets called from `TemplateFn` or `DirectiveFn` such as `ref`. Function `ref` will traverse the tree and allows to call action while traversing them. Every `ActionFn` gets the current node and can mutate them.
+
+### Example: Filtering on `ref`

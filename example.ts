@@ -29,7 +29,7 @@ const Senior = extend(Person, {
 
 const Example = template({
   // multiple: oneOf([1, true, 'hi there', null], quantity(() => randomInt(0, 3))),
-  // randomTemplate: oneOf([Senior, Person, Address, true, false, 'string']),
+  randomTemplate: oneOf([Senior, Person, Address, true, false, 'string']),
   computed: combine(
     {
       nickname: oneOf(['CoolBoYY', 'NiceDuude', 'Allen{FrEsh}', '.:|Andy RaceR|:.']),
@@ -45,7 +45,5 @@ const Example = template({
   ),
 });
 
-const output = build(Example);
+const output = build(Example, 4);
 console.log(JSON.stringify(output, null, 2));
-
-Senior;

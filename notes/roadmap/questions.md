@@ -4,28 +4,35 @@
 
 For more details on function naming, have a look [here](./naming.md). If it should rather be a `TemplateFn`, remove test cases for `DirectiveFn`s.
 
-**Think of cases when we would *really* need to apply processors on `extend()`? Are there any after all?**
+**Think of cases when we would _really_ need to apply processors on `extend()`? Are there any after all?**
 
 ## What happens if a ref() references another ref()?
 
-If this is necessary, _might_ be a design/architectural error, since I could not come up with a valid scenario yet. Has to be proven, though. Tried with something like that (which does not need a ref to a ref):
+For example we ref a computed property, which in turn contains a ref as well.
 
 ```ts
 const Person = template({
   name: oneOf(Names),
-  email: combine(
-    {
-      name: ref('name'),
-      domain: ref('domain', { refStrategy: ParentsSiblings }),
-      tld: ref('toplevelDomains', { refStrategy: ParentsSiblings }, map(tlds => randomItem(tlds))),
-    },
-    refs => `${refs.name}@${domain}.${tld}`,
-  ),
+  age: range(14, 30),
+  isAdult: ref('age', map(a => a >= 18)),
 });
 
-const Providers = template({
-  name: oneOf(Providers),
-  toplevelDomains: oneOf(TLDS, quantity(5)),
+const Family = template({
+  members: use(Person, quantity(4)),
+  parents: ref('members', filter(member => member.isAdult === true),
+});
+
+build(Family);
+```
+
+Since leave nodes are built first, the reference should work as is. Problems are introduced as soon, as both references are on the same level, and the first ref targets the second one:
+
+```ts
+const Person = template({
+  age: range(1, 50),
+  // order is important:
+  isMarried: ref('isAdult', map(adult => adult && probability(0.8))),
+  isAdult: ref('age' /* ... */),
 });
 ```
 
