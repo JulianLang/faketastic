@@ -1,4 +1,4 @@
-import { ObjectTreeNode } from 'object-tree';
+import { ObjectTreeNode } from 'treelike';
 import { Buildable, BuildableSymbol, ProcessorFn } from '../../../types';
 
 const dummyNode: ObjectTreeNode<any> = {

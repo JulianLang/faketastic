@@ -1,4 +1,4 @@
-import { nodeTypeOf, ObjectTreeNode, treeOf } from 'object-tree';
+import { nodeTypeOf, ObjectTreeNode, treeOf } from 'treelike';
 import { Buildable, PrioritySymbol, ProcessorFn } from '../types';
 import { ProcessorType } from '../types/processor.types';
 import { Quantity } from '../types/quantity';

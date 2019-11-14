@@ -1,4 +1,4 @@
-import { ObjectTreeNode } from 'object-tree';
+import { ObjectTreeNode } from 'treelike';
 import { ProcessorPriorities } from '../constants/processor.priorities';
 import {
   Buildable,
