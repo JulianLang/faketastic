@@ -1,4 +1,4 @@
-import { ObjectTreeNode } from 'object-tree';
+import { ObjectTreeNode } from 'treelike';
 import { oneOf } from '../../../builders';
 import { ProcessorFn } from '../../types';
 import { createBuilderFn, createProcessorFn } from '../../util';

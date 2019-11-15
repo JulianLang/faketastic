@@ -1,4 +1,4 @@
-import { createNode, ObjectTreeNode } from 'object-tree';
+import { createNode, ObjectTreeNode } from 'treelike';
 import { createChildTreeNode } from '../../core/built-in/specs/shared/spec.helper';
 import { quantity } from '../quantity';
 import { includeProcessorFnSpecs } from './shared/shared-specs';
