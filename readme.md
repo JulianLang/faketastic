@@ -6,11 +6,12 @@
 
 ## What is faketastic?
 
-Faketastic is a library giving you tools to model your entities and generate randomized data from it. This way you get any number of random data, while still respecting your data restrictions specified in your model. The main difference to well-known mock data generators out there is that faketastic don't want to feed you with _just some random data_, but it _lets you define what data_ to use and in what shape to deliver. It also strives to add semantics to it. The vision is to allow users to design data models of arbitrary complexity and instantly generate _valid and meaningful_ data.
+Faketastic is a library giving you tools to model your entities and generate randomized data from it. This way you get any number of random data, while still respecting your data restrictions specified in your model. The main difference to well-known mock data generators out there is that faketastic don't want to feed you with _just some random data_, but it _lets you define what data_ to use and in what shape to deliver. It also strives to let you add semantics to it. The vision is to allow users to design data models of arbitrary complexity and instantly generate _valid and meaningful_ data.
 
-Thus the main purpose of faketastic (for now) is the combination of defining data models and generating valid sample data from it.
+Thus the main purpose of faketastic (yet) is the combination of defining data models and generating valid sample data from it.
 
 > **API is in Concept State**
+>
 > Please note: faketastic's API is currently in concept state and may be subject to changes in the future.
 > If you like the idea of this project, please feel free to get in touch and/or contribute :)
 
@@ -46,6 +47,7 @@ const Employee = extend(Person, {
   age: range(16, 62),
   email: combine(
     {
+      // please note: ref is not implemented yet, but planned as seen here :)
       name: ref(Employee, 'name', map(toMailName)),
       domain: oneOf(Domains),
     },
