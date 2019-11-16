@@ -1,5 +1,5 @@
 import { ObjectTreeNode } from 'treelike';
-import { ProcessorPriorities } from '../constants/processor.priorities';
+import { ProcessorOrders } from '../constants/processor.orders';
 import {
   Buildable,
   BuildableSymbol,
@@ -18,7 +18,7 @@ export function combine<T>(
   const combineValuesProcessor = createProcessorFn(
     buildAndCombineValues,
     'finalizer',
-    ProcessorPriorities.combineValues,
+    ProcessorOrders.combineValues,
   );
 
   return {

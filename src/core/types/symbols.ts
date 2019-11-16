@@ -1,2 +1,2 @@
-export const PrioritySymbol = Symbol('faketastic.priority');
+export const ProcessorOrderSymbol = Symbol('faketastic.processor.order');
 export const ProcessorSymbol = Symbol('faketastic.processor');
