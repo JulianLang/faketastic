@@ -176,7 +176,7 @@ function sortDescendingByPriority(a: ProcessorFn, b: ProcessorFn): number {
   if (priorityA > priorityB) {
     // because descending, we set -1
     result = -1;
-  } else {
+  } else if (priorityA < priorityB) {
     result = 1;
   }
 
