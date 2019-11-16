@@ -23,7 +23,7 @@ export function combine<T>(
 
   return {
     [BuildableSymbol]: 'value',
-    value: {},
+    value: null,
     processors: [...processors, extractValuesProcessor],
   };
 
