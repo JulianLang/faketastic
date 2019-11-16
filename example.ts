@@ -1,9 +1,8 @@
 import { Names, Streets } from './resources';
 import { combine, oneOf, range } from './src/builders';
-import { build, extend, probability, quantity, template, use } from './src/core';
+import { build, extend, probability, quantity, randomInt, template, use } from './src/core';
 import { canBe, map } from './src/processors';
 
-// const insertItemsOf = (tmpl: Buildable, q: number) => use(tmpl, quantity(q, 'useParentArray'));
 const toCoolNickname = (nickname: string) =>
   nickname
     .replace('o', '0')
@@ -30,6 +29,10 @@ const Senior = extend(Person, {
 const Example = template({
   canBeTest: oneOf(['abc', '123'], canBe('hello world', 0.2)),
   // multiple: oneOf([1, true, 'hi there', null], quantity(() => randomInt(0, 3))),
+  multiple: oneOf(
+    [1, true, 'hi there', null],
+    quantity(() => randomInt(0, 3)),
+  ),
   randomTemplate: oneOf([Senior, Person, Address, true, false, 'string']),
   computed: combine(
     {
