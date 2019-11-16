@@ -1,7 +1,7 @@
 {
   "name": "faketastic",
-  "version": "0.0.15",
-  "description": "A small library to help you building mock objects.",
+  "version": "0.0.21",
+  "description": "A library to help you with modelling data entities and generate them as mock data.",
   "main": "./dist/index.js",
   "private": false,
   "scripts": {
@@ -19,7 +19,8 @@
     "generator",
     "data modelling",
     "data specification",
-    "randomized data"
+    "randomized data",
+    "modeller"
   ],
   "author": "jlang",
   "license": "ISC",
