@@ -1,9 +1,9 @@
 import { ProcessorType } from './processor.types';
-import { PrioritySymbol, ProcessorSymbol } from './symbols';
+import { ProcessorOrderSymbol, ProcessorSymbol } from './symbols';
 
 export interface ProcessorFn {
   [ProcessorSymbol]: ProcessorType;
-  [PrioritySymbol]: number;
+  [ProcessorOrderSymbol]: number;
 
   (...params: any[]): void;
 }
