@@ -3,7 +3,7 @@ import { createBuildable } from '../../core/built-in/specs/shared/spec.helper';
 import { canBe } from '../can-be';
 import { includeProcessorFnSpecs } from './shared/shared-specs';
 
-fdescribe('canBe processor function', () => {
+describe('canBe processor function', () => {
   it('should replace the value of a node with the specified one', () => {
     // arrange
     const expectedValue = 42;
