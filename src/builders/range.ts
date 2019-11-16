@@ -1,5 +1,4 @@
-import { Buildable, BuildableSymbol, createBuilderFn, ProcessorFn } from '../core';
-import { randomInt } from '../core/built-in/generators';
+import { Buildable, BuildableSymbol, createBuilderFn, ProcessorFn, randomInt } from '../core';
 
 export function range(min = 1, max = 10, ...processorFns: ProcessorFn[]): Buildable<Function> {
   const rangeBuilder = createBuilderFn(rangeImpl);

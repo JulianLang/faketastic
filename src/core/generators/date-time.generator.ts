@@ -1,6 +1,6 @@
 import isWithinInterval from 'date-fns/isWithinInterval';
 import parse from 'date-fns/parse';
-import { isDefined, randomInt } from '../core';
+import { isDefined, randomInt } from '..';
 import { DateTimeOpts } from './types';
 
 const defaultDateTimeFormat = 'dd.MM.yyyy HH:mm:ss';
