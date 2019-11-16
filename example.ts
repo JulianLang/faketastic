@@ -1,7 +1,7 @@
 import { Names, Streets } from './resources';
 import { combine, oneOf, range } from './src/builders';
-import { build, extend, probability, quantity, randomInt, template, use } from './src/core';
-import { canBe, map } from './src/processors';
+import { build, extend, probability, randomInt, template, use } from './src/core';
+import { canBe, map, quantity } from './src/processors';
 
 const toCoolNickname = (nickname: string) =>
   nickname
