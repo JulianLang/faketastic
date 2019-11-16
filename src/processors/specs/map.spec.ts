@@ -33,5 +33,6 @@ describe('map processor fn', () => {
     expect(result).toEqual(expectedValue);
   });
 
+  // TODO: langju: when ref() arrived: test case for running after ref() ?
   includeProcessorFnSpecs(map, () => {});
 });
