@@ -37,6 +37,7 @@
     "typescript": "^3.5.3"
   },
   "dependencies": {
+    "date-fns": "^2.7.0",
     "lodash": "^4.17.15",
     "treelike": "0.0.1"
   }
