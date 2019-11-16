@@ -16,7 +16,7 @@ export function combine<T>(
   ...processors: ProcessorFn[]
 ): Buildable<any> {
   const combineValuesProcessor = createProcessorFn(
-    combineValues,
+    buildAndCombineValues,
     'finalizer',
     ProcessorPriorities.combineValues,
   );
@@ -27,7 +27,7 @@ export function combine<T>(
     processors: [...processors, combineValuesProcessor],
   };
 
-  function combineValues(node: ObjectTreeNode<Buildable<T>>) {
+  function buildAndCombineValues(node: ObjectTreeNode<Buildable<T>>) {
     const buildable: Buildable<T> = createBuildable(props, processors);
     const builtTemplate = buildDynamicTemplate(buildable, node);
     const mappedValue = map(builtTemplate);
