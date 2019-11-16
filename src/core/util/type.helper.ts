@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { Buildable, BuildableSymbol } from '../types';
 
-export function isDefined<T>(value: T | undefined): value is T {
+export function isDefined<T>(value: T | undefined | null): value is T {
   return value !== undefined && value !== null;
 }
 
