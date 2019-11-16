@@ -15,19 +15,19 @@ export function combine<T>(
   map: (props: PureObject<T>) => any,
   ...processors: ProcessorFn[]
 ): Buildable<any> {
-  const extractValuesProcessor = createProcessorFn(
-    extractValues,
+  const combineValuesProcessor = createProcessorFn(
+    combineValues,
     'finalizer',
-    ProcessorPriorities.combineValueExtract,
+    ProcessorPriorities.combineValues,
   );
 
   return {
     [BuildableSymbol]: 'value',
     value: null,
-    processors: [...processors, extractValuesProcessor],
+    processors: [...processors, combineValuesProcessor],
   };
 
-  function extractValues(node: ObjectTreeNode<Buildable<T>>) {
+  function combineValues(node: ObjectTreeNode<Buildable<T>>) {
     const buildable: Buildable<T> = createBuildable(props, processors);
     const builtTemplate = buildDynamicTemplate(buildable, node);
     const mappedValue = map(builtTemplate);
