@@ -1,8 +1,8 @@
-import { ObjectTreeNode } from 'treelike';
+import { createNode, ObjectTreeNode } from 'treelike';
 import { oneOf } from '../../../builders';
 import { ProcessorFn } from '../../types';
 import { createBuilderFn, createProcessorFn } from '../../util';
-import { build } from '../build';
+import { build, buildDynamicTemplate } from '../build';
 import { createBuildable } from './shared/spec.helper';
 
 describe('build function', () => {
@@ -209,5 +209,40 @@ describe('build function', () => {
     expect(result.a).toBeDefined();
     expect(result.a).toEqual({ b: value });
     expect(result.a).not.toBe(valueTemplate);
+  });
+});
+
+describe('buildDynamicTemplate', () => {
+  it('should build a template and return the built value', () => {
+    // arrange
+    const buildable = createBuildable({
+      a: oneOf(['hello']),
+      b: 'world',
+    });
+
+    // act
+    const result = buildDynamicTemplate(buildable, null);
+
+    // assert
+    expect(result).toEqual({
+      a: 'hello',
+      b: 'world',
+    });
+  });
+
+  it('should attach the built value to a host node', () => {
+    // arrange
+    const hostName = 'hostName';
+    const assertionProcessor = createProcessorFn((node: ObjectTreeNode) => {
+      // assert
+      expect(node.parent).toBeDefined();
+      expect(node.parent!.name).toBe(hostName);
+    }, 'initializer');
+
+    const host = createNode(hostName, null, []);
+    const buildable = createBuildable({}, [assertionProcessor]);
+
+    // act
+    buildDynamicTemplate(buildable, host);
   });
 });
