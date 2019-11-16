@@ -117,7 +117,7 @@ describe('build function', () => {
     build(buildable);
   });
 
-  it('should respect processor function priorities in all build cycles', () => {
+  it('should respect processor function ordering in all build cycles', () => {
     // arrange
     const execFirst = 0;
     const execAfter = 1;
