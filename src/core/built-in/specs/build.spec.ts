@@ -117,10 +117,10 @@ describe('build function', () => {
     build(buildable);
   });
 
-  it('should respect processor function priorities in all build cycles', () => {
+  it('should respect processor function ordering in all build cycles', () => {
     // arrange
-    const higherPrio = 1;
-    const lowerPrio = 0;
+    const execFirst = 0;
+    const execAfter = 1;
 
     const initalizerOrder: number[] = [];
     const preprocessorOrder: number[] = [];
@@ -130,17 +130,17 @@ describe('build function', () => {
 
     const processors: ProcessorFn[] = [
       // initializers
-      createProcessorFn(() => initalizerOrder.push(2), 'initializer', lowerPrio),
-      createProcessorFn(() => initalizerOrder.push(1), 'initializer', higherPrio),
+      createProcessorFn(() => initalizerOrder.push(2), 'initializer', execAfter),
+      createProcessorFn(() => initalizerOrder.push(1), 'initializer', execFirst),
       // preprocessors
-      createProcessorFn(() => preprocessorOrder.push(2), 'preprocessor', lowerPrio),
-      createProcessorFn(() => preprocessorOrder.push(1), 'preprocessor', higherPrio),
+      createProcessorFn(() => preprocessorOrder.push(2), 'preprocessor', execAfter),
+      createProcessorFn(() => preprocessorOrder.push(1), 'preprocessor', execFirst),
       // postprocessors
-      createProcessorFn(() => postprocessorOrder.push(2), 'postprocessor', lowerPrio),
-      createProcessorFn(() => postprocessorOrder.push(1), 'postprocessor', higherPrio),
+      createProcessorFn(() => postprocessorOrder.push(2), 'postprocessor', execAfter),
+      createProcessorFn(() => postprocessorOrder.push(1), 'postprocessor', execFirst),
       // finalizers
-      createProcessorFn(() => finalizerOrder.push(2), 'finalizer', lowerPrio),
-      createProcessorFn(() => finalizerOrder.push(1), 'finalizer', higherPrio),
+      createProcessorFn(() => finalizerOrder.push(2), 'finalizer', execAfter),
+      createProcessorFn(() => finalizerOrder.push(1), 'finalizer', execFirst),
     ];
     const buildable = createBuildable({}, processors);
 
@@ -149,8 +149,8 @@ describe('build function', () => {
     const negativeTestExpectedOrder = [2, 1];
     const negativeTestProcessors: ProcessorFn[] = [
       // have same prio, so the order in array should define execution order:
-      createProcessorFn(() => negativeTestOrder.push(2), 'initializer', lowerPrio),
-      createProcessorFn(() => negativeTestOrder.push(1), 'initializer', lowerPrio),
+      createProcessorFn(() => negativeTestOrder.push(2), 'initializer', execAfter),
+      createProcessorFn(() => negativeTestOrder.push(1), 'initializer', execAfter),
     ];
     const negativeTestBuildable = createBuildable({}, negativeTestProcessors);
 
