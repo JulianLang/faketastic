@@ -1,6 +1,6 @@
 {
   "name": "faketastic",
-  "version": "0.0.2",
+  "version": "0.0.21",
   "description": "A library to help you with modelling data entities and generate them as mock data.",
   "main": "./dist/index.js",
   "private": false,
