@@ -1,10 +1,7 @@
 import { use } from '../use';
-import {
-  includeDirectiveFnSpecs,
-  includeTemplateFnSpecs
-} from './shared/shared-specs';
+import { includeDirectiveFnSpecs, includeTransparentTemplateFnSpecs } from './shared/shared-specs';
 
 describe('use directive', () => {
   includeDirectiveFnSpecs(use, {});
-  includeTemplateFnSpecs(use);
+  includeTransparentTemplateFnSpecs(use);
 });

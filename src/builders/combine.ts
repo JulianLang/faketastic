@@ -4,7 +4,6 @@ import {
   Buildable,
   BuildableSymbol,
   buildDynamicTemplate,
-  clone,
   createProcessorFn,
   ProcessorFn,
   PureObject,
@@ -24,7 +23,7 @@ export function combine<T>(
 
   return {
     [BuildableSymbol]: 'value',
-    value: clone(props),
+    value: {},
     processors: [...processors, extractValuesProcessor],
   };
 
@@ -32,9 +31,6 @@ export function combine<T>(
     const buildable: Buildable<T> = createBuildable(props, processors);
     const builtTemplate = buildDynamicTemplate(buildable, node);
     const mappedValue = map(builtTemplate);
-
-    // remove children as they should not get merged into the final value:
-    node.children = [];
 
     node.value = mappedValue;
   }

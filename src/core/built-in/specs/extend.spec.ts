@@ -1,5 +1,5 @@
 import { extend } from '../extend';
-import { includeDirectiveFnSpecs, includeTemplateFnSpecs } from './shared/shared-specs';
+import { includeDirectiveFnSpecs, includeTransparentTemplateFnSpecs } from './shared/shared-specs';
 
 describe('extend template fn', () => {
   it('should merge templates', () => {
@@ -59,6 +59,6 @@ describe('extend template fn', () => {
     expect(value.a).not.toBe(obj2);
   });
 
-  includeTemplateFnSpecs(extend, {});
+  includeTransparentTemplateFnSpecs(extend, {});
   includeDirectiveFnSpecs(extend, {}, {});
 });

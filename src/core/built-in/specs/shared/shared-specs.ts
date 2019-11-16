@@ -27,7 +27,10 @@ export function includeDirectiveFnSpecs(directiveFn: Function, ...params: any[])
   });
 }
 
-export function includeTemplateFnSpecs(templateFn: Function, ...additionalParams: any[]) {
+export function includeTransparentTemplateFnSpecs(
+  templateFn: Function,
+  ...additionalParams: any[]
+) {
   it('should include a deep clone of the given template', () => {
     // arrange
     const obj1 = {
@@ -53,6 +56,10 @@ export function includeTemplateFnSpecs(templateFn: Function, ...additionalParams
     expect(clonedB === tmpl.b).toBe(true);
   });
 
+  includeTemplateFnSpecs(templateFn, ...additionalParams);
+}
+
+export function includeTemplateFnSpecs(templateFn: Function, ...additionalParams: any[]) {
   it('should return a buildable', () => {
     // arrange
     // act
