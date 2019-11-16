@@ -1,6 +1,14 @@
 import { ObjectTreeNode } from 'treelike';
 import { ProcessorPriorities } from '../constants/processor.priorities';
-import { Buildable, BuildableSymbol, buildDynamicTemplate, clone, createProcessorFn, ProcessorFn, PureObject } from '../core';
+import {
+  Buildable,
+  BuildableSymbol,
+  buildDynamicTemplate,
+  clone,
+  createProcessorFn,
+  ProcessorFn,
+  PureObject,
+} from '../core';
 import { createBuildable } from '../core/built-in/specs/shared/spec.helper';
 
 export function combine<T>(
