@@ -1,7 +1,7 @@
 import { Names, Streets } from './resources';
 import { combine, oneOf, range } from './src/builders';
 import { build, extend, probability, randomInt, template, use } from './src/core';
-import { quantity } from './src/processors';
+import { canBe, map, quantity } from './src/processors';
 
 const toCoolNickname = (nickname: string) =>
   nickname
@@ -27,6 +27,8 @@ const Senior = extend(Person, {
 });
 
 const Example = template({
+  canBeTest: oneOf(['abc', '123'], canBe('hello world', 0.2)),
+  // multiple: oneOf([1, true, 'hi there', null], quantity(() => randomInt(0, 3))),
   multiple: oneOf(
     [1, true, 'hi there', null],
     quantity(() => randomInt(0, 3)),
@@ -42,9 +44,10 @@ const Example = template({
       const nickname = `${props.nickname}${props.separator}${props.someNumber}`;
       return probability(0.5) ? toCoolNickname(nickname) : nickname;
     },
-    quantity(() => randomInt(0, 3)),
+    quantity(2),
+    map<string>(str => str.toUpperCase()),
   ),
 });
 
-const output = build(Example, 5);
+const output = build(Example, 4);
 console.log(JSON.stringify(output, null, 2));

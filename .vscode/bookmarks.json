@@ -10,22 +10,22 @@
 		]
 	},
 	{
-		"path": "$ROOTPATH$/src/builders/combine.ts",
+		"path": "$ROOTPATH$/src/core/built-in/build.ts",
 		"bookmarks": [
 			{
-				"line": 26,
-				"column": 61,
-				"label": "TODO [Aug 2020]: Should props be cloned?"
+				"line": 42,
+				"column": 37,
+				"label": "TODO: Test this?"
 			}
 		]
 	},
 	{
-		"path": "$ROOTPATH$/src/core/built-in/build.ts",
+		"path": "$ROOTPATH$/notes/containerization.md",
 		"bookmarks": [
 			{
-				"line": 40,
-				"column": 26,
-				"label": "TODO: Test this method?"
+				"line": 54,
+				"column": 42,
+				"label": "TODO: Better name than wrap"
 			}
 		]
 	}

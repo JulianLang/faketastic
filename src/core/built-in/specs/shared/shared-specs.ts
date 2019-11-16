@@ -25,11 +25,12 @@ export function includeDirectiveFnSpecs(directiveFn: Function, ...params: any[])
     // assert
     expect(buildable.processors).toEqual(processorFns);
   });
-
-  includeStatementFnSpecs(directiveFn, ...params);
 }
 
-export function includeTemplateFnSpecs(templateFn: Function, ...additionalParams: any[]) {
+export function includeTransparentTemplateFnSpecs(
+  templateFn: Function,
+  ...additionalParams: any[]
+) {
   it('should include a deep clone of the given template', () => {
     // arrange
     const obj1 = {
@@ -54,13 +55,15 @@ export function includeTemplateFnSpecs(templateFn: Function, ...additionalParams
     // functions do not get cloned
     expect(clonedB === tmpl.b).toBe(true);
   });
+
+  includeTemplateFnSpecs(templateFn, ...additionalParams);
 }
 
-export function includeStatementFnSpecs(statementFn: Function, ...params: any[]) {
+export function includeTemplateFnSpecs(templateFn: Function, ...additionalParams: any[]) {
   it('should return a buildable', () => {
     // arrange
     // act
-    const buildable = statementFn(...params);
+    const buildable = templateFn(...additionalParams);
 
     // assert
     expect(buildable).toBeDefined();

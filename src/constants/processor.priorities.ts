@@ -58,7 +58,7 @@ export const ProcessorPriorities = {
    *
    * *run-after:* `ref()`
    */
-  combineValueExtract: -4010,
+  combineValues: -4010,
   /**
    * **Dependencies**
    *

@@ -5,7 +5,6 @@ import {
   BuildableSymbol,
   buildDynamicTemplate,
   createProcessorFn,
-  isBuildable,
   ProcessorFn,
   PureObject,
 } from '../core';
@@ -16,29 +15,22 @@ export function combine<T>(
   map: (props: PureObject<T>) => any,
   ...processors: ProcessorFn[]
 ): Buildable<any> {
-  const extractValuesProcessor = createProcessorFn(
-    extractValues,
+  const combineValuesProcessor = createProcessorFn(
+    buildAndCombineValues,
     'finalizer',
-    ProcessorPriorities.combineValueExtract,
+    ProcessorPriorities.combineValues,
   );
 
   return {
     [BuildableSymbol]: 'value',
-    // TODO: langju: should `props` be cloned? Wait for bug until August 2020. Then remove this todo.
-    value: props,
-    processors: [...processors, extractValuesProcessor],
+    value: null,
+    processors: [...processors, combineValuesProcessor],
   };
 
-  function extractValues(node: ObjectTreeNode<T>) {
-    const builtValues = node.value;
-    const buildable = isBuildable(builtValues) ? builtValues : createBuildable(builtValues, []);
-    buildDynamicTemplate(buildable, node);
-
-    const builtProps = node.value as PureObject<T>;
-    const mappedValue = map(builtProps);
-
-    // remove children as they should not get merged into the final value:
-    node.children = [];
+  function buildAndCombineValues(node: ObjectTreeNode<Buildable<T>>) {
+    const buildable: Buildable<T> = createBuildable(props, processors);
+    const builtTemplate = buildDynamicTemplate(buildable, node);
+    const mappedValue = map(builtTemplate);
 
     node.value = mappedValue;
   }

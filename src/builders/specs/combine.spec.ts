@@ -1,20 +1,8 @@
 import { build } from '../../core';
-import { includeStatementFnSpecs } from '../../core/built-in/specs/shared/shared-specs';
+import { includeTemplateFnSpecs } from '../../core/built-in/specs/shared/shared-specs';
 import { combine } from '../combine';
 
-describe('combine statement function', () => {
-  it('should return a buildable with the given properties as value', () => {
-    // arrange
-    const template = { a: 1, b: false, c: 'str' };
-    const mapFn = () => {};
-
-    // act
-    const buildable = combine(template, mapFn);
-
-    // assert
-    expect(buildable.value).toBe(template);
-  });
-
+describe('combine template function', () => {
   it('should call the map function', () => {
     // arrange
     const template = { a: 1, b: false, c: 'str' };
@@ -29,5 +17,5 @@ describe('combine statement function', () => {
     expect(spy).toHaveBeenCalledWith(template);
   });
 
-  includeStatementFnSpecs(combine, {}, () => {});
+  includeTemplateFnSpecs(combine, {}, () => {});
 });
