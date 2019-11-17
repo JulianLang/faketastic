@@ -1,11 +1,5 @@
-import {
-  Buildable,
-  BuildableSymbol,
-  createBuilderFn,
-  isDefined,
-  ProcessorFn,
-  randomInt,
-} from '../core';
+import { Buildable, BuildableSymbol, createBuilderFn, ProcessorFn, randomInt } from '../core';
+import { isDefined } from '../util';
 
 export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<Function> {
   const oneOfBuilderFn = createBuilderFn(chooseRandomItem);
