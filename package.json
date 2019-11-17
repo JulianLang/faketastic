@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/jasmine": "^3.3.16",
     "@types/lodash": "^4.14.142",
+    "@types/moment": "^2.13.0",
     "@types/node": "^12.6.8",
     "jasmine": "^3.4.0",
     "jasmine-console-reporter": "^3.1.0",
@@ -37,8 +38,8 @@
     "typescript": "^3.5.3"
   },
   "dependencies": {
-    "date-fns": "^2.7.0",
     "lodash": "^4.17.15",
+    "moment": "^2.24.0",
     "treelike": "0.0.1"
   }
 }
