@@ -1,6 +1,6 @@
+import { isDefined } from '../../util';
 import { Buildable } from '../types';
 import { isBuildable } from './is-buildable';
-import { isDefined } from './is-defined';
 
 export function isArrayOfBuildables(value: any): value is Buildable[] {
   if (!isDefined(value) || !Array.isArray(value)) {
