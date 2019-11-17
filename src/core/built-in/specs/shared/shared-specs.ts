@@ -1,4 +1,5 @@
 import { BuildableSymbol, BuilderFnSymbol } from '../../../types';
+import { isBuilderFunction } from '../../../util';
 
 export function includeBuilderFnSpecs(builderFn: Function, ...params: any[]) {
   it('should add a builder function as value on the buildable', () => {
@@ -9,6 +10,7 @@ export function includeBuilderFnSpecs(builderFn: Function, ...params: any[]) {
     // assert
     expect(typeof buildable.value).toEqual('function');
     expect(typeof (buildable.value as any)[BuilderFnSymbol]).toBeDefined();
+    expect(isBuilderFunction(buildable.value)).toBe(true);
   });
 
   includeDirectiveFnSpecs(builderFn, ...params);
