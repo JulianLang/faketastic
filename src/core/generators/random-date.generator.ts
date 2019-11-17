@@ -1,5 +1,6 @@
 import { randomInt } from './random-int.generator';
 
+// TODO: langju: implementation not accurate regarding min/max.
 export function randomDate(min: Date, max: Date) {
   const year = randomInt(min.getFullYear(), max.getFullYear());
   const month = randomInt(0, 11);
