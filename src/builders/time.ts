@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { randomDate } from '../core';
-import { isDefined } from '../core/util';
+import { isDefined } from '../util';
 import { DateParserFn, DateTimeOpts } from './types';
 
 /**
