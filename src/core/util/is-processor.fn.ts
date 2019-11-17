@@ -1,5 +1,5 @@
 import { ProcessorSymbol, ProcessorType } from '../types';
-import { isDefined } from './type.helper';
+import { isDefined } from './is-defined';
 
 export function isProcessorFn(fn: Function, ofType?: ProcessorType): boolean {
   if (isDefined(ofType)) {
