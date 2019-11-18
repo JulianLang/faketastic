@@ -1,13 +1,9 @@
-import { randomInt } from './random-int.generator';
+// see: https://stackoverflow.com/a/31379050/3063191
+export function randomDate(start: Date, end: Date, startHour = 0, endHour = 23): Date {
+  const startTime = start.getTime();
+  const endTime = end.getTime();
+  const time = startTime + Math.random() * (endTime - startTime);
+  const date = new Date(time);
 
-// TODO: langju: implementation not accurate regarding min/max.
-export function randomDate(min: Date, max: Date) {
-  const year = randomInt(min.getFullYear(), max.getFullYear());
-  const month = randomInt(0, 11);
-  const day = randomInt(1, 31);
-  const hour = randomInt(0, 24);
-  const minute = randomInt(0, 60);
-  const second = randomInt(0, 60);
-
-  return new Date(year, month, day, hour, minute, second, 0);
+  return date;
 }
