@@ -1,111 +1,114 @@
-// import { build, template } from '../../core';
-// import { includeBuilderFnSpecs } from '../../core/built-in/specs/shared/shared-specs';
-// import { time } from '../time';
-// import moment = require('moment');
+import { isDate } from 'util';
+import { build, template } from '../../core';
+import { time } from '../time';
 
-// describe('time builder function', () => {
-//   it('should use todays date and simple time format HH:mm:ss per default', () => {
-//     // arrange
-//     const Appointment = template({
-//       time: time('01:02:03', '14:15:16'),
-//     });
+describe('time builder fn', () => {
+  it('should return a time of today if no parameter is given', () => {
+    // arrange
+    const Appointment = template({
+      t: time(),
+    });
 
-//     // act
-//     const result = build(Appointment);
+    // assert
+    const result = build(Appointment);
 
-//     // assert
-//     const resultTime: Date = result.time;
-//     const timeAsMoment = moment(resultTime);
-//     const startDate = moment().set({
-//       hours: 1,
-//       minutes: 2,
-//       seconds: 3,
-//     });
-//     const endDate = moment().set({
-//       hours: 14,
-//       minutes: 15,
-//       seconds: 16,
-//     });
-//     const today = startDate.toDate();
+    // act
+    expect(isDate(result.t)).toBe(true);
+    expect(result.t).toBeDefined();
+  });
 
-//     expect(resultTime.getDate()).toBe(today.getDate());
-//     expect(resultTime.getMonth()).toBe(today.getMonth());
-//     expect(resultTime.getFullYear()).toBe(today.getFullYear());
-//     expect(timeAsMoment.isSameOrAfter(startDate)).toBe(true);
-//     expect(timeAsMoment.isSameOrBefore(endDate)).toBe(true);
-//   });
+  it('should return current time for now keyword', () => {
+    // arrange
+    const Appointment = template({
+      t: time('now'),
+    });
 
-//   it('should use 00:00:00 - 23:59:59 range when parameters are not specified', () => {
-//     // arrange
-//     const Appointment = template({
-//       time: time(),
-//     });
+    // assert
+    const result = build(Appointment);
 
-//     // act
-//     const result = build(Appointment);
+    // act
+    const now = new Date();
+    const resultTime: Date = result.t;
+    expect(resultTime.getDate()).toBe(now.getDate());
+    expect(resultTime.getMonth()).toBe(now.getMonth());
+    expect(resultTime.getFullYear()).toBe(now.getFullYear());
+    expect(resultTime.getHours()).toBe(now.getHours());
+    expect(resultTime.getMinutes()).toBe(now.getMinutes());
+  });
 
-//     // assert
-//     const timeAsMoment = moment(result.time);
-//     const startDate = moment().set({
-//       hours: 0,
-//       minutes: 0,
-//       seconds: 0,
-//     });
-//     const endDate = moment().set({
-//       hours: 23,
-//       minutes: 59,
-//       seconds: 59,
-//     });
+  it('should use HH:mm as default format', () => {
+    // arrange
+    const Appointment = template({
+      t: time('14:12'),
+    });
 
-//     expect(timeAsMoment.isSameOrAfter(startDate)).toBe(true);
-//     expect(timeAsMoment.isSameOrBefore(endDate)).toBe(true);
-//   });
+    // assert
+    const result = build(Appointment);
 
-//   it('should align default time format to input with missing infos', () => {
-//     // arrange
-//     const Appointment = template({
-//       time: time('12:00', '12:01'),
-//     });
+    // act
+    const resultTime: Date = result.t;
+    expect(resultTime.getHours()).toBe(14);
+    expect(resultTime.getMinutes()).toBe(12);
+  });
 
-//     // act
-//     const result = build(Appointment);
+  it('should accept custom formats', () => {
+    // arrange
+    const Appointment = template({
+      t: time(['02:12 pm', 'hh:mm aa']),
+    });
 
-//     // assert
-//     const startDate = moment()
-//       .set({
-//         hours: 12,
-//         minutes: 0,
-//         seconds: 0,
-//         milliseconds: 0,
-//       })
-//       .toDate();
-//     const endDate = moment()
-//       .set({
-//         hours: 12,
-//         minutes: 1,
-//         seconds: 0,
-//         milliseconds: 0,
-//       })
-//       .toDate();
-//     const date: Date = result.time;
+    // assert
+    const result = build(Appointment);
 
-//     expect(date >= startDate).toBe(true);
-//     expect(date <= endDate).toBe(true);
-//   });
+    // act
+    const resultTime: Date = result.t;
+    expect(resultTime.getHours()).toBe(14);
+    expect(resultTime.getMinutes()).toBe(12);
+  });
 
-//   it('should accept keyword future', () => {
-//     // arrange
-//     const Appointment = template({
-//       time: time('future'),
-//     });
+  it('should accept custom formats for both parameters', () => {
+    // arrange
+    const Appointment = template({
+      t: time(['02:12 pm', 'hh:mm aa'], ['02:14 pm', 'hh:mm aa']),
+    });
 
-//     // act
-//     const result = build(Appointment);
+    // assert
+    const result = build(Appointment);
 
-//     // assert
-//     const now = new Date();
-//     expect(now < result.time).toBe(true);
-//   });
+    // act
+    const resultTime: Date = result.t;
+    expect(resultTime.getHours()).toBe(14);
+    expect(resultTime.getMinutes()).toBeGreaterThanOrEqual(12);
+    expect(resultTime.getMinutes()).toBeLessThanOrEqual(14);
+  });
 
-//   includeBuilderFnSpecs(time, '00:00:00', '00:00:00', {});
-// });
+  it('should accept null as min-date parameter', () => {
+    // arrange
+    const Appointment = template({
+      t: time(null, ['12:00', 'HH:mm']),
+    });
+
+    // assert
+    const result = build(Appointment);
+
+    // act
+    const resultTime: Date = result.t;
+    expect(resultTime.getHours()).toBeLessThanOrEqual(12);
+    expect(resultTime.getMinutes()).toBeLessThanOrEqual(59);
+  });
+
+  it('should accept null as max-date parameter', () => {
+    // arrange
+    const Appointment = template({
+      t: time(['12:00', 'HH:mm'], null),
+    });
+
+    // assert
+    const result = build(Appointment);
+
+    // act
+    const resultTime: Date = result.t;
+    expect(resultTime.getHours()).toBeGreaterThanOrEqual(12);
+    expect(resultTime.getMinutes()).toBeGreaterThanOrEqual(0);
+  });
+});
