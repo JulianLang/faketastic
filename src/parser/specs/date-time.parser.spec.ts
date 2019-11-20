@@ -1,4 +1,4 @@
-import { dateTimeFormatter } from '../date-time.formatter';
+import { dateTimeParser } from '../date-time.parser';
 
 describe('date time formatter', () => {
   it('should accept YYYY/MM/DD HH:mm:ss per default', () => {
@@ -8,7 +8,7 @@ describe('date time formatter', () => {
     const expectedDate = new Date(expectedTime);
 
     // act
-    const date = dateTimeFormatter(timeString);
+    const date = dateTimeParser(timeString);
 
     // assert
     expect(date).toEqual(expectedDate);
@@ -22,7 +22,7 @@ describe('date time formatter', () => {
     const expectedDate = new Date(expectedTime);
 
     // act
-    const date = dateTimeFormatter(timeString, formatString);
+    const date = dateTimeParser(timeString, formatString);
 
     // assert
     expect(date).toEqual(expectedDate);
@@ -34,7 +34,7 @@ describe('date time formatter', () => {
     const expectedDate = new Date(2019, 11, 30, 0, 0, 0, 0);
 
     // act
-    const date = dateTimeFormatter(timeString);
+    const date = dateTimeParser(timeString);
 
     // assert
     expect(date).toEqual(expectedDate);
@@ -47,7 +47,7 @@ describe('date time formatter', () => {
     const expectedDate = new Date(expectedTime);
 
     // act
-    const date = dateTimeFormatter(timeString, 'HH:mm');
+    const date = dateTimeParser(timeString, 'HH:mm');
 
     // assert
     expect(date).toEqual(expectedDate);
