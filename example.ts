@@ -8,11 +8,11 @@ const Appointment = template({
   // any time from 00:00:00 to 23:59:59
   t1: time(map(toUtcString)),
   // exact date and time now
-  t2: time('now', undefined, map(toUtcString)),
+  t2: time('now', map(toUtcString)),
   // exact time: 13:32:00
-  t3: time('13:32:00', undefined, map(toUtcString)),
+  t3: time('13:32:00', map(toUtcString)),
   // exact time: 13:32:00
-  t4: time(['13:32:00', 'HH:mm:ss'], undefined, map(toUtcString)),
+  t4: time(['13:32:00', 'HH:mm:ss'], map(toUtcString)),
   // any from 12:00:00 to 13:00:00, today
   t5: time('12:00:00', '13:00', map(toUtcString)),
   // any from 12:00:00 to 13:00:00, today
