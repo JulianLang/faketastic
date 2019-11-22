@@ -19,7 +19,6 @@ const Appointment = template({
   t6: time(['12:10:10', 'HH:mm:ss'], ['19:24', 'HH:mm'], map(toUtcString)),
   // any from now to 23:59:59, today
   t7: time(new Date(), null, map(toUtcString)),
-  // TODO: langju: bug: 04:20:28
   // any from 11:00:00 to 23:59:59, today
   t8: time('11:00', null, map(toUtcString)),
   // any from 00:00:00 to 04:00:00, today
