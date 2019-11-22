@@ -1,7 +1,11 @@
 import { isDefined } from '../../util';
-import { ProcessorSymbol, ProcessorType } from '../types';
+import { ProcessorFn, ProcessorSymbol, ProcessorType } from '../types';
 
-export function isProcessorFn(fn: Function, ofType?: ProcessorType): boolean {
+export function isProcessorFn(fn: any, ofType?: ProcessorType): fn is ProcessorFn {
+  if (typeof fn !== 'function') {
+    return false;
+  }
+
   if (isDefined(ofType)) {
     return (fn as any)[ProcessorSymbol] === ofType;
   } else {

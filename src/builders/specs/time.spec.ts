@@ -1,5 +1,5 @@
 import { isDate } from 'util';
-import { build, template } from '../../core';
+import { build, createProcessorFn, template } from '../../core';
 import { time } from '../time';
 
 describe('time builder fn', () => {
@@ -34,6 +34,20 @@ describe('time builder fn', () => {
     expect(resultTime.getFullYear()).toBe(now.getFullYear());
     expect(resultTime.getHours()).toBe(now.getHours());
     expect(resultTime.getMinutes()).toBe(now.getMinutes());
+  });
+
+  it('should add the parameter to buidables processors, if they are processor functions', () => {
+    // arrange
+    const procFn1 = createProcessorFn(() => {}, 'initializer');
+    const procFn2 = createProcessorFn(() => {}, 'initializer');
+
+    // act
+    const buildable = time(procFn1, procFn2);
+
+    // assert
+    expect(buildable.processors.length).toBe(2);
+    expect(buildable.processors[0]).toBe(procFn1);
+    expect(buildable.processors[1]).toBe(procFn2);
   });
 
   it('should use HH:mm as default format', () => {

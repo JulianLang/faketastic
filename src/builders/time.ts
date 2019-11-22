@@ -1,4 +1,5 @@
 import {
+  addIfProcessorFn,
   Buildable,
   BuildableSymbol,
   BuilderFn,
@@ -19,11 +20,18 @@ const defaultFormat = 'HH:mm:ss:SSS';
  * @param latest Time string to be used as latest allowed time. HH:mm:ss - `13:15:00`
  */
 export function time(
-  earliest?: TimeInput,
-  latest?: TimeInput,
+  earliest?: TimeInput | ProcessorFn,
+  latest?: TimeInput | ProcessorFn,
   ...processors: ProcessorFn[]
 ): Buildable<BuilderFn> {
   const timeBuilder = createBuilderFn(timeImpl);
+
+  if (addIfProcessorFn(earliest, processors)) {
+    earliest = undefined;
+  }
+  if (addIfProcessorFn(latest, processors)) {
+    latest = undefined;
+  }
 
   return {
     [BuildableSymbol]: 'template',
@@ -57,8 +65,8 @@ export function time(
       latest = ['23:59:59:999'];
     }
 
-    const minDate = getDate(earliest);
-    const maxDate = getDate(latest);
+    const minDate = getDate(earliest as TimeInput);
+    const maxDate = getDate(latest as TimeInput);
 
     return randomDate(minDate, maxDate);
   }
