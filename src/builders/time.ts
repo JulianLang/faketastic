@@ -31,8 +31,8 @@ export function time(
     value: timeBuilder,
   };
 
+  // TODO: langju: simplify / formalize parameter parsing:
   function timeImpl() {
-    // TODO: langju: simplify / formalize parameter parsing:
     // time('now') | time('now', '16:00)
     if (earliest === 'now') {
       earliest = new Date();
@@ -41,10 +41,6 @@ export function time(
       if (latest === undefined) {
         latest = new Date();
       }
-    }
-    // time('12:00', null)
-    if (latest === null) {
-      latest = new Date();
     }
     // time('12:00')
     if (isDefined(earliest) && latest === undefined) {
