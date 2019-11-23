@@ -1,4 +1,4 @@
-import { randomItem } from '../random-item.generator';
+import { randomItem } from '../../src/core/generators/random-item.generator';
 
 describe('generators: randomItem', () => {
   it('should return null for an empty array', () => {

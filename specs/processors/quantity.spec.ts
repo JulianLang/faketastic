@@ -1,6 +1,6 @@
 import { createNode, ObjectTreeNode } from 'treelike';
-import { createChildTreeNode } from '../../core/built-in/specs/shared/spec.helper';
-import { quantity } from '../quantity';
+import { quantity } from '../../src/processors/quantity';
+import { createChildTreeNode } from '../spec-helpers/spec.helper';
 import { includeProcessorFnSpecs } from './shared/shared-specs';
 
 describe('quantity processor fn', () => {

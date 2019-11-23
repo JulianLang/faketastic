@@ -1,5 +1,4 @@
-import { BuildableSymbol, BuilderFnSymbol } from '../../../types';
-import { isBuilderFunction } from '../../../util';
+import { BuildableSymbol, BuilderFnSymbol, isBuilderFunction } from '../../src/core';
 
 export function includeBuilderFnSpecs(builderFn: Function, ...params: any[]) {
   it('should add a builder function as value on the buildable', () => {

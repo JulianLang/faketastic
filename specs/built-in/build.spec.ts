@@ -1,9 +1,13 @@
 import { createNode, ObjectTreeNode } from 'treelike';
-import { oneOf } from '../../../builders';
-import { ProcessorFn } from '../../types';
-import { createBuilderFn, createProcessorFn } from '../../util';
-import { build, buildDynamicTemplate } from '../build';
-import { createBuildable } from './shared/spec.helper';
+import {
+  build,
+  buildDynamicTemplate,
+  createBuildable,
+  createBuilderFn,
+  createProcessorFn,
+  oneOf,
+  ProcessorFn,
+} from '../../src';
 
 describe('build function', () => {
   it('should return a value of same type as the input, if quantity is constant 1', () => {

@@ -1,6 +1,5 @@
-import { build } from '../../core';
-import { createBuildable } from '../../core/built-in/specs/shared/spec.helper';
-import { canBe } from '../can-be';
+import { build, createBuildable } from '../../src/core';
+import { canBe } from '../../src/processors/can-be';
 import { includeProcessorFnSpecs } from './shared/shared-specs';
 
 describe('canBe processor function', () => {

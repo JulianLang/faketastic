@@ -1,6 +1,6 @@
-import { isDate } from 'util';
-import { build, createProcessorFn, template } from '../../core';
-import { time } from '../time';
+import { time } from '../../src/builders/time';
+import { build, createProcessorFn, template } from '../../src/core';
+import { isDateInstance } from '../../src/util';
 
 describe('time builder fn', () => {
   it('should return a time of today if no parameter is given', () => {
@@ -13,7 +13,7 @@ describe('time builder fn', () => {
     const result = build(Appointment);
 
     // assert
-    expect(isDate(result.t)).toBe(true);
+    expect(isDateInstance(result.t)).toBe(true);
     expect(result.t).toBeDefined();
   });
 

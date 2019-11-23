@@ -8,6 +8,7 @@
     "build": "npx rimraf ./dist && npx tsc -p .",
     "start": "ts-node ./example.ts",
     "test": "jasmine-ts --reporter=jasmine-console-reporter --config=jasmine.json",
+    "test:coverage": "npx nyc -e .ts -x \"*.spec.ts\" --reporter=html jasmine-ts --reporter=jasmine-console-reporter --config=jasmine.json",
     "test:watch": "nodemon --quiet --ext ts --exec 'jasmine-ts --reporter=jasmine-console-reporter --config=jasmine.json'"
   },
   "files": [
@@ -24,15 +25,20 @@
   ],
   "author": "jlang",
   "license": "ISC",
+  "nyc": {
+    "include": "src"
+  },
   "devDependencies": {
     "@types/jasmine": "^3.3.16",
     "@types/lodash": "^4.14.142",
     "@types/moment": "^2.13.0",
     "@types/node": "^12.6.8",
+    "istanbul": "^0.4.5",
     "jasmine": "^3.4.0",
     "jasmine-console-reporter": "^3.1.0",
     "jasmine-ts": "^0.3.0",
     "nodemon": "^1.19.3",
+    "nyc": "^14.1.1",
     "rimraf": "^3.0.0",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"

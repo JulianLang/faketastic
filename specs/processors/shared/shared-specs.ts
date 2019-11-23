@@ -1,4 +1,4 @@
-import { ProcessorSymbol } from '../../../core';
+import { ProcessorSymbol } from '../../../src/core';
 
 export function includeProcessorFnSpecs(processorFn: Function, ...params: any[]) {
   it('should return a processor fn', () => {

@@ -1,4 +1,4 @@
-import { tryParse } from '../try-parse.fn';
+import { tryParse } from '../../src/parser/try-parse.fn';
 
 describe('tryParse', () => {
   it('should call all parsers and return null if none could parse the input', () => {

@@ -1,6 +1,6 @@
-import { build } from '../../core';
-import { includeTemplateFnSpecs } from '../../core/built-in/specs/shared/shared-specs';
-import { combine } from '../combine';
+import { combine } from '../../src/builders';
+import { build } from '../../src/core';
+import { includeTemplateFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('combine template function', () => {
   it('should call the map function', () => {
