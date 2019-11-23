@@ -1,11 +1,23 @@
 import { dateTimeParser } from '../date-time.parser';
 
 describe('date time formatter', () => {
+  it('should accept timestamp', () => {
+    // arrange
+    const timeString = 1574497160206; // 2019-11-23 08:19:20.206 (UTC)
+    const utcDate = Date.UTC(2019, 10, 23, 8, 19, 20, 206);
+    const expectedTime = new Date(utcDate);
+
+    // act
+    const time = dateTimeParser(timeString);
+
+    // assert
+    expect(time).toEqual(expectedTime);
+  });
+
   it('should accept YYYY/MM/DD HH:mm:ss per default', () => {
     // arrange
     const timeString = '2019/12/30 12:11:10';
-    const expectedTime = new Date(2019, 11, 30).setHours(12, 11, 10, 0);
-    const expectedDate = new Date(expectedTime);
+    const expectedDate = new Date(2019, 11, 30, 12, 11, 10, 0);
 
     // act
     const date = dateTimeParser(timeString);
