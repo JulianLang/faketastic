@@ -1,6 +1,6 @@
 import { build, createBuildable } from '../../src/core';
 import { map } from '../../src/processors/map';
-import { includeProcessorFnSpecs } from './shared/shared-specs';
+import { includeProcessorFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('map processor fn', () => {
   it('should call the mapFn with the buildable it is located on', () => {

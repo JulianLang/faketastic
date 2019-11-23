@@ -1,13 +1,15 @@
+import { copyAttributes, ObjectTreeNode, replace, treeOf } from 'treelike';
+import { ProcessorOrders } from '../constants';
 import {
   Buildable,
   BuildableSymbol,
-  BuilderFn,
-  createBuilderFn,
+  childSelector,
+  createProcessorFn,
   ProcessorFn,
   randomInt,
   randomItem,
 } from '../core';
-import { isUndefined } from '../util';
+import { cloneItems, isDefined, isUndefined } from '../util';
 import { SomeOfOpts } from './types';
 
 /**
@@ -21,20 +23,33 @@ export function someOf<T>(
   values: T[],
   opts?: SomeOfOpts,
   ...processors: ProcessorFn[]
-): Buildable<BuilderFn<T[]>> {
-  const someOfBuilder = createBuilderFn<T[]>(someOfImpl);
+): Buildable<any[]> {
   const someOfDefaultOpts: SomeOfOpts = {
     allowDuplicates: true,
     minItems: 2,
   };
 
+  const initSomeOf = createProcessorFn(init, 'preprocessor', ProcessorOrders.treeStructureChanging);
+
   return {
     [BuildableSymbol]: 'value',
-    processors,
-    value: someOfBuilder,
+    processors: [initSomeOf, ...processors],
+    value: [],
   };
 
-  function someOfImpl(): T[] {
+  function init(node: ObjectTreeNode) {
+    const content = chooseItems();
+    const contentRoot = treeOf(content, childSelector);
+
+    if (isDefined(node.parent)) {
+      contentRoot.name = node.name;
+      replace(node, contentRoot);
+    } else {
+      copyAttributes(contentRoot, node);
+    }
+  }
+
+  function chooseItems(): T[] {
     if (isUndefined(opts)) {
       opts = someOfDefaultOpts;
     }
@@ -84,6 +99,6 @@ export function someOf<T>(
       }
     }
 
-    return result;
+    return cloneItems(result);
   }
 }

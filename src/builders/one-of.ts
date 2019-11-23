@@ -1,14 +1,35 @@
-import { Buildable, BuildableSymbol, createBuilderFn, ProcessorFn, randomInt } from '../core';
-import { isDefined } from '../util';
+import { copyAttributes, ObjectTreeNode, replace, treeOf } from 'treelike';
+import { ProcessorOrders } from '../constants';
+import {
+  Buildable,
+  BuildableSymbol,
+  childSelector,
+  createProcessorFn,
+  ProcessorFn,
+  randomInt,
+} from '../core';
+import { clone, isDefined } from '../util';
 
-export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<Function> {
-  const oneOfBuilderFn = createBuilderFn(chooseRandomItem);
+export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<any> {
+  const initOneOf = createProcessorFn(init, 'preprocessor', ProcessorOrders.treeStructureChanging);
 
   return {
     [BuildableSymbol]: 'value',
-    value: oneOfBuilderFn,
-    processors: processorFns,
+    value: null,
+    processors: [initOneOf, ...processorFns],
   };
+
+  function init(node: ObjectTreeNode) {
+    const content = chooseRandomItem();
+    const contentRoot = treeOf(content, childSelector);
+
+    if (isDefined(node.parent)) {
+      contentRoot.name = node.name;
+      replace(node, contentRoot);
+    } else {
+      copyAttributes(contentRoot, node);
+    }
+  }
 
   function chooseRandomItem() {
     if (!isDefined(values)) {
@@ -18,7 +39,8 @@ export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<
     }
 
     const index = randomInt(0, values.length - 1);
+    const clonedValue = clone(values[index]);
 
-    return values[index];
+    return clonedValue;
   }
 }

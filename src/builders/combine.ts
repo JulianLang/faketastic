@@ -1,14 +1,15 @@
 import { ObjectTreeNode } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import {
+  build,
   Buildable,
   BuildableSymbol,
-  buildDynamicTemplate,
   createBuildable,
   createProcessorFn,
   ProcessorFn,
   PureObject,
 } from '../core';
+import { clone } from '../util';
 
 export function combine<T>(
   props: PureObject<T>,
@@ -28,10 +29,10 @@ export function combine<T>(
   };
 
   function buildAndCombineValues(node: ObjectTreeNode<Buildable<T>>) {
-    const buildable: Buildable<T> = createBuildable(props, processors);
-    const builtTemplate = buildDynamicTemplate(buildable, node);
+    const clonedProps = clone(props);
+    const buildable: Buildable<T> = createBuildable(clonedProps, processors);
+    const builtTemplate = build(buildable);
     const mappedValue = map(builtTemplate);
-
     node.value = mappedValue;
   }
 }

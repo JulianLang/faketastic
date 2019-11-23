@@ -1,6 +1,13 @@
-import { Buildable, BuildableSymbol, createBuilderFn, ProcessorFn, randomInt } from '../core';
+import {
+  Buildable,
+  BuildableSymbol,
+  BuilderFn,
+  createBuilderFn,
+  ProcessorFn,
+  randomInt,
+} from '../core';
 
-export function range(min = 1, max = 10, ...processorFns: ProcessorFn[]): Buildable<Function> {
+export function range(min = 1, max = 10, ...processorFns: ProcessorFn[]): Buildable<BuilderFn> {
   const rangeBuilder = createBuilderFn(rangeImpl);
 
   return {

@@ -1,7 +1,7 @@
 import { createNode, ObjectTreeNode } from 'treelike';
 import { quantity } from '../../src/processors/quantity';
+import { includeProcessorFnSpecs } from '../spec-helpers/shared-specs';
 import { createChildTreeNode } from '../spec-helpers/spec.helper';
-import { includeProcessorFnSpecs } from './shared/shared-specs';
 
 describe('quantity processor fn', () => {
   it('should keep the current parent node, if quantity is set to constant-1', () => {

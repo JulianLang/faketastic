@@ -1,6 +1,5 @@
 import { build } from '../../src';
 import { someOf } from '../../src/builders';
-import { includeBuilderFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('someOf builder function', () => {
   it('should return at least "2" and at max "values.length" items', () => {
@@ -140,6 +139,4 @@ describe('someOf builder function', () => {
     // assert
     expect(() => build(buildable)).toThrow();
   });
-
-  includeBuilderFnSpecs(someOf, [1, 2, 3], {});
 });

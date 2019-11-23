@@ -1,15 +1,5 @@
-import { createNode, ObjectTreeNode } from 'treelike';
-import {
-  build,
-  buildDynamicTemplate,
-  createBuildable,
-  createBuilderFn,
-  createProcessorFn,
-  oneOf,
-  ProcessorFn,
-  someOf,
-} from '../../src';
-import { isArray } from '../../src/util';
+import { ObjectTreeNode } from 'treelike';
+import { build, createBuildable, createBuilderFn, createProcessorFn, ProcessorFn } from '../../src';
 
 describe('build function', () => {
   it('should return a value of same type as the input, if quantity is constant 1', () => {
@@ -194,84 +184,5 @@ describe('build function', () => {
     expect(result.a).toBeDefined();
     expect(result.a).toEqual(value);
     expect(wasCalled).toBe(true);
-  });
-
-  it('should call builder functions and build their return value when it is a Buildable itself', () => {
-    // arrange
-    const value = 'value';
-    const valueTemplate = { b: oneOf([value]) };
-    const buildableValue = createBuildable(valueTemplate);
-    const builderFn = createBuilderFn(() => buildableValue);
-
-    const buildable = createBuildable({
-      a: createBuildable(builderFn),
-    });
-
-    // act
-    const result = build(buildable);
-
-    // assert
-    expect(result).toBeDefined();
-    expect(result.a).toBeDefined();
-    expect(result.a).toEqual({ b: value });
-    expect(result.a).not.toBe(valueTemplate);
-  });
-});
-
-describe('buildDynamicTemplate', () => {
-  it('should build a template and return the built value', () => {
-    // arrange
-    const buildable = createBuildable({
-      a: oneOf(['hello']),
-      b: 'world',
-    });
-
-    // act
-    const result = buildDynamicTemplate(buildable, null);
-
-    // assert
-    expect(result).toEqual({
-      a: 'hello',
-      b: 'world',
-    });
-  });
-
-  it('should build all templates within a given array while keeping static values as well', () => {
-    // arrange
-    const A = createBuildable({ a: oneOf(['A']) });
-    const B = createBuildable({ b: oneOf(['B']) });
-
-    const buildable = createBuildable({
-      // since minItems is 3 and duplicates are not allowed, it guarantuess that A, B and 'static' is included:
-      a: someOf([A, B, 'static'], { minItems: 3, allowDuplicates: false }),
-      b: 'world',
-    });
-
-    // act
-    const result = buildDynamicTemplate(buildable, null);
-
-    // assert
-    expect(isArray(result.a)).toBe(true);
-    expect(result.a).toContain({ a: 'A' });
-    expect(result.a).toContain({ b: 'B' });
-    expect(result.a).toContain('static');
-
-    expect(result.b).toEqual('world');
-  });
-
-  it('should attach the built value to a host node', () => {
-    // arrange
-    const hostName = 'hostName';
-    const assertionProcessor = createProcessorFn((node: ObjectTreeNode) => {
-      // assert
-      expect(node.parent).toBeDefined();
-      expect(node.parent!.name).toBe(hostName);
-    }, 'initializer');
-
-    const host = createNode(hostName, null, []);
-    const buildable = createBuildable({}, [assertionProcessor]);
-
-    // act
-    buildDynamicTemplate(buildable, host);
   });
 });

@@ -1,5 +1,5 @@
+import { clone } from '../../util';
 import { Buildable, BuildableSymbol, PureObject } from '../types';
-import { clone } from '../util';
 
 export function template<T>(tmpl: PureObject<T>): Buildable<T> {
   return {
