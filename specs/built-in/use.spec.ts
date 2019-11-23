@@ -1,4 +1,4 @@
-import { use } from '../..';
+import { use } from '../../src/core';
 import {
   includeDirectiveFnSpecs,
   includeTransparentTemplateFnSpecs,
