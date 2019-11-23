@@ -102,4 +102,41 @@ describe('someOf builder function', () => {
     // assert
     expect(didResultLengthVary).toBe(true);
   });
+
+  it('should detect minItems being greater than maxItems', () => {
+    // arrange
+    const buildable = someOf([1, 2, 3], {
+      minItems: 3,
+      maxItems: 1,
+    });
+
+    // act
+    // assert
+    expect(() => build(buildable)).toThrow();
+  });
+
+  it('should detect empty arrays', () => {
+    // arrange
+    const buildable = someOf([]);
+
+    // act
+    // assert
+    expect(() => build(buildable)).toThrow();
+  });
+
+  it('should detect options being impossible to meet.', () => {
+    // arrange
+    const buildable = someOf([1], {
+      /*
+        This config is impossible to meet, as there is no enough data ([1])
+        to generate 2 distinct items from. someOf should detect this and throw.
+      */
+      minItems: 2,
+      allowDuplicates: false,
+    });
+
+    // act
+    // assert
+    expect(() => build(buildable)).toThrow();
+  });
 });
