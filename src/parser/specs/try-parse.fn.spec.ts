@@ -32,4 +32,15 @@ describe('tryParse', () => {
     expect(parser2).toHaveBeenCalledTimes(1);
     expect(parser3).not.toHaveBeenCalled();
   });
+
+  it('should warn you, if you pass in an empty array for parser functions', () => {
+    // arrange
+    const consoleSpy = spyOn(console, 'warn');
+
+    // act
+    tryParse([], null);
+
+    // assert
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
+  });
 });

@@ -16,5 +16,12 @@ export function tryParse<T, K, R>(parserFns: ParserFn<T, K, R>[], input: T, opts
     }
   }
 
+  if (parserFns.length === 0) {
+    console.warn(
+      `faketastic: Called tryParse for input "${input}" without providing any parser functions. ` +
+        `This might be done by mistake, since calling tryParse like that will always return null.`,
+    );
+  }
+
   return null;
 }
