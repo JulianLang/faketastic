@@ -234,6 +234,23 @@ describe('buildDynamicTemplate', () => {
     });
   });
 
+  it('should build all templates within a given array while keeping static values as well', () => {
+    // arrange
+    const buildable = createBuildable({
+      a: [oneOf(['hello']), 'dynamic!'],
+      b: 'world',
+    });
+
+    // act
+    const result = buildDynamicTemplate(buildable, null);
+
+    // assert
+    expect(result).toEqual({
+      a: ['hello', 'dynamic!'],
+      b: 'world',
+    });
+  });
+
   it('should attach the built value to a host node', () => {
     // arrange
     const hostName = 'hostName';
