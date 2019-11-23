@@ -34,4 +34,14 @@ describe('generators: probability(n)', () => {
     expect(average).toBeGreaterThan(toleratedMin);
     expect(average).toBeLessThan(toleratedMax);
   });
+
+  it('should return true for probability 1', () => {
+    // arrange, act, assert
+    expect(probability(1)).toBe(true);
+  });
+
+  it('should return false for probability 0', () => {
+    // arrange, act, assert
+    expect(probability(0)).toBe(false);
+  });
 });

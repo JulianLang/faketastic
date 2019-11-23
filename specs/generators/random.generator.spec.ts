@@ -14,7 +14,7 @@ describe('generators: random(min, max)', () => {
     // arrange
     const testCycles = 1000;
     const min = 1;
-    const max = 1;
+    const max = 10;
 
     for (let i = 0; i < testCycles; i++) {
       // act
@@ -24,5 +24,33 @@ describe('generators: random(min, max)', () => {
       expect(value).toBeLessThan(max + 0.1);
       expect(value).toBeGreaterThan(min - 0.1);
     }
+  });
+
+  it('should return min if the random result is smaller than min', () => {
+    // arrange
+    const randomSpy = spyOn(Math, 'random').and.callFake(() => -10);
+    const min = 1;
+    const max = 2;
+
+    // act
+    const value = random(min, max);
+
+    // assert
+    expect(randomSpy).toHaveBeenCalledTimes(1);
+    expect(value).toBe(min);
+  });
+
+  it('should return max if the random result is greater than max', () => {
+    // arrange
+    const randomSpy = spyOn(Math, 'random').and.callFake(() => 10);
+    const min = 1;
+    const max = 2;
+
+    // act
+    const value = random(min, max);
+
+    // assert
+    expect(randomSpy).toHaveBeenCalledTimes(1);
+    expect(value).toBe(max);
   });
 });
