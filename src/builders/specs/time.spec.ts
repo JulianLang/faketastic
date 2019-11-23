@@ -9,10 +9,10 @@ describe('time builder fn', () => {
       t: time(),
     });
 
-    // assert
+    // act
     const result = build(Appointment);
 
-    // act
+    // assert
     expect(isDate(result.t)).toBe(true);
     expect(result.t).toBeDefined();
   });
