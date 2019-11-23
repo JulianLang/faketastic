@@ -1,7 +1,8 @@
-import { BuilderFnSymbol } from '../types';
+import { BuilderFn, BuilderFnSymbol } from '../types';
 
-export function createBuilderFn(fn: Function): Function {
-  (fn as any)[BuilderFnSymbol] = true;
+export function createBuilderFn(fn: Function): BuilderFn {
+  const builderFn: any = fn;
+  builderFn[BuilderFnSymbol] = true;
 
-  return fn;
+  return builderFn;
 }

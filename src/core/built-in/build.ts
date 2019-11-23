@@ -1,8 +1,9 @@
 import { nodeTypeOf, ObjectTreeNode, treeOf } from 'treelike';
+import { isDefined } from '../../util';
 import { Buildable, ProcessorFn, ProcessorOrderSymbol } from '../types';
 import { ProcessorType } from '../types/processor.types';
 import { Quantity } from '../types/quantity';
-import { clone, isBuildable, isBuilderFunction, isDefined, isProcessorFn } from '../util';
+import { clone, isBuildable, isBuilderFunction, isProcessorFn } from '../util';
 import { getQuantity } from '../util/get-quantity';
 
 const dynamicRootIdentifier = '$dynamic-root';

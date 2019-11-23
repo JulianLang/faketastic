@@ -1,53 +1,24 @@
-import { Names, Streets } from './resources';
-import { combine, oneOf, range } from './src/builders';
-import { build, extend, probability, randomInt, template, use } from './src/core';
-import { canBe, map, quantity } from './src/processors';
+/*
+  Playground. You can try out faketastic here when developing your own functionality.
+  Please do not check in changes of this file.
 
-const toCoolNickname = (nickname: string) =>
-  nickname
-    .replace('o', '0')
-    .replace('i', '1')
-    .replace('e', '3')
-    .replace('a', '4');
+  To make git ignore this file for changes, enter this command into a terminal:
 
-const Address = template({
-  street: oneOf(Streets),
-  zip: range(100000, 999999),
+    $ cd path/to/this/repository/root
+    $ git update-index --assume-unchanged example.ts
+
+  Now you can edit this file without worrying about checking in these changes.
+  See also: https://stackoverflow.com/a/17410119/3063191 or https://git-scm.com/docs/git-update-index
+
+  To execute the code in this file, simply run:
+
+    $ npm start
+*/
+import { build, template } from './src';
+
+const MyTemplate = template({
+  faketastic: 'playground works!',
 });
 
-const Person = template({
-  name: oneOf(Names),
-  age: range(1, 79),
-  address: use(Address),
-});
-
-const Senior = extend(Person, {
-  age: range(80, 90),
-  isSenior: oneOf([true, false]),
-});
-
-const Example = template({
-  canBeTest: oneOf(['abc', '123'], canBe('hello world', 0.2)),
-  // multiple: oneOf([1, true, 'hi there', null], quantity(() => randomInt(0, 3))),
-  multiple: oneOf(
-    [1, true, 'hi there', null],
-    quantity(() => randomInt(0, 3)),
-  ),
-  randomTemplate: oneOf([Senior, Person, Address, true, false, 'string']),
-  computed: combine(
-    {
-      nickname: oneOf(['CoolBoYY', 'NiceDuude', 'Allen{FrEsh}', '.:|Andy RaceR|:.']),
-      separator: oneOf([':', '?!', '_', '||']),
-      someNumber: range(20, 99),
-    },
-    props => {
-      const nickname = `${props.nickname}${props.separator}${props.someNumber}`;
-      return probability(0.5) ? toCoolNickname(nickname) : nickname;
-    },
-    quantity(2),
-    map<string>(str => str.toUpperCase()),
-  ),
-});
-
-const output = build(Example, 4);
-console.log(JSON.stringify(output, null, 2));
+const output = build(MyTemplate);
+console.log(output);

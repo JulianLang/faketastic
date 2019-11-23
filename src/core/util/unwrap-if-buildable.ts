@@ -1,4 +1,4 @@
-import { isBuildable } from './type.helper';
+import { isBuildable } from './is-buildable';
 
 export function unwrapIfBuildable(tmpl: any): any {
   let unwrappedValue = tmpl;
