@@ -5,8 +5,10 @@
 
 # notes
 **/notes
+**/example.ts
 
 # testing
 **/*.test.js
-src/.DS_Store
+
+# file system
 **/.DS_Store
