@@ -8,7 +8,7 @@ import {
   randomDate,
 } from '../core';
 import { dateTimeParser } from '../parser';
-import { isArray, isDefined } from '../util';
+import { isArray, isDefined, isUndefined } from '../util';
 import { TimeInput } from './types';
 
 // hours : minutes : seconds : milliseconds
@@ -54,8 +54,8 @@ const defaultFormat = 'HH:mm:ss:SSS';
  * @param latest Time string, number or date object to be used as latest allowed time. Default format is HH:mm:ss - `13:15:00`
  */
 export function time(
-  earliest?: TimeInput | ProcessorFn,
-  latest?: TimeInput | ProcessorFn,
+  earliest?: TimeInput | null | ProcessorFn,
+  latest?: TimeInput | null | ProcessorFn,
   ...processors: ProcessorFn[]
 ): Buildable<BuilderFn> {
   const timeBuilder = createBuilderFn(timeImpl);
@@ -102,17 +102,26 @@ export function time(
     const minDate = getDate(earliest as TimeInput);
     const maxDate = getDate(latest as TimeInput);
 
+    if (isUndefined(minDate)) {
+      throw new Error(`faketastic: time: Could not parse "${earliest}".`);
+    }
+    if (isUndefined(maxDate)) {
+      throw new Error(`faketastic: time: Could not parse "${latest}".`);
+    }
+
     return randomDate(minDate, maxDate);
   }
 
-  function getDate(input: TimeInput): Date {
-    return isArray(input) ? getFormattedTime(input) : dateTimeParser(input!, defaultFormat);
+  function getDate(input: TimeInput): Date | null {
+    return isArray(input)
+      ? getFormattedTime(input)
+      : dateTimeParser(input!, { format: defaultFormat });
   }
 
-  function getFormattedTime(input: string[]): Date {
+  function getFormattedTime(input: string[]): Date | null {
     const inputString = input[0];
     const format = input.length >= 2 ? input[1] : defaultFormat;
 
-    return dateTimeParser(inputString, format);
+    return dateTimeParser(inputString, { format });
   }
 }

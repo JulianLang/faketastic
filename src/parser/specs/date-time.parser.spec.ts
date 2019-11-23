@@ -34,7 +34,7 @@ describe('date time formatter', () => {
     const expectedDate = new Date(expectedTime);
 
     // act
-    const date = dateTimeParser(timeString, formatString);
+    const date = dateTimeParser(timeString, { format: formatString });
 
     // assert
     expect(date).toEqual(expectedDate);
@@ -59,7 +59,7 @@ describe('date time formatter', () => {
     const expectedDate = new Date(expectedTime);
 
     // act
-    const date = dateTimeParser(timeString, 'HH:mm');
+    const date = dateTimeParser(timeString, { format: 'HH:mm' });
 
     // assert
     expect(date).toEqual(expectedDate);

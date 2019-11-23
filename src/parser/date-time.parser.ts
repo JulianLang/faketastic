@@ -1,23 +1,18 @@
 import moment from 'moment';
 import { TimeInput } from '../builders/types';
-import { isDefined, isUndefined } from '../util';
+import { isUndefined } from '../util';
+import { tryParse } from './try-parse.fn';
 import { ParserFn } from './types';
 
-export const dateTimeParser: ParserFn<string | number | Date, Date> = (
-  input: string | number | Date,
-  format = 'YYYY/MM/DD HH:mm:ss',
+type DateTimeParseOpts = { format?: string };
+
+export const dateTimeParser: ParserFn<TimeInput, DateTimeParseOpts, Date> = (
+  input: TimeInput,
+  opts?: DateTimeParseOpts,
 ) => {
-  const parserFns: Function[] = [fromNumber, withMoment];
+  const parserFns: ParserFn<TimeInput, DateTimeParseOpts, Date>[] = [fromNumber, withMoment];
 
-  for (const parser of parserFns) {
-    const result = parser(input, format);
-
-    if (isDefined(result)) {
-      return result;
-    }
-  }
-
-  return null;
+  return tryParse(parserFns, input, opts);
 };
 
 function fromNumber(input: TimeInput): Date | null {
@@ -36,20 +31,20 @@ function fromNumber(input: TimeInput): Date | null {
   }
 }
 
-function withMoment(input: TimeInput, format?: string): Date | null {
-  if (isUndefined(format)) {
-    format = 'YYYY/MM/DD HH:mm:ss';
+function withMoment(input: TimeInput, opts?: DateTimeParseOpts): Date | null {
+  if (isUndefined(opts) || isUndefined(opts.format)) {
+    opts = { format: 'YYYY/MM/DD HH:mm:ss' };
   }
   if (isUndefined(input)) {
     return null;
   }
 
   try {
-    const momentDate = isDefined(format) ? moment(input, format) : moment(input);
+    const momentDate = moment(input, opts.format);
     const date = momentDate.toDate();
 
     return date;
   } catch {
-    throw new Error(`faketastic: dateTimeParser: Could not parse "${input}" as date "${format}"`);
+    return null;
   }
 }
