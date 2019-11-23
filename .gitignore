@@ -7,6 +7,8 @@
 **/notes
 
 # testing
+**/.nyc_output
+**/coverage
 **/*.test.js
 
 # file system
