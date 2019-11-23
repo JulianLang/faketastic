@@ -44,27 +44,30 @@ export function someOf<T>(
     if (values.length === 0) {
       throw new Error(`faketastic: "someOf" can only operate on non-empty arrays.`);
     }
-    if (min > max) {
-      throw new Error(
-        `faketastic: Options for "someOf" are impossible to meet as "minItems" (${min})` +
-          `is greater than "maxItems" (${max}).`,
-      );
-    }
     if (min > values.length && !opts.allowDuplicates) {
       throw new Error(
         `faketastic: Options for "someOf" are impossible to meet as "minItems" > "values.length" and` +
           `duplicates are not allowed in results.`,
       );
     }
+    if (min > max) {
+      throw new Error(
+        `faketastic: Options for "someOf" are impossible to meet as "minItems" (${min})` +
+          `is greater than "maxItems" (${max}).`,
+      );
+    }
 
     const targetItemCount = randomInt(min, max);
 
     for (let i = 0; i < targetItemCount; i++) {
-      const item = randomItem(values);
+      /*
+        variable "item" cannot be null here, as "randomItem" will only return null if the given
+        values array has no items. However, this is impossible since the array's size gets
+        checked in the code above and if the array is empty, an error is thrown.
 
-      if (isUndefined(item)) {
-        continue;
-      }
+        Thus the ! operator behind randomItem is correct and safe to use.
+      */
+      const item = randomItem(values)!;
 
       if (opts.allowDuplicates || !result.includes(item)) {
         result.push(item);
