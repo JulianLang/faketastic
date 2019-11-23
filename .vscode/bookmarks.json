@@ -10,16 +10,6 @@
 		]
 	},
 	{
-		"path": "$ROOTPATH$/src/core/built-in/build.ts",
-		"bookmarks": [
-			{
-				"line": 42,
-				"column": 37,
-				"label": "TODO: Test this?"
-			}
-		]
-	},
-	{
 		"path": "$ROOTPATH$/notes/containerization.md",
 		"bookmarks": [
 			{
