@@ -1,4 +1,20 @@
-import { BuildableSymbol, BuilderFnSymbol, isBuilderFunction } from '../../src/core';
+import {
+  BuildableSymbol,
+  BuilderFnSymbol,
+  isBuilderFunction,
+  ProcessorSymbol,
+} from '../../src/core';
+
+export function includeProcessorFnSpecs(processorFn: Function, ...params: any[]) {
+  it('should return a processor fn', () => {
+    // arrange
+    // act
+    const processor = processorFn(...params);
+
+    // assert
+    expect((processor as any)[ProcessorSymbol]).toBeDefined();
+  });
+}
 
 export function includeBuilderFnSpecs(builderFn: Function, ...params: any[]) {
   it('should add a builder function as value on the buildable', () => {
