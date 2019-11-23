@@ -1,4 +1,4 @@
-import { extend } from '../..';
+import { extend } from '../../src/core';
 import {
   includeDirectiveFnSpecs,
   includeTransparentTemplateFnSpecs,

@@ -125,4 +125,14 @@ describe('time builder fn', () => {
     expect(resultTime.getHours()).toBeGreaterThanOrEqual(12);
     expect(resultTime.getMinutes()).toBeGreaterThanOrEqual(0);
   });
+
+  it('should throw for unparsable parameters', () => {
+    // arrange
+    const buildable1 = time('unparsable');
+    const buildable2 = time(new Date(), 'unparsable');
+
+    // act, assert
+    expect(() => build(buildable1)).toThrow();
+    expect(() => build(buildable2)).toThrow();
+  });
 });

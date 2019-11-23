@@ -8,7 +8,7 @@ import {
   randomDate,
 } from '../core';
 import { dateTimeParser } from '../parser';
-import { isArray, isDefined, isUndefined } from '../util';
+import { isArray, isDefined, isUndefined, isValidDate } from '../util';
 import { TimeInput } from './types';
 
 // hours : minutes : seconds : milliseconds
@@ -102,10 +102,10 @@ export function time(
     const minDate = getDate(earliest as TimeInput);
     const maxDate = getDate(latest as TimeInput);
 
-    if (isUndefined(minDate)) {
+    if (isUndefined(minDate) || !isValidDate(minDate)) {
       throw new Error(`faketastic: time: Could not parse "${earliest}".`);
     }
-    if (isUndefined(maxDate)) {
+    if (isUndefined(maxDate) || !isValidDate(maxDate)) {
       throw new Error(`faketastic: time: Could not parse "${latest}".`);
     }
 
