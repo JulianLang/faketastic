@@ -1,4 +1,5 @@
 import { ObjectTreeNode, replace } from 'treelike';
+import { ProcessorOrders } from '../constants';
 import { createProcessorFn } from '../core';
 import { QuantityInsertMode } from '../core/types';
 import { Quantity } from '../core/types/quantity';
@@ -9,9 +10,13 @@ export function quantity(
   quantity: Quantity = 1,
   insertMode: QuantityInsertMode = 'createNewArray',
 ) {
-  return createProcessorFn(quantityImpl, 'initializer');
+  return createProcessorFn(
+    quantityImpl,
+    'initializer',
+    ProcessorOrders.treeStructureChanging,
+  );
 
-  function quantityImpl(node: ObjectTreeNode<any>) {
+  function quantityImpl(node: ObjectTreeNode) {
     if (quantity === 1) {
       // nothing to do
       return;
@@ -19,17 +24,17 @@ export function quantity(
 
     if (!isDefined(node.parent)) {
       console.warn(
-        `Faketastic: Cannot use quantity function on root level. Use build(<template>, <quantity>) instead.`,
+        `faketastic: Cannot use quantity function on root level. Use build(<template>, <quantity>) instead.`,
       );
       return;
     }
 
-    const children: ObjectTreeNode<any>[] = multiplyNode(node, quantity);
+    const children = multiplyNode(node, quantity);
 
     if (insertMode === 'useParentArray') {
       insertInline(children, node);
     } else {
-      const arrayNodeWithChildren: ObjectTreeNode<any> = {
+      const arrayNodeWithChildren: ObjectTreeNode = {
         ...node,
         type: 'array',
         value: [],
@@ -39,12 +44,12 @@ export function quantity(
     }
   }
 
-  function multiplyNode(node: ObjectTreeNode<any>, quantity: Quantity) {
-    const children: ObjectTreeNode<any>[] = [];
+  function multiplyNode(node: ObjectTreeNode, quantity: Quantity): ObjectTreeNode[] {
+    const children: ObjectTreeNode[] = [];
     const numberOfItems = getQuantity(quantity);
 
     for (let index = 0; index < numberOfItems; index++) {
-      const clonedNode: ObjectTreeNode<any> = clone(node);
+      const clonedNode: ObjectTreeNode = clone(node);
       clonedNode.name = index;
       children.push(clonedNode);
     }
@@ -52,10 +57,7 @@ export function quantity(
     return children;
   }
 
-  function insertInline(
-    children: ObjectTreeNode<any>[],
-    node: ObjectTreeNode<any>,
-  ): ObjectTreeNode<any> {
+  function insertInline(children: ObjectTreeNode[], node: ObjectTreeNode): ObjectTreeNode {
     if (node.parent == null || node.parent.parent == null) {
       throw new Error(`Use quantity's "inline" parameter only on nodes having a grandparent node.`);
     }
@@ -64,7 +66,7 @@ export function quantity(
     }
 
     const mergedChildren = merge(node.parent.children, children, node);
-    const newParent: ObjectTreeNode<any> = {
+    const newParent: ObjectTreeNode = {
       ...node.parent,
       type: 'array',
       value: [],
@@ -78,10 +80,10 @@ export function quantity(
   }
 
   function merge(
-    currentChildren: ObjectTreeNode<any>[],
-    newChildren: ObjectTreeNode<any>[],
-    quantityBaseNode: ObjectTreeNode<any>,
-  ): ObjectTreeNode<any>[] {
+    currentChildren: ObjectTreeNode[],
+    newChildren: ObjectTreeNode[],
+    quantityBaseNode: ObjectTreeNode,
+  ): ObjectTreeNode[] {
     const merged = [...currentChildren, ...newChildren];
     const childrenWithoutBaseNode = merged.filter(n => n !== quantityBaseNode);
     const renamed = renameFromIndex(childrenWithoutBaseNode);
@@ -89,7 +91,7 @@ export function quantity(
     return renamed;
   }
 
-  function renameFromIndex(nodes: ObjectTreeNode<any>[]): ObjectTreeNode<any>[] {
+  function renameFromIndex(nodes: ObjectTreeNode[]): ObjectTreeNode[] {
     nodes.forEach((n, index) => (n.name = index));
 
     return nodes;

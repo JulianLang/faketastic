@@ -11,7 +11,7 @@ import {
 import { clone, isDefined } from '../util';
 
 export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<any> {
-  const initOneOf = createProcessorFn(init, 'initializer', ProcessorOrders.treeStructureChanging);
+  const initOneOf = createProcessorFn(init, 'preprocessor', ProcessorOrders.treeStructureChanging);
 
   return {
     [BuildableSymbol]: 'value',
@@ -39,7 +39,8 @@ export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<
     }
 
     const index = randomInt(0, values.length - 1);
+    const clonedValue = clone(values[index]);
 
-    return clone(values[index]);
+    return clonedValue;
   }
 }

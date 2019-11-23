@@ -29,7 +29,7 @@ export function someOf<T>(
     minItems: 2,
   };
 
-  const initSomeOf = createProcessorFn(init, 'initializer', ProcessorOrders.treeStructureChanging);
+  const initSomeOf = createProcessorFn(init, 'preprocessor', ProcessorOrders.treeStructureChanging);
 
   return {
     [BuildableSymbol]: 'value',
