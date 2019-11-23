@@ -1,23 +1,33 @@
-/*
-  Playground. You can try out faketastic here when developing your own functionality.
-  Please do not check in changes of this file.
+import { combine, oneOf, range, someOf } from './src/builders';
+import { build, template } from './src/core';
 
-  To make git ignore this file for changes, enter this command into a terminal:
+const GotoUrl = combine(
+  {
+    domain: 'https://faketastic.goto.de/meeting',
+    id: range(100000000, 999999999),
+  },
+  v => `${v.domain}/${v.id}`,
+);
+const DocumentUrl = combine(
+  {
+    domain: 'https://fake.office.de/documents/',
+    fileName: oneOf(['agenda.docx', 'offer.xslx', 'contract-draft.rft']),
+  },
+  v => `${v.domain}/${v.fileName}`,
+);
+const TrackingApiCall = combine(
+  {
+    domain: 'https://fake-api.centigrade.de/trackings/',
+    action: oneOf(['start', 'pause']),
+    trackingId: range(10000, 99999),
+  },
+  v => `${v.domain}/${v.action}/${v.trackingId}`,
+);
 
-    $ cd path/to/this/repository/root
-    $ git update-index --assume-unchanged example.ts
-
-  Now you can edit this file without worrying about checking in these changes.
-  See also: https://stackoverflow.com/a/17410119/3063191 or https://git-scm.com/docs/git-update-index
-
-  To execute the code in this file, simply run:
-
-    $ npm start
-*/
-import { build, template } from './src';
+const UrlTypes = [GotoUrl, DocumentUrl, TrackingApiCall];
 
 const MyTemplate = template({
-  faketastic: 'playground works!',
+  url: someOf(UrlTypes),
 });
 
 const output = build(MyTemplate);

@@ -1,6 +1,6 @@
 import { oneOf } from '../../src/builders';
 import { build } from '../../src/core';
-import { includeBuilderFnSpecs } from '../spec-helpers/shared-specs';
+import { includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('oneOf BuilderFn', () => {
   it('should throw for null at building-time', () => {
@@ -26,11 +26,11 @@ describe('oneOf BuilderFn', () => {
     const buildable = oneOf([]);
 
     // act
-    const result = buildable.value();
+    const result = build(buildable);
 
     // assert
     expect(result).toBe(undefined);
   });
 
-  includeBuilderFnSpecs(oneOf, []);
+  includeDirectiveFnSpecs(oneOf, []);
 });

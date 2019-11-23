@@ -24,7 +24,9 @@ export function includeDirectiveFnSpecs(directiveFn: Function, ...params: any[])
     const buildable = directiveFn(...params, ...processorFns);
 
     // assert
-    expect(buildable.processors).toEqual(processorFns);
+    for (const procFn of processorFns) {
+      expect(buildable.processors).toContain(procFn);
+    }
   });
 }
 

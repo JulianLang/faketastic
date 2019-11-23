@@ -1,9 +1,9 @@
 import { nodeTypeOf, ObjectTreeNode, treeOf } from 'treelike';
-import { isDefined } from '../../util';
+import { isDefined, isUndefined } from '../../util';
 import { Buildable, ProcessorFn, ProcessorOrderSymbol } from '../types';
 import { ProcessorType } from '../types/processor.types';
 import { Quantity } from '../types/quantity';
-import { clone, isBuildable, isBuildableArray, isBuilderFunction, isProcessorFn } from '../util';
+import { clone, isBuildable, isBuilderFunction, isProcessorFn } from '../util';
 import { getQuantity } from '../util/get-quantity';
 
 const dynamicRootIdentifier = '$dynamic-root';
@@ -32,72 +32,36 @@ function buildMultiple<T>(buildable: Buildable<T>, count: number): any {
   return result;
 }
 
-/**
- * Builds a `Buildable`'s template instantly and decoupled from the main build-cycles. Per default the given `Buildable` gets
- * cloned before building it. To support references inside the dynamic template to target non-local values, the `hostNode`
- * parameter gets attached as a parent to the dynamic template root-node acting as a bridge to the main object-tree.
- * @param buildable The buildable to be built.
- * @param hostNode The `ObjectTreeNode` to be attached as parent node. This gives the template access to the main object-tree
- * which in turn allows references of the dynamic template to target and resolve non-local values.
- * @param cloneBeforeBuild Defines whether to clone the buildable before building it. Default is `true`.
- */
-export function buildDynamicTemplate(
-  buildable: Buildable<any>,
-  hostNode: ObjectTreeNode<any> | null,
-  cloneBeforeBuild = true,
-): any {
-  if (isBuildableArray(buildable.value)) {
-    return buildDynamicTemplateArray(buildable, hostNode);
-  }
-
-  const dynamicTemplate = cloneBeforeBuild ? clone(buildable.value) : buildable.value;
-  const builtTemplate = buildInstance(dynamicTemplate, hostNode);
-
-  return builtTemplate;
-}
-
-function buildDynamicTemplateArray(
-  buildable: Buildable<any[]>,
-  node: ObjectTreeNode | null,
-): any[] {
-  const built: any[] = [];
-
-  for (const item of buildable.value) {
-    if (isBuildable(item)) {
-      const builtTemplate = buildDynamicTemplate(item, node);
-      built.push(builtTemplate);
-    } else {
-      built.push(item);
-    }
-  }
-
-  return built;
-}
-
-function buildInstance<T>(buildable: Buildable<T>, asChildOf?: ObjectTreeNode | null) {
-  const root = treeOf(buildable, childSelector);
-
-  if (isDefined(asChildOf)) {
-    /*
-     * Note: unidirectional relationship: root --> parent.
-     *
-     * This is intentionally because we want only the dynamic template to be able to see the object-tree,
-     * but not vice versa, because the dynamic template gets build in for its own, decoupled of the rest
-     * of the tree. Still it may need access to the rest of the tree to resolve references for example.
-     * This is why we attach the tree to the template as parent here:
-     */
-    root.parent = asChildOf;
-    root.name = dynamicRootIdentifier;
-  }
+function buildInstance<T>(buildable: Buildable<T>) {
+  let root = treeOf(buildable, childSelector);
 
   traverse(root, node => runProcessors('initializer', node));
+  /*
+    because processors are allowed to alter the tree dynamically,
+    we reevaluate the root node after each and every processor cycle.
+  */
+  root = tryFindRoot(root);
   traverse(root, node => runProcessors('preprocessor', node));
+  root = tryFindRoot(root);
   traverse(root, node => buildNode(node));
+  root = tryFindRoot(root);
   traverse(root, node => runProcessors('postprocessor', node));
+  root = tryFindRoot(root);
   traverse(root, node => runProcessors('finalizer', node));
+  root = tryFindRoot(root);
   traverse(root, node => finalize(node));
 
   return root.value;
+}
+
+function tryFindRoot(assumedRoot: ObjectTreeNode): ObjectTreeNode {
+  let realRoot: ObjectTreeNode = assumedRoot;
+
+  while (isDefined(assumedRoot.parent)) {
+    realRoot = assumedRoot.parent;
+  }
+
+  return realRoot;
 }
 
 function finalize(node: ObjectTreeNode): void {
@@ -115,7 +79,7 @@ function finalize(node: ObjectTreeNode): void {
 
 function buildObjectFromChildrenOf(node: ObjectTreeNode) {
   // if node's value has been already defined, no initialization neccessary
-  if (node.value === undefined) {
+  if (isUndefined(node.value)) {
     switch (node.type) {
       case 'array':
         node.value = [];
@@ -165,19 +129,6 @@ function buildNode(node: ObjectTreeNode): void {
     const builderFn = buildable.value;
     buildable.value = builderFn();
   }
-
-  /*
-   * Builder Functions like "oneOf", can not only return static values like strings or numbers,
-   * but also again Buildables (or arrays containing Buildables) that define templates, that need
-   * to get built as well.
-   *
-   * This behavior enables the user to randomly select templates.
-   * That's why we call the `buildDynamicTemplate`-method here.
-   */
-  if (isBuildable(buildable.value) || isBuildableArray(buildable.value)) {
-    const builtTemplate = buildDynamicTemplate(buildable, node);
-    setValue(builtTemplate, node);
-  }
 }
 
 function traverse<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) => void): void {
@@ -211,7 +162,7 @@ function sortByOrderNumber(a: ProcessorFn, b: ProcessorFn): number {
  * Selects (sub-)properties that should get converted into children nodes of type `ObjectTreeNode`.
  * @param input The read value that gets converted to ObjectTreeNode
  */
-function childSelector(input: any): any {
+export function childSelector(input: any): any {
   let value = input;
 
   while (isBuildable(value)) {
