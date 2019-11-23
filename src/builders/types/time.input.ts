@@ -1,1 +1,1 @@
-export type TimeInput = string | string[] | Date | number | null;
+export type TimeInput = string | string[] | Date | number;
