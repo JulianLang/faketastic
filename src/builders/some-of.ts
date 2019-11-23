@@ -1,4 +1,4 @@
-import { copyAttributes, ObjectTreeNode, treeOf } from 'treelike';
+import { copyAttributes, ObjectTreeNode, replace, treeOf } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import {
   Buildable,
@@ -9,7 +9,7 @@ import {
   randomInt,
   randomItem,
 } from '../core';
-import { isUndefined } from '../util';
+import { isDefined, isUndefined } from '../util';
 import { SomeOfOpts } from './types';
 
 /**
@@ -41,7 +41,12 @@ export function someOf<T>(
     const content = chooseItems();
     const contentRoot = treeOf(content, childSelector);
 
-    copyAttributes(contentRoot, node);
+    if (isDefined(node.parent)) {
+      contentRoot.name = node.name;
+      replace(node, contentRoot);
+    } else {
+      copyAttributes(contentRoot, node);
+    }
   }
 
   function chooseItems(): T[] {

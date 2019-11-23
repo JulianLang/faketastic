@@ -6,7 +6,7 @@ const GotoUrl = combine(
     domain: 'https://faketastic.goto.de/meeting',
     id: range(100000000, 999999999),
   },
-  v => `${v.domain}/${v.id}`,
+  v => `${v.domain}?id=${v.id}`,
 );
 const DocumentUrl = combine(
   {
@@ -17,7 +17,7 @@ const DocumentUrl = combine(
 );
 const TrackingApiCall = combine(
   {
-    domain: 'https://fake-api.centigrade.de/trackings/',
+    domain: 'https://fake-api.centigrade.de/trackings',
     action: oneOf(['start', 'pause']),
     trackingId: range(10000, 99999),
   },
@@ -31,4 +31,4 @@ const MyTemplate = template({
 });
 
 const output = build(MyTemplate);
-console.log(output);
+console.log(JSON.stringify(output, null, 2));

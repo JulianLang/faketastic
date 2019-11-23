@@ -1,4 +1,4 @@
-import { addChild, copyAttributes, ObjectTreeNode, treeOf } from 'treelike';
+import { copyAttributes, ObjectTreeNode, replace, treeOf } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import {
   Buildable,
@@ -24,7 +24,8 @@ export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<
     const contentRoot = treeOf(content, childSelector);
 
     if (isDefined(node.parent)) {
-      addChild(contentRoot, node);
+      contentRoot.name = node.name;
+      replace(node, contentRoot);
     } else {
       copyAttributes(contentRoot, node);
     }
