@@ -1,5 +1,5 @@
 export const BuilderFnSymbol = Symbol('faketastic.builder');
-export interface BuilderFn {
+export interface BuilderFn<T = any> {
   [BuilderFnSymbol]: boolean;
-  <T>(...params: any[]): T;
+  (...params: any[]): T;
 }
