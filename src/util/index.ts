@@ -1,4 +1,5 @@
 export * from './clone';
+export * from './clone-items';
 export * from './is-array';
 export * from './is-date.instance';
 export * from './is-defined';

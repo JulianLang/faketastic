@@ -9,6 +9,7 @@ import {
   ProcessorFn,
   PureObject,
 } from '../core';
+import { clone } from '../util';
 
 export function combine<T>(
   props: PureObject<T>,
@@ -28,7 +29,8 @@ export function combine<T>(
   };
 
   function buildAndCombineValues(node: ObjectTreeNode<Buildable<T>>) {
-    const buildable: Buildable<T> = createBuildable(props, processors);
+    const clonedProps = clone(props);
+    const buildable: Buildable<T> = createBuildable(clonedProps, processors);
     const builtTemplate = build(buildable);
     const mappedValue = map(builtTemplate);
     node.value = mappedValue;

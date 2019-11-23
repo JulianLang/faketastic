@@ -1,5 +1,5 @@
 import { combine, oneOf, range, someOf } from './src/builders';
-import { build, template } from './src/core';
+import { build, randomInt, template } from './src/core';
 
 const GotoUrl = combine(
   {
@@ -10,7 +10,7 @@ const GotoUrl = combine(
 );
 const DocumentUrl = combine(
   {
-    domain: 'https://fake.office.de/documents/',
+    domain: 'https://fake.office.de/documents',
     fileName: oneOf(['agenda.docx', 'offer.xslx', 'contract-draft.rft']),
   },
   v => `${v.domain}/${v.fileName}`,
@@ -30,5 +30,5 @@ const MyTemplate = template({
   url: someOf(UrlTypes),
 });
 
-const output = build(MyTemplate);
+const output = build(MyTemplate, () => randomInt(1, 5));
 console.log(JSON.stringify(output, null, 2));

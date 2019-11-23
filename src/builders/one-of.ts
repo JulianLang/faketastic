@@ -8,7 +8,7 @@ import {
   ProcessorFn,
   randomInt,
 } from '../core';
-import { isDefined } from '../util';
+import { clone, isDefined } from '../util';
 
 export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<any> {
   const initOneOf = createProcessorFn(init, 'initializer', ProcessorOrders.treeStructureChanging);
@@ -40,6 +40,6 @@ export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<
 
     const index = randomInt(0, values.length - 1);
 
-    return values[index];
+    return clone(values[index]);
   }
 }

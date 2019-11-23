@@ -9,7 +9,7 @@ import {
   randomInt,
   randomItem,
 } from '../core';
-import { isDefined, isUndefined } from '../util';
+import { cloneItems, isDefined, isUndefined } from '../util';
 import { SomeOfOpts } from './types';
 
 /**
@@ -99,6 +99,6 @@ export function someOf<T>(
       }
     }
 
-    return result;
+    return cloneItems(result);
   }
 }
