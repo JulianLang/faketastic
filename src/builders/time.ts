@@ -15,9 +15,43 @@ import { TimeInput } from './types';
 const defaultFormat = 'HH:mm:ss:SSS';
 
 /**
- * Generates a random time, while using today's date.
- * @param earliest Time string to be used as earliest allowed time. HH:mm:ss - `13:15:00`
- * @param latest Time string to be used as latest allowed time. HH:mm:ss - `13:15:00`
+ * Generates a random time, while using today's date. Parameters can be of type `TimeInput` allowing
+ * you to pass your time restrictions in several formats:
+ *
+ * - `'now'`: Date time of the moment it gets called.
+ * - string: `"12:41:02"`: Simple time string (in format HH:mm:ss or HH:mm).
+ * - string[]: `["01:41 pm", "HH:mm aa"]`: Time string with specified format.
+ * - number: `1574497160206`: Time number as it is produced by `new Date().getTime()` for example
+ * - date: `new Date()`: A native JavaScript `Date`-instance.
+ *
+ * **Please note:** faketastic currently does not handle time zones.
+ *
+ * ---
+ *
+ * Usage examples:
+ *
+ * ~~~ts
+ * // any time from 00:00:00 to 23:59:59
+ * time();
+ * // exact date and time now
+ * time('now');
+ * // exact time: 13:32:00
+ * time('13:32:00');
+ * // exact time: 13:32:00
+ * time(['01:32 pm', 'HH:mm aa']);
+ * // any from 12:00:00 to 13:00:00, today
+ * time('12:00:00', '13:00');
+ * // any from 12:00:00 to 13:00:00, today
+ * time(['12:10:10', 'HH:mm:ss'], ['19:24', 'HH:mm']);
+ * // any from now to 23:59:59, today
+ * time(new Date(), null);
+ * // any from 11:00:00 to 23:59:59, today
+ * time('11:00', null);
+ * // any from 00:00:00 to 04:00:00, today
+ * time(null, '04:00');
+ * ~~~
+ * @param earliest Time string, number or date object to be used as earliest allowed time. Default format is HH:mm:ss - `13:15:00`
+ * @param latest Time string, number or date object to be used as latest allowed time. Default format is HH:mm:ss - `13:15:00`
  */
 export function time(
   earliest?: TimeInput | ProcessorFn,
