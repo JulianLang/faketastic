@@ -23,7 +23,7 @@ export function someOf<T>(
   values: T[],
   opts?: SomeOfOpts,
   ...processors: ProcessorFn[]
-): Buildable<any> {
+): Buildable<any[]> {
   const someOfDefaultOpts: SomeOfOpts = {
     allowDuplicates: true,
     minItems: 2,
