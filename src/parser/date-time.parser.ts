@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { TimeInput } from '../builders/types';
-import { ParserFn } from '../types';
 import { isDefined, isUndefined } from '../util';
+import { ParserFn } from './types';
 
 export const dateTimeParser: ParserFn<string | number | Date, Date> = (
   input: string | number | Date,
