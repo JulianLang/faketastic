@@ -3,7 +3,7 @@ import { isDefined } from '../../util';
 import { Buildable, ProcessorFn, ProcessorOrderSymbol } from '../types';
 import { ProcessorType } from '../types/processor.types';
 import { Quantity } from '../types/quantity';
-import { clone, isBuildable, isBuilderFunction, isProcessorFn } from '../util';
+import { clone, isBuildable, isBuildableArray, isBuilderFunction, isProcessorFn } from '../util';
 import { getQuantity } from '../util/get-quantity';
 
 const dynamicRootIdentifier = '$dynamic-root';
@@ -46,10 +46,32 @@ export function buildDynamicTemplate(
   hostNode: ObjectTreeNode<any> | null,
   cloneBeforeBuild = true,
 ): any {
+  if (isBuildableArray(buildable.value)) {
+    return buildDynamicTemplateArray(buildable, hostNode);
+  }
+
   const dynamicTemplate = cloneBeforeBuild ? clone(buildable.value) : buildable.value;
   const builtTemplate = buildInstance(dynamicTemplate, hostNode);
 
   return builtTemplate;
+}
+
+function buildDynamicTemplateArray(
+  buildable: Buildable<any[]>,
+  node: ObjectTreeNode | null,
+): any[] {
+  const built: any[] = [];
+
+  for (const item of buildable.value) {
+    if (isBuildable(item)) {
+      const builtTemplate = buildDynamicTemplate(item, node);
+      built.push(builtTemplate);
+    } else {
+      built.push(item);
+    }
+  }
+
+  return built;
 }
 
 function buildInstance<T>(buildable: Buildable<T>, asChildOf?: ObjectTreeNode | null) {
@@ -146,11 +168,13 @@ function buildNode(node: ObjectTreeNode): void {
 
   /*
    * Builder Functions like "oneOf", can not only return static values like strings or numbers,
-   * but also again Buildables defining templates, that need to get built as well.
+   * but also again Buildables (or arrays containing Buildables) that define templates, that need
+   * to get built as well.
+   *
    * This behavior enables the user to randomly select templates.
    * That's why we call the `buildDynamicTemplate`-method here.
    */
-  if (isBuildable(buildable.value)) {
+  if (isBuildable(buildable.value) || isBuildableArray(buildable.value)) {
     const builtTemplate = buildDynamicTemplate(buildable, node);
     setValue(builtTemplate, node);
   }

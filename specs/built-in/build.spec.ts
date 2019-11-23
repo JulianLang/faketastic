@@ -7,7 +7,9 @@ import {
   createProcessorFn,
   oneOf,
   ProcessorFn,
+  someOf,
 } from '../../src';
+import { isArray } from '../../src/util';
 
 describe('build function', () => {
   it('should return a value of same type as the input, if quantity is constant 1', () => {
@@ -232,6 +234,29 @@ describe('buildDynamicTemplate', () => {
       a: 'hello',
       b: 'world',
     });
+  });
+
+  it('should build all templates within a given array while keeping static values as well', () => {
+    // arrange
+    const A = createBuildable({ a: oneOf(['A']) });
+    const B = createBuildable({ b: oneOf(['B']) });
+
+    const buildable = createBuildable({
+      // since minItems is 3 and duplicates are not allowed, it guarantuess that A, B and 'static' is included:
+      a: someOf([A, B, 'static'], { minItems: 3, allowDuplicates: false }),
+      b: 'world',
+    });
+
+    // act
+    const result = buildDynamicTemplate(buildable, null);
+
+    // assert
+    expect(isArray(result.a)).toBe(true);
+    expect(result.a).toContain({ a: 'A' });
+    expect(result.a).toContain({ b: 'B' });
+    expect(result.a).toContain('static');
+
+    expect(result.b).toEqual('world');
   });
 
   it('should attach the built value to a host node', () => {
