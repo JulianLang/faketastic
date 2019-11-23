@@ -10,6 +10,13 @@ import {
 import { isUndefined } from '../util';
 import { SomeOfOpts } from './types';
 
+/**
+ * Takes an array of items and picks a random amount of items from it. There are options available to
+ * define how (and how many) items should be picked from the given array.
+ * @param values The values to pick items from.
+ * @param opts Additional options on how (many) items should be picked.
+ * @param processors Processors such as `quantity`, `map` or others to apply to this `Buildable`
+ */
 export function someOf<T>(
   values: T[],
   opts?: SomeOfOpts,
