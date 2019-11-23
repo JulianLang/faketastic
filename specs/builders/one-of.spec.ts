@@ -1,6 +1,6 @@
-import { build } from '../../core';
-import { includeBuilderFnSpecs } from '../../core/built-in/specs/shared/shared-specs';
-import { oneOf } from '../one-of';
+import { oneOf } from '../../src/builders';
+import { build } from '../../src/core';
+import { includeBuilderFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('oneOf BuilderFn', () => {
   it('should throw for null at building-time', () => {

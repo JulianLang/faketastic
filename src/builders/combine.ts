@@ -1,14 +1,14 @@
 import { ObjectTreeNode } from 'treelike';
-import { ProcessorOrders } from '../constants/processor.orders';
+import { ProcessorOrders } from '../constants';
 import {
   Buildable,
   BuildableSymbol,
   buildDynamicTemplate,
+  createBuildable,
   createProcessorFn,
   ProcessorFn,
   PureObject,
 } from '../core';
-import { createBuildable } from '../core/built-in/specs/shared/spec.helper';
 
 export function combine<T>(
   props: PureObject<T>,

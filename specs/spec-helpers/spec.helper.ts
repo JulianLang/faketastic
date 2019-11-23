@@ -1,5 +1,4 @@
 import { ObjectTreeNode } from 'treelike';
-import { Buildable, BuildableSymbol, ProcessorFn } from '../../../types';
 
 const dummyNode: ObjectTreeNode<any> = {
   children: [],
@@ -31,14 +30,4 @@ export function createParentTreeNode(): ObjectTreeNode<any> {
   node.children[0].parent = node;
 
   return node;
-}
-
-export function createBuildable<T>(tmpl: T, processors: ProcessorFn[] = []): Buildable<T> {
-  const buildable: Buildable<any> = {
-    [BuildableSymbol]: 'template',
-    processors,
-    value: tmpl,
-  };
-
-  return buildable;
 }

@@ -1,6 +1,5 @@
-import { build } from '../../core';
-import { createBuildable } from '../../core/built-in/specs/shared/spec.helper';
-import { map } from '../map';
+import { build, createBuildable } from '../../src/core';
+import { map } from '../../src/processors/map';
 import { includeProcessorFnSpecs } from './shared/shared-specs';
 
 describe('map processor fn', () => {

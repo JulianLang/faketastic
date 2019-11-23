@@ -1,6 +1,6 @@
 import { Buildable, ProcessorFn, PureObject } from '../types';
-import { clone, unwrapIfBuildable } from '../util';
-import { createBuildable } from './specs/shared/spec.helper';
+import { clone, createBuildable, unwrapIfBuildable } from '../util';
+
 export function extend<T, K>(
   tmpl: PureObject<T>,
   extension: K,

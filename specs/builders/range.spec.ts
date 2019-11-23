@@ -1,5 +1,5 @@
-import { includeBuilderFnSpecs } from '../../core/built-in/specs/shared/shared-specs';
-import { range } from '../range';
+import { range } from '../../src/builders';
+import { includeBuilderFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('range BuilderFn', () => {
   it('should always return values in range', () => {

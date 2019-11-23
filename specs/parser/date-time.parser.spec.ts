@@ -1,4 +1,4 @@
-import { dateTimeParser } from '../date-time.parser';
+import { dateTimeParser } from '../../src/parser/date-time.parser';
 
 describe('date time formatter', () => {
   it('should accept timestamp', () => {
