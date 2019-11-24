@@ -1,4 +1,4 @@
-import { duration } from '../../src/parser/duration.parser';
+import { duration } from '../../src/converters';
 
 describe('duration parser', () => {
   it('should return a date adding the specified min/max duration', () => {
