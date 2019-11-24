@@ -1,5 +1,12 @@
-import { ObjectTreeNode } from 'treelike';
-import { build, createBuildable, createBuilderFn, createProcessorFn, ProcessorFn } from '../../src';
+import { createNode, ObjectTreeNode } from 'treelike';
+import {
+  build,
+  createBuildable,
+  createBuilderFn,
+  createProcessorFn,
+  oneOf,
+  ProcessorFn,
+} from '../../src';
 
 describe('build function', () => {
   it('should return a value of same type as the input, if quantity is constant 1', () => {
@@ -184,5 +191,26 @@ describe('build function', () => {
     expect(result.a).toBeDefined();
     expect(result.a).toEqual(value);
     expect(wasCalled).toBe(true);
+  });
+
+  it('should build children of value nodes', () => {
+    // arrange
+    const setChildrenOnValueNodeProcessor = createProcessorFn((n: ObjectTreeNode) => {
+      n.value = 42;
+      n.children = [createNode('child', null)];
+    }, 'initializer');
+
+    const buildable = createBuildable({
+      /*
+        the processor will do two things in order to provocate a value node with children:
+        1) it sets a value on the property-node "a" in order to make it a value-node.
+        2) add children to the node, which is not allowed and something faketastic should be able to handle
+      */
+      a: oneOf([1, 2, 3], setChildrenOnValueNodeProcessor),
+    });
+
+    // act
+    // assert
+    expect(() => build(buildable)).not.toThrow();
   });
 });

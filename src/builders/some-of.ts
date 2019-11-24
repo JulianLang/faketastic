@@ -1,6 +1,7 @@
-import { copyAttributes, ObjectTreeNode, replace, treeOf } from 'treelike';
+import { copyAttributes, ObjectTreeNode, treeOf } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import {
+  addIfProcessorFn,
   Buildable,
   BuildableSymbol,
   childSelector,
@@ -21,20 +22,24 @@ import { SomeOfOpts } from './types';
  */
 export function someOf<T>(
   values: T[],
-  opts?: SomeOfOpts,
+  opts?: SomeOfOpts | ProcessorFn,
   ...processors: ProcessorFn[]
-): Buildable<any[]> {
+): Buildable<any> {
   const someOfDefaultOpts: SomeOfOpts = {
     allowDuplicates: true,
     minItems: 2,
   };
+
+  if (addIfProcessorFn(opts, processors)) {
+    opts = undefined;
+  }
 
   const initSomeOf = createProcessorFn(init, 'preprocessor', ProcessorOrders.treeStructureChanging);
 
   return {
     [BuildableSymbol]: 'value',
     processors: [initSomeOf, ...processors],
-    value: [],
+    value: null,
   };
 
   function init(node: ObjectTreeNode) {
@@ -43,10 +48,9 @@ export function someOf<T>(
 
     if (isDefined(node.parent)) {
       contentRoot.name = node.name;
-      replace(node, contentRoot);
-    } else {
-      copyAttributes(contentRoot, node);
     }
+
+    copyAttributes(contentRoot, node);
   }
 
   function chooseItems(): T[] {

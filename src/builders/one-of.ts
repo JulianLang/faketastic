@@ -1,4 +1,4 @@
-import { copyAttributes, ObjectTreeNode, replace, treeOf } from 'treelike';
+import { copyAttributes, ObjectTreeNode, treeOf } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import {
   Buildable,
@@ -15,8 +15,8 @@ export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<
 
   return {
     [BuildableSymbol]: 'value',
-    value: null,
     processors: [initOneOf, ...processorFns],
+    value: null,
   };
 
   function init(node: ObjectTreeNode) {
@@ -25,10 +25,9 @@ export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<
 
     if (isDefined(node.parent)) {
       contentRoot.name = node.name;
-      replace(node, contentRoot);
-    } else {
-      copyAttributes(contentRoot, node);
     }
+
+    copyAttributes(contentRoot, node);
   }
 
   function chooseRandomItem() {

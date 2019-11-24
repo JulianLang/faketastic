@@ -74,10 +74,14 @@ function finalize(node: ObjectTreeNode): void {
   }
 
   setValue(value, node);
-  buildObjectFromChildrenOf(node);
+
+  // value nodes must not have any children
+  if (node.type !== 'value') {
+    buildChildrenOf(node);
+  }
 }
 
-function buildObjectFromChildrenOf(node: ObjectTreeNode) {
+function buildChildrenOf(node: ObjectTreeNode) {
   // if node's value has been already defined, no initialization neccessary
   if (isUndefined(node.value)) {
     switch (node.type) {
