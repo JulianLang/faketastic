@@ -14,6 +14,8 @@ export function canBe<T>(value: T, likelyhood = 0.5): ProcessorFn {
     const shouldApply = alwaysApply || probability(likelyhood);
 
     if (shouldApply) {
+      // remove children as they are irrelevant due to setting the value:
+      node.children = [];
       node.value = value;
     }
   }
