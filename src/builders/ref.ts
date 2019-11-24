@@ -1,6 +1,6 @@
 import { findNode, ObjectTreeNode } from 'treelike';
 import { ProcessorOrders } from '../constants';
-import { Buildable, BuildableSymbol, createProcessorFn, ProcessorFn } from '../core';
+import { Buildable, BuildableSymbol, createProcessorFn, isBuildable, ProcessorFn } from '../core';
 import { isDefined, isUndefined } from '../util';
 export function ref<T = any>(propertyName: keyof T, ...processors: ProcessorFn[]): Buildable<any> {
   const refProcessor = createProcessorFn(refImpl, 'finalizer', ProcessorOrders.ref);
@@ -22,7 +22,9 @@ export function ref<T = any>(propertyName: keyof T, ...processors: ProcessorFn[]
       console.warn(`faketastic: Could not resolve reference to "${propertyName}"`);
     } else {
       node.children = [];
-      node.value = resolvedReference.value;
+      node.value = isBuildable(resolvedReference.value)
+        ? resolvedReference.value.value
+        : resolvedReference.value;
     }
   }
 }
