@@ -1,12 +1,8 @@
 import { nodeTypeOf, ObjectTreeNode, treeOf } from 'treelike';
-import { clone, isDefined, isUndefined } from '../../util';
+import { isUndefined } from '../../util';
 import { Buildable, ProcessorFn, ProcessorOrderSymbol } from '../types';
 import { ProcessorType } from '../types/processor.types';
-import { Quantity } from '../types/quantity';
 import { isBuildable, isBuilderFunction, isProcessorFn } from '../util';
-import { getQuantity } from '../util/get-quantity';
-
-const dynamicRootIdentifier = '$dynamic-root';
 
 /**
  * Builds a buildable and outputs the generated mock data. The amount of objects
@@ -14,54 +10,18 @@ const dynamicRootIdentifier = '$dynamic-root';
  * @param buildable An object of interface Buildable that should get built.
  * @param quantity The amount of mock data objects that should be generated from the buildable.
  */
-export function build<T>(buildable: Buildable<T>, quantity: Quantity = 1): any {
-  let count = getQuantity(quantity);
-
-  return quantity === 1 ? buildInstance(buildable) : buildMultiple(buildable, count);
-}
-
-function buildMultiple<T>(buildable: Buildable<T>, count: number): any {
-  const result = [];
-
-  for (let i = 0; i < count; i++) {
-    const buildableClone = clone(buildable);
-    const instance = buildInstance<T>(buildableClone);
-    result.push(instance);
-  }
-
-  return result;
-}
-
-function buildInstance<T>(buildable: Buildable<T>) {
-  let root = treeOf(buildable, childSelector);
+export function build<T>(buildable: Buildable<T>, ...processors: ProcessorFn[]): any {
+  buildable.processors.push(...processors);
+  const root = treeOf(buildable, childSelector);
 
   traverse(root, node => runProcessors('initializer', node));
-  /*
-    because processors are allowed to alter the tree dynamically,
-    we reevaluate the root node after each and every processor cycle.
-  */
-  root = tryFindRoot(root);
   traverse(root, node => runProcessors('preprocessor', node));
-  root = tryFindRoot(root);
   traverse(root, node => buildNode(node));
-  root = tryFindRoot(root);
   traverse(root, node => runProcessors('postprocessor', node));
-  root = tryFindRoot(root);
   traverse(root, node => runProcessors('finalizer', node));
-  root = tryFindRoot(root);
   traverse(root, node => finalize(node));
 
   return root.value;
-}
-
-function tryFindRoot(assumedRoot: ObjectTreeNode): ObjectTreeNode {
-  let realRoot: ObjectTreeNode = assumedRoot;
-
-  while (isDefined(assumedRoot.parent)) {
-    realRoot = assumedRoot.parent;
-  }
-
-  return realRoot;
 }
 
 function finalize(node: ObjectTreeNode): void {
@@ -136,15 +96,14 @@ function buildNode(node: ObjectTreeNode): void {
 }
 
 function traverse<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) => void): void {
-  for (const child of node.children) {
-    traverse(child, onNext);
-    onNext(child);
+  // also include root node:
+  if (isUndefined(node.parent)) {
+    onNext(node);
   }
 
-  // TODO: langju: the naming-criteria is too arbitrary, think of other marker for being a root node of a dynamic template
-  const isRootNode = !isDefined(node.parent) || node.name === dynamicRootIdentifier;
-  if (isRootNode) {
-    onNext(node);
+  for (const child of node.children) {
+    onNext(child);
+    traverse(child, onNext);
   }
 }
 

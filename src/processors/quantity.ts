@@ -4,28 +4,17 @@ import { createProcessorFn } from '../core';
 import { QuantityInsertMode } from '../core/types';
 import { Quantity } from '../core/types/quantity';
 import { getQuantity } from '../core/util/get-quantity';
-import { clone, isDefined } from '../util';
+import { clone } from '../util';
 
 export function quantity(
   quantity: Quantity = 1,
   insertMode: QuantityInsertMode = 'createNewArray',
 ) {
-  return createProcessorFn(
-    quantityImpl,
-    'initializer',
-    ProcessorOrders.treeStructureChanging,
-  );
+  return createProcessorFn(quantityImpl, 'initializer', ProcessorOrders.treeStructureChanging);
 
   function quantityImpl(node: ObjectTreeNode) {
     if (quantity === 1) {
       // nothing to do
-      return;
-    }
-
-    if (!isDefined(node.parent)) {
-      console.warn(
-        `faketastic: Cannot use quantity function on root level. Use build(<template>, <quantity>) instead.`,
-      );
       return;
     }
 
@@ -34,27 +23,23 @@ export function quantity(
     if (insertMode === 'useParentArray') {
       insertInline(children, node);
     } else {
-      const arrayNodeWithChildren: ObjectTreeNode = {
-        ...node,
-        type: 'array',
-        value: [],
-        children,
-      };
-      replace(node, arrayNodeWithChildren);
+      node.type = 'array';
+      node.children = children;
+      node.value = [];
     }
   }
 
   function multiplyNode(node: ObjectTreeNode, quantity: Quantity): ObjectTreeNode[] {
-    const children: ObjectTreeNode[] = [];
+    const nodes: ObjectTreeNode[] = [];
     const numberOfItems = getQuantity(quantity);
 
     for (let index = 0; index < numberOfItems; index++) {
       const clonedNode: ObjectTreeNode = clone(node);
       clonedNode.name = index;
-      children.push(clonedNode);
+      nodes.push(clonedNode);
     }
 
-    return children;
+    return nodes;
   }
 
   function insertInline(children: ObjectTreeNode[], node: ObjectTreeNode): ObjectTreeNode {

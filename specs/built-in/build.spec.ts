@@ -6,32 +6,16 @@ import {
   createProcessorFn,
   oneOf,
   ProcessorFn,
+  quantity,
 } from '../../src';
 
 describe('build function', () => {
-  it('should return a value of same type as the input, if quantity is constant 1', () => {
-    // arrange
-    const input = createBuildable({});
-    const inputType = typeof input;
-
-    // act
-    const resultA = build(input);
-    const resultB = build(input, 1);
-
-    // assert
-    expect(typeof resultA).toEqual(inputType);
-    expect(Array.isArray(resultA)).toEqual(false);
-
-    expect(typeof resultB).toEqual(inputType);
-    expect(Array.isArray(resultB)).toEqual(false);
-  });
-
   it('should return an array of the input type, if quantity is greater than 1', () => {
     // arrange
     const input = createBuildable({});
 
     // act
-    const result = build(input, 2);
+    const result = build(input, quantity(2));
 
     // assert
     expect(Array.isArray(result)).toEqual(true);
@@ -43,23 +27,11 @@ describe('build function', () => {
     const numberOfItems = 1;
 
     // act
-    const result = build(input, () => numberOfItems);
+    const result = build(input, quantity(1));
 
     // assert
     expect(Array.isArray(result)).toEqual(true);
     expect(result.length).toBe(numberOfItems);
-  });
-
-  it('should return an empty array of the input type, if quantity is a function returning 0', () => {
-    // arrange
-    const input = createBuildable({});
-    const numberOfItems = 0;
-    // act
-    const result = build(input, () => numberOfItems);
-
-    // assert
-    expect(Array.isArray(result)).toEqual(true);
-    expect(result.length).toEqual(numberOfItems);
   });
 
   it('should return an empty array of the input type, if quantity is constant 0', () => {
@@ -67,7 +39,7 @@ describe('build function', () => {
     const input = createBuildable({});
     const numberOfItems = 0;
     // act
-    const result = build(input, numberOfItems);
+    const result = build(input, quantity(0));
 
     // assert
     expect(Array.isArray(result)).toEqual(true);

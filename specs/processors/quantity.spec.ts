@@ -29,33 +29,21 @@ describe('quantity processor fn', () => {
     // arrange
     const numberOfItems = 2;
     const processorFn = quantity(numberOfItems);
-    const node = createChildTreeNode();
-    const parent = node.parent;
+    const value = { a: 1, b: true, c: 'str' };
+    const node = createNode('obj', value);
 
     // act
     processorFn(node);
 
     // assert
-    // node must be replaced with new array node, having 2 children,
-    // being the origianl node cloned 2 times
-    const dynamicallyInsertedParent = parent!.children[0];
 
-    expect(dynamicallyInsertedParent.type).toBe('array');
-    expect(dynamicallyInsertedParent.children.length).toBe(numberOfItems);
+    expect(node.value as any).toEqual([]);
+    expect(node.children).toEqual(node.children);
+    expect(node.children.length).toEqual(numberOfItems);
+    expect(node.type).toEqual('array');
 
-    // child no. 1 must equal original node, except parent and name
-    const cloneOfOriginalNode1 = dynamicallyInsertedParent!.children[0];
-    expect(cloneOfOriginalNode1.name).toEqual(0);
-    expect(cloneOfOriginalNode1.value).toEqual(node.value);
-    expect(cloneOfOriginalNode1.children).toEqual(node.children);
-    expect(cloneOfOriginalNode1.type).toEqual(node.type);
-
-    // child no. 2 must equal original node, except parent and name
-    const cloneOfOriginalNode2 = dynamicallyInsertedParent!.children[1];
-    expect(cloneOfOriginalNode2.name).toEqual(1);
-    expect(cloneOfOriginalNode2.value).toEqual(node.value);
-    expect(cloneOfOriginalNode2.children).toEqual(node.children);
-    expect(cloneOfOriginalNode2.type).toEqual(node.type);
+    expect(node.children[0].value).toEqual(value);
+    expect(node.children[1].value).toEqual(value);
   });
 
   it('should add no additional array-parent node, if quantity parameter "inline" is set to true', () => {
