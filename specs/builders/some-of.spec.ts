@@ -2,7 +2,7 @@ import { build } from '../../src';
 import { someOf } from '../../src/builders';
 
 describe('someOf builder function', () => {
-  it('should return at least "2" and at max "values.length" items', () => {
+  it('should return at least 1 and at max "values.length" items', () => {
     for (let i = 0; i < 1000; i++) {
       // arrange
       const values = [1, 2, 3, 4, 5, 6];
@@ -13,7 +13,7 @@ describe('someOf builder function', () => {
 
       // assert
       expect(result).toBeDefined();
-      expect(result.length).toBeGreaterThanOrEqual(2);
+      expect(result.length).toBeGreaterThanOrEqual(1);
       expect(result.length).toBeLessThanOrEqual(values.length);
     }
   });

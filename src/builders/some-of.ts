@@ -28,7 +28,7 @@ export function someOf<T>(
 ): Buildable<any> {
   const someOfDefaultOpts: SomeOfOpts = {
     allowDuplicates: true,
-    minItems: 2,
+    minItems: 1,
   };
 
   if (addIfProcessorFn(opts, processors)) {
