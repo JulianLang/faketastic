@@ -1,4 +1,4 @@
-import { ObjectTreeNode, replace } from 'treelike';
+import { addChildren, ObjectTreeNode, replace } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import { createProcessorFn, isBuildable } from '../core';
 import { Buildable, QuantityInsertMode } from '../core/types';
@@ -32,8 +32,9 @@ export function quantity(
       insertInline(children, node);
     } else {
       node.type = 'array';
-      node.children = children;
       node.value = [];
+      node.children = [];
+      addChildren(children, node);
     }
   }
 

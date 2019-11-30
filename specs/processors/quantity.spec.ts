@@ -1,10 +1,28 @@
 import { createNode, ObjectTreeNode } from 'treelike';
-import { build, createBuildable } from '../../src/core';
+import { build, createBuildable, createProcessorFn, template, use } from '../../src/core';
 import { quantity } from '../../src/processors/quantity';
 import { includeProcessorFnSpecs } from '../spec-helpers/shared-specs';
 import { createChildTreeNode } from '../spec-helpers/spec.helper';
 
 describe('quantity processor fn', () => {
+  it('should connect the content nodes to the rest of tree', () => {
+    // arrange, assert
+    const assertProcessor = createProcessorFn((node: ObjectTreeNode) => {
+      // assertion, only on parent node
+      if (node.name === 'a') {
+        for (const child of node.children) {
+          expect(child.parent).toBe(node);
+        }
+      }
+    }, 'initializer');
+    const tmpl = template({
+      a: use({}, quantity(2), assertProcessor),
+    });
+
+    // act
+    build(tmpl);
+  });
+
   it('should return an array of the input type, if quantity is a function returning 1', () => {
     // arrange
     const input = createBuildable({});
