@@ -1,10 +1,10 @@
 import { clone } from '../../util';
-import { Buildable, BuildableSymbol } from '../types';
+import { Buildable } from '../types';
+import { asBuildable } from '../util';
 
 export function template<T>(tmpl: T): Buildable<T> {
-  return {
-    [BuildableSymbol]: 'template',
-    value: clone(tmpl),
-    processors: [],
-  };
+  const cloned: T = clone(tmpl);
+  const buildable: Buildable<T> = asBuildable(cloned);
+
+  return buildable;
 }
