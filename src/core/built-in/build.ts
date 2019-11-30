@@ -27,13 +27,9 @@ export function build<R = any, T = any>(buildable: Buildable<T>, ...processors: 
 }
 
 function finalize(node: ObjectTreeNode): void {
-  let value = node.value;
-
-  // buildable has value property which holds the actual built value.
+  // buildable has a value property which holds the actual built value.
   // However, this value can again be a buildable, until a leaf of the tree is reached
-  while (isBuildable(value)) {
-    value = value.value;
-  }
+  const value = getLeafBuildable(node.value);
 
   setValue(value, node);
 
@@ -148,8 +144,8 @@ function traverseReverse<T>(
     onNext(child);
   }
 
-  const isRootNode = !isDefined(node.parent);
-  if (isRootNode) {
+  // also include root node:
+  if (!isDefined(node.parent)) {
     onNext(node);
   }
 }
