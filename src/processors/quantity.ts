@@ -1,7 +1,7 @@
 import { ObjectTreeNode, replace } from 'treelike';
 import { ProcessorOrders } from '../constants';
-import { createProcessorFn } from '../core';
-import { QuantityInsertMode } from '../core/types';
+import { createProcessorFn, isBuildable } from '../core';
+import { Buildable, QuantityInsertMode } from '../core/types';
 import { Quantity } from '../core/types/quantity';
 import { getQuantity } from '../core/util/get-quantity';
 import { clone } from '../util';
@@ -10,9 +10,17 @@ export function quantity(
   quantity: Quantity = 1,
   insertMode: QuantityInsertMode = 'createNewArray',
 ) {
-  return createProcessorFn(quantityImpl, 'initializer', ProcessorOrders.treeStructureChanging);
+  return createProcessorFn(quantityImpl, 'preprocessor', ProcessorOrders.treeStructureChanging);
 
   function quantityImpl(node: ObjectTreeNode) {
+    /*
+      remove quantity processor from buildable to avoid infinity loop, as otherwise
+      the newly created children will apply quantity as well leading to infinity loop.
+    */
+    if (isBuildable(node.value)) {
+      removeQuantityProcessor(node.value);
+    }
+
     if (quantity === 1) {
       // nothing to do
       return;
@@ -80,5 +88,9 @@ export function quantity(
     nodes.forEach((n, index) => (n.name = index));
 
     return nodes;
+  }
+
+  function removeQuantityProcessor(buildable: Buildable) {
+    buildable.processors = buildable.processors.filter(p => p !== quantityImpl);
   }
 }

@@ -22,10 +22,7 @@ export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<
   function init(node: ObjectTreeNode) {
     const content = chooseRandomItem();
     const contentRoot = treeOf(content, childSelector);
-
-    if (isDefined(node.parent)) {
-      contentRoot.name = node.name;
-    }
+    contentRoot.name = node.name;
 
     copyAttributes(contentRoot, node);
   }

@@ -10,56 +10,71 @@ import { isBuildable, isBuilderFunction, isProcessorFn } from '../util';
  * @param buildable An object of interface Buildable that should get built.
  * @param quantity The amount of mock data objects that should be generated from the buildable.
  */
-export function build<T>(buildable: Buildable<T>, ...processors: ProcessorFn[]): any {
+export function build<T, R = any>(buildable: Buildable<T>, ...processors: ProcessorFn[]): R {
   buildable.processors.push(...processors);
-  const root = treeOf(buildable, childSelector);
+  const buildableNode = treeOf(buildable, childSelector);
 
-  traverse(root, node => runProcessors('initializer', node));
-  traverse(root, node => runProcessors('preprocessor', node));
-  traverse(root, node => buildNode(node));
-  traverse(root, node => runProcessors('postprocessor', node));
-  traverse(root, node => runProcessors('finalizer', node));
-  traverse(root, node => finalize(node));
+  traverse(buildableNode, node => runProcessors('initializer', node));
+  traverse(buildableNode, node => runProcessors('preprocessor', node));
+  traverse(buildableNode, node => buildNode(node));
+  traverse(buildableNode, node => runProcessors('postprocessor', node));
+  traverse(buildableNode, node => runProcessors('finalizer', node));
 
-  return root.value;
+  updateType(buildableNode);
+
+  if (buildableNode.children.length > 0) {
+    switch (buildableNode.type) {
+      case 'array':
+        buildableNode.value = [] as any;
+        break;
+      case 'object':
+        buildableNode.value = {} as any;
+        break;
+    }
+
+    buildChildrenOf(buildableNode);
+  }
+
+  if (isBuildable(buildableNode.value)) {
+    buildableNode.value = getLeafBuildable(buildableNode.value);
+  }
+
+  return buildableNode.value as any;
 }
 
-function finalize(node: ObjectTreeNode): void {
-  let value = node.value;
+/**
+ * Builds a node by replacing its value with an empty object or array (depending on node type)
+ * and assigning its children's values to the object / array as either properties or items.
+ * @param node The node to build its children.
+ */
+function buildChildrenOf(node: ObjectTreeNode) {
+  for (const child of node.children) {
+    // we want the leaf value here, as it is the actual/build value
+    let value = getLeafBuildable(child.value);
 
-  // buildable has value property which holds the actual built value.
-  // However, this value can again be a buildable, until a leaf of the tree is reached
+    // all children must have names
+    node.value[child.name!] = value;
+  }
+}
+
+/**
+ * Takes a value that might be a `Buildable` and starts looking for the most nested `Buildable`
+ * by recursively checking if the `Buildable.value` is a `Buildable` again.
+ * @param value A value that might be a `Buildable` to start searching for nested `Buildable`s.
+ */
+function getLeafBuildable(value: any) {
   while (isBuildable(value)) {
     value = value.value;
   }
 
-  setValue(value, node);
-
-  // value nodes must not have any children
-  if (node.type !== 'value') {
-    buildChildrenOf(node);
-  }
+  return value;
 }
 
-function buildChildrenOf(node: ObjectTreeNode) {
-  // if node's value has been already defined, no initialization neccessary
-  if (isUndefined(node.value)) {
-    switch (node.type) {
-      case 'array':
-        node.value = [];
-        break;
-      case 'object':
-        node.value = {};
-        break;
-    }
-  }
-
-  for (const child of node.children) {
-    // all children must have names
-    node.value[child.name!] = child.value;
-  }
-}
-
+/**
+ * Runs all processor functions of a specified type, being present on a given node.
+ * @param type The processor type to run.
+ * @param node The node to run its processors.
+ */
 function runProcessors(type: ProcessorType, node: ObjectTreeNode): void {
   if (isBuildable(node.value)) {
     const buildable: Buildable = node.value;
@@ -73,15 +88,19 @@ function runProcessors(type: ProcessorType, node: ObjectTreeNode): void {
   }
 }
 
-function setValue(value: any, node: ObjectTreeNode) {
-  node.value = value;
-  updateType(node);
-}
-
+/**
+ * Updates the node type of a given node by aligning it to its value type.
+ * @param node The node to update its type.
+ */
 function updateType(node: ObjectTreeNode) {
-  node.type = nodeTypeOf(node.value);
+  const value = getLeafBuildable(node.value);
+  node.type = nodeTypeOf(value);
 }
 
+/**
+ * Builds a node's value if the value is a `Buildable`.
+ * @param node The node to build.
+ */
 function buildNode(node: ObjectTreeNode): void {
   if (!isBuildable(node.value)) {
     return;
@@ -95,6 +114,11 @@ function buildNode(node: ObjectTreeNode): void {
   }
 }
 
+/**
+ * Traverses a tree (top-down), starting from a given node.
+ * @param node The node to start traversion from.
+ * @param onNext The callback function to call for each node reached.
+ */
 function traverse<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) => void): void {
   // also include root node:
   if (isUndefined(node.parent)) {
@@ -107,6 +131,11 @@ function traverse<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) 
   }
 }
 
+/**
+ * Compares two processor functions by its processor order.
+ * @param a A processor function as comparison subject.
+ * @param b A processor function as comparison object.
+ */
 function sortByOrderNumber(a: ProcessorFn, b: ProcessorFn): number {
   let result = 0;
   const orderA = a[ProcessorOrderSymbol];
