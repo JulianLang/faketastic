@@ -1,16 +1,17 @@
-import { copyAttributes, ObjectTreeNode, treeOf } from 'treelike';
+import { ObjectTreeNode } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import {
   addIfProcessorFn,
+  asBuildable,
+  build,
   Buildable,
   BuildableSymbol,
-  childSelector,
   createProcessorFn,
   ProcessorFn,
   randomInt,
   randomItem,
 } from '../core';
-import { cloneItems, isDefined, isUndefined } from '../util';
+import { cloneItems, isUndefined } from '../util';
 import { SomeOfOpts } from './types';
 
 /**
@@ -44,13 +45,12 @@ export function someOf<T>(
 
   function init(node: ObjectTreeNode) {
     const content = chooseItems();
-    const contentRoot = treeOf(content, childSelector);
+    const buildableContent = asBuildable(content);
+    const builtContent = build(buildableContent);
 
-    if (isDefined(node.parent)) {
-      contentRoot.name = node.name;
-    }
-
-    copyAttributes(contentRoot, node);
+    node.type = 'array';
+    node.children = [];
+    node.value = builtContent;
   }
 
   function chooseItems(): T[] {

@@ -6,44 +6,20 @@ import {
   createProcessorFn,
   oneOf,
   ProcessorFn,
-  quantity,
+  template,
 } from '../../src';
 
 describe('build function', () => {
-  it('should return an array of the input type, if quantity is greater than 1', () => {
+  it('should accept buildable arrays', () => {
     // arrange
-    const input = createBuildable({});
+    const value = [1, 2, 3];
+    const tmpl = template(value);
 
     // act
-    const result = build(input, quantity(2));
+    const result = build(tmpl);
 
     // assert
-    expect(Array.isArray(result)).toEqual(true);
-  });
-
-  it('should return an array of the input type, if quantity is a function returning 1', () => {
-    // arrange
-    const input = createBuildable({});
-    const numberOfItems = 1;
-
-    // act
-    const result = build(input, quantity(1));
-
-    // assert
-    expect(Array.isArray(result)).toEqual(true);
-    expect(result.length).toBe(numberOfItems);
-  });
-
-  it('should return an empty array of the input type, if quantity is constant 0', () => {
-    // arrange
-    const input = createBuildable({});
-    const numberOfItems = 0;
-    // act
-    const result = build(input, quantity(0));
-
-    // assert
-    expect(Array.isArray(result)).toEqual(true);
-    expect(result.length).toEqual(numberOfItems);
+    expect(result).toEqual(value);
   });
 
   it('should run processor functions in correct order', () => {

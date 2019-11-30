@@ -1,10 +1,50 @@
 import { createNode, ObjectTreeNode } from 'treelike';
+import { build, createBuildable } from '../../src/core';
 import { quantity } from '../../src/processors/quantity';
 import { includeProcessorFnSpecs } from '../spec-helpers/shared-specs';
 import { createChildTreeNode } from '../spec-helpers/spec.helper';
 
 describe('quantity processor fn', () => {
-  it('should keep the current parent node, if quantity is set to constant-1', () => {
+  it('should return an array of the input type, if quantity is a function returning 1', () => {
+    // arrange
+    const input = createBuildable({});
+    const numberOfItems = 1;
+
+    // act
+    const result = build(
+      input,
+      quantity(() => 1),
+    );
+
+    // assert
+    expect(Array.isArray(result)).toBe(true);
+    expect(result.length).toBe(numberOfItems);
+  });
+
+  it('should return an array of the input type, if quantity is greater than 1', () => {
+    // arrange
+    const input = createBuildable({});
+
+    // act
+    const result = build(input, quantity(2));
+
+    // assert
+    expect(Array.isArray(result)).toEqual(true);
+  });
+
+  it('should return an empty array of the input type, if quantity is constant 0', () => {
+    // arrange
+    const input = createBuildable({});
+    const numberOfItems = 0;
+    // act
+    const result = build(input, quantity(0));
+
+    // assert
+    expect(Array.isArray(result)).toEqual(true);
+    expect(result.length).toEqual(numberOfItems);
+  });
+
+  it('should keep the current parent node, if quantity is set to constant 1', () => {
     // arrange
     const processorFn = quantity(1);
     const node = createChildTreeNode();

@@ -10,54 +10,53 @@ import { isBuildable, isBuilderFunction, isProcessorFn } from '../util';
  * @param buildable An object of interface Buildable that should get built.
  * @param quantity The amount of mock data objects that should be generated from the buildable.
  */
-export function build<T>(buildable: Buildable<T>, ...processors: ProcessorFn[]): any {
+export function build<T, R = any>(buildable: Buildable<T>, ...processors: ProcessorFn[]): R {
   buildable.processors.push(...processors);
-  const root = treeOf(buildable, childSelector);
+  const buildableNode = treeOf(buildable, childSelector);
 
-  traverse(root, node => runProcessors('initializer', node));
-  traverse(root, node => runProcessors('preprocessor', node));
-  traverse(root, node => buildNode(node));
-  traverse(root, node => runProcessors('postprocessor', node));
-  traverse(root, node => runProcessors('finalizer', node));
-  traverse(root, node => finalize(node));
+  traverse(buildableNode, node => runProcessors('initializer', node));
+  traverse(buildableNode, node => runProcessors('preprocessor', node));
+  traverse(buildableNode, node => buildNode(node));
+  traverse(buildableNode, node => runProcessors('postprocessor', node));
+  traverse(buildableNode, node => runProcessors('finalizer', node));
 
-  return root.value;
-}
+  updateType(buildableNode);
 
-function finalize(node: ObjectTreeNode): void {
-  let value = node.value;
+  if (buildableNode.children.length > 0) {
+    switch (buildableNode.type) {
+      case 'array':
+        buildableNode.value = [] as any;
+        break;
+      case 'object':
+        buildableNode.value = {} as any;
+        break;
+    }
 
-  // buildable has value property which holds the actual built value.
-  // However, this value can again be a buildable, until a leaf of the tree is reached
-  while (isBuildable(value)) {
-    value = value.value;
+    buildChildrenOf(buildableNode);
   }
 
-  setValue(value, node);
-
-  // value nodes must not have any children
-  if (node.type !== 'value') {
-    buildChildrenOf(node);
+  if (isBuildable(buildableNode.value)) {
+    buildableNode.value = getLeafBuildable(buildableNode);
   }
+
+  return buildableNode.value as any;
 }
 
 function buildChildrenOf(node: ObjectTreeNode) {
-  // if node's value has been already defined, no initialization neccessary
-  if (isUndefined(node.value)) {
-    switch (node.type) {
-      case 'array':
-        node.value = [];
-        break;
-      case 'object':
-        node.value = {};
-        break;
-    }
-  }
-
   for (const child of node.children) {
+    let value = getLeafBuildable(child);
+
     // all children must have names
-    node.value[child.name!] = child.value;
+    node.value[child.name!] = value;
   }
+}
+
+function getLeafBuildable(child: ObjectTreeNode<any>) {
+  let value = child.value;
+  while (isBuildable(value)) {
+    value = value.value;
+  }
+  return value;
 }
 
 function runProcessors(type: ProcessorType, node: ObjectTreeNode): void {
@@ -73,13 +72,9 @@ function runProcessors(type: ProcessorType, node: ObjectTreeNode): void {
   }
 }
 
-function setValue(value: any, node: ObjectTreeNode) {
-  node.value = value;
-  updateType(node);
-}
-
 function updateType(node: ObjectTreeNode) {
-  node.type = nodeTypeOf(node.value);
+  const value = getLeafBuildable(node);
+  node.type = nodeTypeOf(value);
 }
 
 function buildNode(node: ObjectTreeNode): void {
