@@ -1,4 +1,4 @@
-import { build } from '../../src';
+import { build, template } from '../../src';
 import { someOf } from '../../src/builders';
 
 describe('someOf builder function', () => {
@@ -138,5 +138,27 @@ describe('someOf builder function', () => {
     // act
     // assert
     expect(() => build(buildable)).toThrow();
+  });
+
+  it('should be nestable', () => {
+    // arrange
+    const tmpl = template({
+      a: someOf([someOf(['A'], { maxItems: 1 })], { maxItems: 1 }),
+    });
+
+    // act
+    const result = build(tmpl);
+
+    // assert
+    expect(result.a).toEqual([['A']]);
+  });
+
+  it('should be directly buildable', () => {
+    // arrange
+    // act
+    const result = build(someOf([42], { maxItems: 1 }));
+
+    // assert
+    expect(result).toEqual([42]);
   });
 });

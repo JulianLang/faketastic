@@ -1,9 +1,10 @@
-import { copyAttributes, ObjectTreeNode, treeOf } from 'treelike';
+import { nodeTypeOf, ObjectTreeNode } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import {
+  asBuildable,
+  build,
   Buildable,
   BuildableSymbol,
-  childSelector,
   createProcessorFn,
   ProcessorFn,
   randomInt,
@@ -25,10 +26,11 @@ export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<
 
   function initOneOfImpl(node: ObjectTreeNode) {
     const content = chooseRandomItem();
-    const contentRoot = treeOf(content, childSelector);
-    contentRoot.name = node.name;
+    const buildableContent = asBuildable(content);
+    const builtContent = build(buildableContent);
 
-    copyAttributes(contentRoot, node);
+    node.value = builtContent;
+    node.type = nodeTypeOf(builtContent);
   }
 
   function chooseRandomItem() {
