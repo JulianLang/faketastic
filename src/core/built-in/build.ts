@@ -49,18 +49,6 @@ function finalize(node: ObjectTreeNode): void {
  * @param node The node to build its children.
  */
 function buildChildrenOf(node: ObjectTreeNode) {
-  // if node's value has been already defined, no initialization neccessary
-  if (isUndefined(node.value)) {
-    switch (node.type) {
-      case 'array':
-        node.value = [];
-        break;
-      case 'object':
-        node.value = {};
-        break;
-    }
-  }
-
   for (const child of node.children) {
     // all children must have names
     node.value[child.name!] = child.value;

@@ -1,16 +1,33 @@
 import { createNode, ObjectTreeNode } from 'treelike';
 import {
   build,
+  canBe,
   createBuildable,
   createBuilderFn,
   createProcessorFn,
   oneOf,
   ProcessorFn,
   quantity,
+  range,
   template,
 } from '../../src';
 
 describe('build function', () => {
+  it('should not override null or undefined', () => {
+    // arrange
+    const tmpl = template({
+      a: range(1, 2, canBe(null, 1)),
+      b: range(1, 2, canBe(undefined, 1)),
+    });
+
+    // act
+    const result = build(tmpl);
+
+    // assert
+    expect(result.a).toBe(null);
+    expect(result.b).toBe(undefined);
+  });
+
   it('should be nestable', () => {
     // arrange
     const Person = template({
