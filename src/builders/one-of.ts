@@ -11,7 +11,11 @@ import {
 import { clone, isDefined } from '../util';
 
 export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<any> {
-  const initOneOf = createProcessorFn(init, 'preprocessor', ProcessorOrders.treeStructureChanging);
+  const initOneOf = createProcessorFn(
+    initOneOfImpl,
+    'preprocessor',
+    ProcessorOrders.treeStructureChanging,
+  );
 
   return {
     [BuildableSymbol]: 'value',
@@ -19,7 +23,7 @@ export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<
     value: null,
   };
 
-  function init(node: ObjectTreeNode) {
+  function initOneOfImpl(node: ObjectTreeNode) {
     const content = chooseRandomItem();
     const contentRoot = treeOf(content, childSelector);
     contentRoot.name = node.name;

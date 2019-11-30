@@ -35,7 +35,11 @@ export function someOf<T>(
     opts = undefined;
   }
 
-  const initSomeOf = createProcessorFn(init, 'preprocessor', ProcessorOrders.treeStructureChanging);
+  const initSomeOf = createProcessorFn(
+    initSomeOfImpl,
+    'preprocessor',
+    ProcessorOrders.treeStructureChanging,
+  );
 
   return {
     [BuildableSymbol]: 'value',
@@ -43,7 +47,7 @@ export function someOf<T>(
     value: null,
   };
 
-  function init(node: ObjectTreeNode) {
+  function initSomeOfImpl(node: ObjectTreeNode) {
     const content = chooseItems();
     const buildableContent = asBuildable(content);
     const builtContent = build(buildableContent);

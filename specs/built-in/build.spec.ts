@@ -6,10 +6,49 @@ import {
   createProcessorFn,
   oneOf,
   ProcessorFn,
+  quantity,
   template,
 } from '../../src';
 
 describe('build function', () => {
+  it('should be nestable', () => {
+    // arrange
+    const Person = template({
+      name: oneOf(['Hans', 'Norbert', 'Lilly']),
+    });
+    const Family = template({
+      members: build(Person),
+    });
+
+    // act
+    const family = build(Family);
+
+    // assert
+    expect(family).toBeDefined();
+    expect(family.members).toBeDefined();
+    expect(typeof family.members.name).toBe('string');
+  });
+
+  it('should be nestable with quantity', () => {
+    // arrange
+    const Person = template({
+      name: oneOf(['Hans', 'Norbert', 'Lilly']),
+    });
+    const Family = template({
+      members: build(Person, quantity(2)),
+    });
+
+    // act
+    const family = build(Family);
+
+    // assert
+    expect(family).toBeDefined();
+    expect(family.members).toBeDefined();
+    expect(family.members.length).toBe(2);
+    expect(typeof family.members[0].name).toBe('string');
+    expect(typeof family.members[1].name).toBe('string');
+  });
+
   it('should accept buildable arrays', () => {
     // arrange
     const value = [1, 2, 3];

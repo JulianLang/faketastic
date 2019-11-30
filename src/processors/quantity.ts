@@ -10,7 +10,7 @@ export function quantity(
   quantity: Quantity = 1,
   insertMode: QuantityInsertMode = 'createNewArray',
 ) {
-  return createProcessorFn(quantityImpl, 'preprocessor', ProcessorOrders.treeStructureChanging);
+  return createProcessorFn(quantityImpl, 'initializer', ProcessorOrders.treeStructureChanging);
 
   function quantityImpl(node: ObjectTreeNode) {
     /*

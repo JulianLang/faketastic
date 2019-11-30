@@ -1,5 +1,5 @@
 import { nodeTypeOf, ObjectTreeNode, treeOf } from 'treelike';
-import { isUndefined } from '../../util';
+import { isDefined, isUndefined } from '../../util';
 import { Buildable, ProcessorFn, ProcessorOrderSymbol } from '../types';
 import { ProcessorType } from '../types/processor.types';
 import { isBuildable, isBuilderFunction, isProcessorFn } from '../util';
@@ -10,7 +10,7 @@ import { isBuildable, isBuilderFunction, isProcessorFn } from '../util';
  * @param buildable An object of interface Buildable that should get built.
  * @param quantity The amount of mock data objects that should be generated from the buildable.
  */
-export function build<T, R = any>(buildable: Buildable<T>, ...processors: ProcessorFn[]): R {
+export function build<R = any, T = any>(buildable: Buildable<T>, ...processors: ProcessorFn[]): R {
   buildable.processors.push(...processors);
   const buildableNode = treeOf(buildable, childSelector);
 
@@ -21,25 +21,26 @@ export function build<T, R = any>(buildable: Buildable<T>, ...processors: Proces
   traverse(buildableNode, node => runProcessors('finalizer', node));
 
   updateType(buildableNode);
-
-  if (buildableNode.children.length > 0) {
-    switch (buildableNode.type) {
-      case 'array':
-        buildableNode.value = [] as any;
-        break;
-      case 'object':
-        buildableNode.value = {} as any;
-        break;
-    }
-
-    buildChildrenOf(buildableNode);
-  }
-
-  if (isBuildable(buildableNode.value)) {
-    buildableNode.value = getLeafBuildable(buildableNode.value);
-  }
+  traverseReverse(buildableNode, node => finalize(node));
 
   return buildableNode.value as any;
+}
+
+function finalize(node: ObjectTreeNode): void {
+  let value = node.value;
+
+  // buildable has value property which holds the actual built value.
+  // However, this value can again be a buildable, until a leaf of the tree is reached
+  while (isBuildable(value)) {
+    value = value.value;
+  }
+
+  setValue(value, node);
+
+  // value nodes must not have any children
+  if (node.type !== 'value') {
+    buildChildrenOf(node);
+  }
 }
 
 /**
@@ -48,12 +49,21 @@ export function build<T, R = any>(buildable: Buildable<T>, ...processors: Proces
  * @param node The node to build its children.
  */
 function buildChildrenOf(node: ObjectTreeNode) {
-  for (const child of node.children) {
-    // we want the leaf value here, as it is the actual/build value
-    let value = getLeafBuildable(child.value);
+  // if node's value has been already defined, no initialization neccessary
+  if (isUndefined(node.value)) {
+    switch (node.type) {
+      case 'array':
+        node.value = [];
+        break;
+      case 'object':
+        node.value = {};
+        break;
+    }
+  }
 
+  for (const child of node.children) {
     // all children must have names
-    node.value[child.name!] = value;
+    node.value[child.name!] = child.value;
   }
 }
 
@@ -114,6 +124,11 @@ function buildNode(node: ObjectTreeNode): void {
   }
 }
 
+function setValue(value: any, node: ObjectTreeNode) {
+  node.value = value;
+  updateType(node);
+}
+
 /**
  * Traverses a tree (top-down), starting from a given node.
  * @param node The node to start traversion from.
@@ -128,6 +143,26 @@ function traverse<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) 
   for (const child of node.children) {
     onNext(child);
     traverse(child, onNext);
+  }
+}
+
+/**
+ * Traverses a tree (bottom-up), starting from a given node.
+ * @param node The node to start traversion from.
+ * @param onNext The callback function to call for each node reached.
+ */
+function traverseReverse<T>(
+  node: ObjectTreeNode<T>,
+  onNext: (node: ObjectTreeNode<T>) => void,
+): void {
+  for (const child of node.children) {
+    traverse(child, onNext);
+    onNext(child);
+  }
+
+  const isRootNode = !isDefined(node.parent);
+  if (isRootNode) {
+    onNext(node);
   }
 }
 
