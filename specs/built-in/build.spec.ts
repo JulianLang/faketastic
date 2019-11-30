@@ -10,9 +10,32 @@ import {
   quantity,
   range,
   template,
+  use,
 } from '../../src';
 
 describe('build function', () => {
+  it('should run processor functions from top to buttom (treewise)', () => {
+    // arrange
+    const order: number[] = [];
+    const newProcFn = (n: number) => createProcessorFn(() => order.push(n), 'initializer');
+
+    const tmpl = template({
+      a: use(
+        {
+          b: use({}, newProcFn(2)),
+          c: use({}, newProcFn(3)),
+        },
+        newProcFn(1),
+      ),
+    });
+
+    // act
+    build(tmpl);
+
+    // assert
+    expect(order).toEqual([1, 2, 3]);
+  });
+
   it('should not override null or undefined', () => {
     // arrange
     const tmpl = template({
