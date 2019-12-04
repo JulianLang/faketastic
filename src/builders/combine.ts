@@ -9,6 +9,7 @@ import {
   ProcessorFn,
   PureObject,
 } from '../core';
+import { placeholder } from '../placeholder';
 import { clone } from '../util';
 
 export function combine<T>(
@@ -24,7 +25,7 @@ export function combine<T>(
 
   return {
     [BuildableSymbol]: 'value',
-    value: null,
+    value: placeholder(),
     processors: [...processors, combineValuesProcessor],
   };
 
