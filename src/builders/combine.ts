@@ -1,14 +1,15 @@
 import { ObjectTreeNode } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import {
-  build,
   Buildable,
   BuildableSymbol,
+  buildChild,
   createBuildable,
   createProcessorFn,
   ProcessorFn,
   PureObject,
 } from '../core';
+import { placeholder } from '../placeholder';
 import { clone } from '../util';
 
 export function combine<T>(
@@ -24,14 +25,15 @@ export function combine<T>(
 
   return {
     [BuildableSymbol]: 'value',
-    value: null,
+    value: placeholder(),
     processors: [...processors, combineValuesProcessor],
   };
 
   function buildAndCombineValues(node: ObjectTreeNode<Buildable<T>>) {
     const clonedProps = clone(props);
+    // TODO: langju: this will execute processors multiple times? what if it contains quantity() for example?
     const buildable: Buildable<T> = createBuildable(clonedProps, processors);
-    const builtTemplate = build(buildable);
+    const builtTemplate = buildChild(buildable, node);
     const mappedValue = map(builtTemplate);
     node.value = mappedValue;
   }

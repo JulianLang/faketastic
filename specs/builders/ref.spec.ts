@@ -1,8 +1,52 @@
-import { ref } from '../../src/builders';
+import { combine, oneOf, ref } from '../../src/builders';
 import { build, template } from '../../src/core';
 import { includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('ref builder function', () => {
+  it('should not reference matching placeholder nodes', () => {
+    // arrange
+    const expectedValue = 42;
+    const tmpl = template({
+      age: oneOf([expectedValue]),
+      b: combine(
+        {
+          // the ref's name matches its target, but should be ignored:
+          age: ref('age'),
+        },
+        values => values.age,
+      ),
+    });
+
+    // act
+    const built = build(tmpl);
+
+    // assert
+    expect(built).toBeDefined();
+    expect(built.b).toEqual(expectedValue);
+  });
+
+  it('should resolve references being located on a grandparent', () => {
+    // arrange
+    const expectedValue = 42;
+    const tmpl = template({
+      a: oneOf([expectedValue]),
+      b: {
+        c: {
+          d: ref('a'),
+        },
+      },
+    });
+
+    // act
+    const built = build(tmpl);
+
+    // assert
+    expect(built).toBeDefined();
+    expect(built.b).toBeDefined();
+    expect(built.b.c).toBeDefined();
+    expect(built.b.c.d).toEqual(expectedValue);
+  });
+
   it('should resolve an existing reference', () => {
     // arrange
     const expectedValue = 'hello!';
