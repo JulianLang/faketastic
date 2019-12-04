@@ -1,8 +1,30 @@
-import { ref } from '../../src/builders';
+import { oneOf, ref } from '../../src/builders';
 import { build, template } from '../../src/core';
 import { includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('ref builder function', () => {
+  it('should resolve references being located on a grandparent', () => {
+    // arrange
+    const expectedValue = 42;
+    const tmpl = template({
+      a: oneOf([expectedValue]),
+      b: {
+        c: {
+          d: ref('a'),
+        },
+      },
+    });
+
+    // act
+    const built = build(tmpl);
+
+    // assert
+    expect(built).toBeDefined();
+    expect(built.b).toBeDefined();
+    expect(built.b.c).toBeDefined();
+    expect(built.b.c.d).toEqual(expectedValue);
+  });
+
   it('should resolve an existing reference', () => {
     // arrange
     const expectedValue = 'hello!';
