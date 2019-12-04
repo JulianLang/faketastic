@@ -1,9 +1,9 @@
 import { ObjectTreeNode } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import {
-  build,
   Buildable,
   BuildableSymbol,
+  buildChild,
   createBuildable,
   createProcessorFn,
   ProcessorFn,
@@ -33,7 +33,7 @@ export function combine<T>(
     const clonedProps = clone(props);
     // TODO: langju: this will execute processors multiple times? what if it contains quantity() for example?
     const buildable: Buildable<T> = createBuildable(clonedProps, processors);
-    const builtTemplate = build(buildable);
+    const builtTemplate = buildChild(buildable);
     const mappedValue = map(builtTemplate);
     node.value = mappedValue;
   }
