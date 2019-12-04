@@ -30,6 +30,7 @@ export function combine<T>(
 
   function buildAndCombineValues(node: ObjectTreeNode<Buildable<T>>) {
     const clonedProps = clone(props);
+    // TODO: langju: this will execute processors multiple times? what if it contains quantity() for example?
     const buildable: Buildable<T> = createBuildable(clonedProps, processors);
     const builtTemplate = build(buildable);
     const mappedValue = map(builtTemplate);
