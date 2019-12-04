@@ -1,4 +1,5 @@
 import {
+  isDefined,
   leafTraverser,
   nodeTypeOf,
   ObjectTreeNode,
@@ -8,7 +9,7 @@ import {
 } from 'treelike';
 import { Buildable, ProcessorFn, ProcessorOrderSymbol } from '../types';
 import { ProcessorType } from '../types/processor.types';
-import { isBuildable, isBuilderFunction, isProcessorFn } from '../util';
+import { getLeafBuildable, isBuildable, isBuilderFunction, isProcessorFn } from '../util';
 
 /**
  * Builds a buildable and outputs the generated mock data. The amount of objects
@@ -17,8 +18,20 @@ import { isBuildable, isBuilderFunction, isProcessorFn } from '../util';
  * @param quantity The amount of mock data objects that should be generated from the buildable.
  */
 export function build<R = any, T = any>(buildable: Buildable<T>, ...processors: ProcessorFn[]): R {
+  return buildChild(buildable, undefined, ...processors);
+}
+
+export function buildChild<R = any, T = any>(
+  buildable: Buildable<T>,
+  asChildOf?: ObjectTreeNode,
+  ...processors: ProcessorFn[]
+): R {
   buildable.processors.push(...processors);
   const buildableNode = treeOf(buildable, childSelector);
+
+  if (isDefined(asChildOf)) {
+    buildableNode.parent = asChildOf;
+  }
 
   runCycle(buildableNode, node => runProcessors('initializer', node));
   runCycle(buildableNode, node => runProcessors('preprocessor', node));
@@ -27,7 +40,7 @@ export function build<R = any, T = any>(buildable: Buildable<T>, ...processors: 
   runCycle(buildableNode, node => runProcessors('finalizer', node));
 
   updateType(buildableNode);
-  runReverse(buildableNode, node => finalize(node));
+  runReverse(buildableNode, node => finalize(node), asChildOf);
 
   return buildableNode.value as any;
 }
@@ -120,8 +133,22 @@ function runCycle<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) 
  * @param node The node to start traversion from.
  * @param onNext The callback function to call for each node reached.
  */
-function runReverse<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) => void): void {
-  traverse(node, onNext, leafTraverser);
+function runReverse<T>(
+  node: ObjectTreeNode<T>,
+  onNext: (node: ObjectTreeNode<T>) => void,
+  asChildOf?: ObjectTreeNode,
+): void {
+  if (isDefined(asChildOf)) {
+    // only build child's tree scope, so stop when reaching asChildOf (child's root node)
+    leafTraverser(node, onNext, node => node === asChildOf);
+    // ... but still emit rootNode as well
+    onNext(asChildOf);
+  } else {
+    traverse(node, onNext, leafTraverser);
+  }
+
+  // also include root
+  onNext(node);
 }
 
 /**
