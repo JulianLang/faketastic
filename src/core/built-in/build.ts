@@ -1,5 +1,11 @@
-import { nodeTypeOf, ObjectTreeNode, treeOf } from 'treelike';
-import { isDefined, isUndefined } from '../../util';
+import {
+  leafTraverser,
+  nodeTypeOf,
+  ObjectTreeNode,
+  traverse,
+  treeOf,
+  treeTraverser,
+} from 'treelike';
 import { Buildable, ProcessorFn, ProcessorOrderSymbol } from '../types';
 import { ProcessorType } from '../types/processor.types';
 import { isBuildable, isBuilderFunction, isProcessorFn } from '../util';
@@ -14,14 +20,14 @@ export function build<R = any, T = any>(buildable: Buildable<T>, ...processors: 
   buildable.processors.push(...processors);
   const buildableNode = treeOf(buildable, childSelector);
 
-  traverse(buildableNode, node => runProcessors('initializer', node));
-  traverse(buildableNode, node => runProcessors('preprocessor', node));
-  traverse(buildableNode, node => buildNode(node));
-  traverse(buildableNode, node => runProcessors('postprocessor', node));
-  traverse(buildableNode, node => runProcessors('finalizer', node));
+  runCycle(buildableNode, node => runProcessors('initializer', node));
+  runCycle(buildableNode, node => runProcessors('preprocessor', node));
+  runCycle(buildableNode, node => buildNode(node));
+  runCycle(buildableNode, node => runProcessors('postprocessor', node));
+  runCycle(buildableNode, node => runProcessors('finalizer', node));
 
   updateType(buildableNode);
-  traverseReverse(buildableNode, node => finalize(node));
+  runReverse(buildableNode, node => finalize(node));
 
   return buildableNode.value as any;
 }
@@ -56,7 +62,7 @@ function buildChildrenOf(node: ObjectTreeNode) {
  * by recursively checking if the `Buildable.value` is a `Buildable` again.
  * @param value A value that might be a `Buildable` to start searching for nested `Buildable`s.
  */
-function getLeafBuildable(value: any) {
+function getLeafBuildable(value: any): any {
   while (isBuildable(value)) {
     value = value.value;
   }
@@ -118,16 +124,8 @@ function setValue(value: any, node: ObjectTreeNode) {
  * @param node The node to start traversion from.
  * @param onNext The callback function to call for each node reached.
  */
-function traverse<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) => void): void {
-  // also include root node:
-  if (isUndefined(node.parent)) {
-    onNext(node);
-  }
-
-  for (const child of node.children) {
-    onNext(child);
-    traverse(child, onNext);
-  }
+function runCycle<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) => void): void {
+  traverse(node, onNext, treeTraverser);
 }
 
 /**
@@ -135,19 +133,8 @@ function traverse<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) 
  * @param node The node to start traversion from.
  * @param onNext The callback function to call for each node reached.
  */
-function traverseReverse<T>(
-  node: ObjectTreeNode<T>,
-  onNext: (node: ObjectTreeNode<T>) => void,
-): void {
-  for (const child of node.children) {
-    traverse(child, onNext);
-    onNext(child);
-  }
-
-  // also include root node:
-  if (!isDefined(node.parent)) {
-    onNext(node);
-  }
+function runReverse<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) => void): void {
+  traverse(node, onNext, leafTraverser);
 }
 
 /**
