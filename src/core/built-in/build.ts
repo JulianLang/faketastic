@@ -58,19 +58,6 @@ function buildChildrenOf(node: ObjectTreeNode) {
 }
 
 /**
- * Takes a value that might be a `Buildable` and starts looking for the most nested `Buildable`
- * by recursively checking if the `Buildable.value` is a `Buildable` again.
- * @param value A value that might be a `Buildable` to start searching for nested `Buildable`s.
- */
-function getLeafBuildable(value: any): any {
-  while (isBuildable(value)) {
-    value = value.value;
-  }
-
-  return value;
-}
-
-/**
  * Runs all processor functions of a specified type, being present on a given node.
  * @param type The processor type to run.
  * @param node The node to run its processors.
