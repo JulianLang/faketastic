@@ -1,7 +1,7 @@
 import { findNode, ObjectTreeNode, siblingAndSelfTraverser } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import { Buildable, BuildableSymbol, createProcessorFn, isBuildable, ProcessorFn } from '../core';
-import { isPlaceholder } from '../placeholder';
+import { isPlaceholder, placeholder } from '../placeholder';
 import { isDefined, isUndefined } from '../util';
 export function ref<T = any>(propertyName: keyof T, ...processors: ProcessorFn[]): Buildable<any> {
   const refProcessor = createProcessorFn(refImpl, 'finalizer', ProcessorOrders.ref);
@@ -9,7 +9,7 @@ export function ref<T = any>(propertyName: keyof T, ...processors: ProcessorFn[]
   return {
     [BuildableSymbol]: 'value',
     processors: [refProcessor, ...processors],
-    value: null,
+    value: placeholder(`ref:${propertyName}`),
   };
 
   function refImpl(node: ObjectTreeNode) {
