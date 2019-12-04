@@ -14,11 +14,32 @@
 
     $ npm start
 */
-import { build, template } from './src';
+import { build, Buildable, canBe, combine, oneOf, quantity, ref, template, use } from './src';
 
-const MyTemplate = template({
-  faketastic: 'playground works!',
+// @ts-ignore
+const File = template({
+  name: oneOf(['empty', 'nice', 'something']),
+  extension: oneOf(['css', 'txt', 'rtf', 'docx', 'mp3']),
+  fileName: combine(
+    {
+      name: ref('name'),
+      ext: ref('extension'),
+    },
+    v => `${v.name}.${v.ext}`,
+  ),
 });
 
-const output = build(MyTemplate);
-console.log(output);
+// @ts-ignore
+const Directory: Buildable<any> = template({
+  name: oneOf(['A', 'B', 'C', 'D', 'E', 'F']),
+  files: use(File, quantity(2)),
+});
+
+Directory.value.directories = use(
+  Directory,
+  canBe(null, 0.3),
+  quantity(() => 1),
+);
+
+const output = build(Directory);
+console.log(JSON.stringify(output, null, 2));
