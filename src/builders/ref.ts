@@ -31,15 +31,19 @@ export function ref<T = any>(propertyName: keyof T, ...processors: ProcessorFn[]
     let currentNode: ObjectTreeNode | undefined = node;
 
     while (isUndefined(resolvedReference) && isDefined(currentNode)) {
-      resolvedReference = findNode(
-        currentNode,
-        n => !isPlaceholder(n) && n.name === propertyName,
-        siblingAndSelfTraverser,
-      );
+      resolvedReference = findNode(currentNode, n => isMatch(n), siblingAndSelfTraverser);
 
       currentNode = currentNode.parent;
     }
 
     return resolvedReference;
+  }
+
+  function isMatch(node: ObjectTreeNode) {
+    const hasCorrectName = node.name === propertyName;
+    const value = isBuildable(node.value) ? node.value.value : node.value;
+    const isValue = !isPlaceholder(value);
+
+    return isValue && hasCorrectName;
   }
 }
