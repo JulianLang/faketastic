@@ -1,5 +1,5 @@
-import { combine } from '../../src/builders';
-import { build } from '../../src/core';
+import { combine, ref } from '../../src/builders';
+import { build, template } from '../../src/core';
 import { includeTemplateFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('combine template function', () => {
@@ -15,6 +15,27 @@ describe('combine template function', () => {
 
     // assert
     expect(spy).toHaveBeenCalledWith(template);
+  });
+
+  it('should connect the buildable to the rest of the tree', () => {
+    // arrange
+    const expectedValue = 42;
+    const tmpl = template({
+      a: expectedValue,
+      b: combine(
+        {
+          b: ref('a'),
+        },
+        values => values.b,
+      ),
+    });
+
+    // act
+    const built = build(tmpl);
+
+    // assert
+    expect(built).toBeDefined();
+    expect(built.b).toEqual(expectedValue);
   });
 
   includeTemplateFnSpecs(combine, {}, () => {});
