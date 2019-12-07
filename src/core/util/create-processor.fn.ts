@@ -17,7 +17,7 @@ export function createProcessorFn(
   processorFn[ProcessorSymbol] = type;
   processorFn[ProcessorOrderSymbol] = orderNumber;
 
-  if (sticky) {
+  if (sticky === 'sticky') {
     processorFn[IsStickyProcessorSymbol] = true;
   }
 
