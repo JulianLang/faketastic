@@ -14,8 +14,10 @@
 
     $ npm start
 */
-import { build, Buildable, combine, oneOf, quantity, randomInt, ref, template, use } from './src';
+import { build, Buildable, combine, oneOf, quantity, ref, template, use } from './src';
 import { withRecursion } from './src/template-modifier/with-recursion';
+
+let deepness = 1;
 
 // @ts-ignore
 const File = template({
@@ -37,7 +39,12 @@ const Directory: Buildable<any> = template(
       files: use(File, quantity(2)),
     },
     'directories',
-    quantity(() => randomInt(0, 2)),
+    () => {
+      console.log(deepness, deepness === 2);
+      return deepness++ === 2 ? { endWithValue: [] } : { continue: true };
+    },
+    quantity(() => 1),
+    // canBe([], 0.5, 'unsticky'),
   ),
 );
 
