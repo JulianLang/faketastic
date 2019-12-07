@@ -39,12 +39,8 @@ const Directory: Buildable<any> = template(
       files: use(File, quantity(2)),
     },
     'directories',
-    () => {
-      console.log(deepness, deepness === 2);
-      return deepness++ === 2 ? { endWithValue: [] } : { continue: true };
-    },
+    () => (deepness++ === 2 ? { endWithValue: [] } : { continue: true }),
     quantity(() => 1),
-    // canBe([], 0.5, 'unsticky'),
   ),
 );
 
