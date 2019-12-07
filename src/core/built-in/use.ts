@@ -1,11 +1,11 @@
 import { Buildable, ProcessorFn } from '../types';
-import { asBuildable } from '../util';
+import { template } from './template';
 
 export function use<T extends object = object>(
   value: T,
   ...processors: ProcessorFn[]
 ): Buildable<T> {
-  const tmpl: Buildable<T> = asBuildable(value);
+  const tmpl: Buildable<T> = template(value);
   tmpl.processors = processors;
 
   return tmpl;
