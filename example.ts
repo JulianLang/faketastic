@@ -14,10 +14,19 @@
 
     $ npm start
 */
-import { build, Buildable, combine, oneOf, quantity, ref, template, use } from './src';
+import { build, Buildable, combine, oneOf, quantity, randomInt, ref, template, use } from './src';
 import { withRecursion } from './src/template-modifier/with-recursion';
 
-let deepness = 1;
+const DepthRecursionInstructor = (depth: number) => {
+  let currentDepth = 1;
+
+  return () => {
+    currentDepth += 1;
+    const shouldBreakRecursion = currentDepth >= depth;
+
+    return shouldBreakRecursion ? { endWithValue: [] } : { continue: true };
+  };
+};
 
 // @ts-ignore
 const File = template({
@@ -39,11 +48,11 @@ const Directory: Buildable<any> = template(
       files: use(File, quantity(2)),
     },
     'directories',
-    () => (deepness++ === 2 ? { endWithValue: [] } : { continue: true }),
-    quantity(() => 1),
+    DepthRecursionInstructor(3),
+    quantity(() => randomInt(1, 3)),
   ),
 );
 
 const output = build(Directory);
-console.log(output);
+console.log(JSON.stringify(output, null, 2));
 console.log();
