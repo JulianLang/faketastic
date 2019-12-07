@@ -1,10 +1,10 @@
 import { addChildren, ObjectTreeNode, replace } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import { createProcessorFn, isBuildable } from '../core';
-import { Buildable, QuantityInsertMode } from '../core/types';
+import { Buildable, IsStickyProcessorSymbol, ProcessorFn, QuantityInsertMode } from '../core/types';
 import { Quantity } from '../core/types/quantity';
 import { getQuantity } from '../core/util/get-quantity';
-import { clone } from '../util';
+import { clone, isDefined, isUndefined } from '../util';
 
 export function quantity(
   quantity: Quantity = 1,
@@ -13,21 +13,37 @@ export function quantity(
   return createProcessorFn(quantityImpl, 'initializer', ProcessorOrders.treeStructureChanging);
 
   function quantityImpl(node: ObjectTreeNode) {
-    /*
-      remove quantity processor from buildable to avoid infinity loop, as otherwise
-      the newly created children will apply quantity as well leading to infinity loop.
-    */
-    if (isBuildable(node.value)) {
-      removeQuantityProcessor(node.value);
-    }
-
     if (quantity === 1) {
       // nothing to do
       return;
     }
 
-    const children = multiplyNode(node, quantity);
+    let unstickyProcessors: ProcessorFn[] = [];
 
+    if (isBuildable(node.value)) {
+      /*
+        remove quantity processor from buildable to avoid infinity loop, as otherwise
+        the newly created children will apply quantity as well leading to infinity loop.
+      */
+      removeQuantityProcessor(node.value);
+      /**
+       * Processors marked as "sticky" will disengage from the original node and stick to
+       * the multiplied nodes that represents the actual generated values later on. Unsticky
+       * processors will not be transfered to the multiplied value nodes and be kept on original node.
+       */
+      unstickyProcessors = extractUnstickyProcessors(node);
+    }
+
+    const children = multiplyNode(node, quantity);
+    modifyTree(children, node);
+
+    if (isBuildable(node.value)) {
+      // readd previously removed unsticky processors on the original node:
+      node.value.processors = unstickyProcessors;
+    }
+  }
+
+  function modifyTree(children: ObjectTreeNode<any>[], node: ObjectTreeNode<any>) {
     if (insertMode === 'useParentArray') {
       insertInline(children, node);
     } else {
@@ -36,6 +52,25 @@ export function quantity(
       node.children = [];
       addChildren(children, node);
     }
+  }
+
+  function extractUnstickyProcessors(node: ObjectTreeNode<any>) {
+    const unstickyProcessors = getUnstickyProcessors(node);
+    removeStickyProcessors(node);
+
+    return unstickyProcessors;
+  }
+
+  function removeStickyProcessors(node: ObjectTreeNode<any>) {
+    node.value.processors = node.value.processors.filter((processorFn: ProcessorFn) =>
+      isDefined(processorFn[IsStickyProcessorSymbol]),
+    );
+  }
+
+  function getUnstickyProcessors(node: ObjectTreeNode<any>) {
+    return node.value.processors.filter((processorFn: ProcessorFn) =>
+      isUndefined(processorFn[IsStickyProcessorSymbol]),
+    );
   }
 
   function multiplyNode(node: ObjectTreeNode, quantity: Quantity): ObjectTreeNode[] {
