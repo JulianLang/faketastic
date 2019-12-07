@@ -46,6 +46,6 @@
   "dependencies": {
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "treelike": "0.0.18"
+    "treelike": "0.0.19"
   }
 }
