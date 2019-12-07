@@ -14,7 +14,22 @@
 
     $ npm start
 */
-import { build, Buildable, canBe, combine, oneOf, quantity, ref, template, use } from './src';
+import {
+  build,
+  Buildable,
+  combine,
+  createBuildable,
+  createBuilderFn,
+  oneOf,
+  ProcessorFn,
+  PureObject,
+  quantity,
+  randomInt,
+  ref,
+  template,
+  use,
+} from './src';
+import { clone } from './src/util';
 
 // @ts-ignore
 const File = template({
@@ -29,18 +44,36 @@ const File = template({
   ),
 });
 
-const Directory: Buildable<any> = template({
-  name: oneOf(['A', 'B', 'C', 'D', 'E', 'F']),
-  files: use(File, quantity(2)),
-});
+const addRecursiveProperty = <T>(property: string, tmpl: T, ...processors: ProcessorFn[]) => {
+  const builder = createBuilderFn(() => {
+    let result = clone(tmpl);
+    (result as any)[property] = addRecursiveProperty(property, tmpl, ...processors);
 
-Directory.value.directories = oneOf([
-  use(
-    Directory.value,
-    quantity(() => 1),
-    canBe([]),
-  ),
-]);
+    return result;
+  });
+
+  return createBuildable(builder, processors);
+};
+
+const recursiveTemplate = (
+  tmpl: PureObject<any>,
+  property: string,
+  ...processors: ProcessorFn[]
+) => {
+  (tmpl as any)[property] = addRecursiveProperty(property, tmpl, ...processors);
+  return template(tmpl);
+};
+
+const Directory: Buildable<any> = recursiveTemplate(
+  {
+    name: oneOf(['A', 'B', 'C', 'D', 'E', 'F']),
+    files: use(File, quantity(2)),
+  },
+  'directories',
+  quantity(() => randomInt(0, 2)),
+);
 
 const output = build(Directory);
-console.log(JSON.stringify(output, null, 2));
+// console.log(JSON.stringify(output, null, 2));
+console.log(output);
+console.log();

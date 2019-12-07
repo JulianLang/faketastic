@@ -1,4 +1,4 @@
-import { isDefined } from '../util';
+import { isDefined, isUndefined } from '../util';
 import { Placeholder, PlaceholderSymbol } from './types/placeholder';
 
 /**
@@ -7,6 +7,10 @@ import { Placeholder, PlaceholderSymbol } from './types/placeholder';
  * @param ofType (Optional) The type-id string of the placeholder.
  */
 export function isPlaceholder(value: any, ofType?: string): value is Placeholder {
+  if (isUndefined(value)) {
+    return false;
+  }
+
   if (isDefined(ofType)) {
     return value[PlaceholderSymbol] === ofType;
   } else {

@@ -9,7 +9,13 @@ import {
 } from 'treelike';
 import { Buildable, ProcessorFn, ProcessorOrderSymbol } from '../types';
 import { ProcessorType } from '../types/processor.types';
-import { getLeafBuildable, isBuildable, isBuilderFunction, isProcessorFn } from '../util';
+import {
+  asBuildable,
+  getLeafBuildable,
+  isBuildable,
+  isBuilderFunction,
+  isProcessorFn,
+} from '../util';
 
 /**
  * Builds a buildable and outputs the generated mock data. The amount of objects
@@ -111,6 +117,15 @@ function buildNode(node: ObjectTreeNode): void {
   if (isBuilderFunction(buildable.value)) {
     const builderFn = buildable.value;
     buildable.value = builderFn();
+
+    updateType(node);
+
+    if (node.type !== 'value') {
+      const buildableValue = asBuildable(buildable.value);
+      const built = buildChild(buildableValue, node);
+
+      setValue(built, node);
+    }
   }
 }
 
