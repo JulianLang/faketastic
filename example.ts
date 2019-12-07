@@ -14,7 +14,18 @@
 
     $ npm start
 */
-import { build, Buildable, combine, oneOf, quantity, randomInt, ref, template, use } from './src';
+import {
+  build,
+  Buildable,
+  canBe,
+  combine,
+  oneOf,
+  probability,
+  quantity,
+  ref,
+  template,
+  use,
+} from './src';
 import { withRecursion } from './src/template-modifier/with-recursion';
 
 // @ts-ignore
@@ -37,7 +48,9 @@ const Directory: Buildable<any> = template(
       files: use(File, quantity(2)),
     },
     'directories',
-    quantity(() => randomInt(0, 2)),
+    () => (probability(0.35) ? { endWithValue: [] } : { continue: true }),
+    quantity(() => 1),
+    canBe([], 0.5, 'unsticky'),
   ),
 );
 
