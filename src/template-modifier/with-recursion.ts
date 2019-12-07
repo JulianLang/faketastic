@@ -1,7 +1,6 @@
 import { createBuildable, createBuilderFn, ProcessorFn, PureObject } from '../core';
-import { Func } from '../types';
 import { clone } from '../util';
-import { RecursionInstruction } from './types';
+import { RecursionInstruction, RecursionInstructorFn } from './types';
 
 /**
  * Creates a recursive template object to be passed to `template` function.
@@ -13,13 +12,13 @@ import { RecursionInstruction } from './types';
 export function withRecursion<T>(
   tmpl: PureObject<T>,
   property: string,
-  endWhen: Func<[T], RecursionInstruction>,
+  endWhen: RecursionInstructorFn,
   ...processors: ProcessorFn[]
 ) {
-  const instruction = endWhen(tmpl);
+  const instruction = getRecursionInstruction(endWhen, tmpl);
 
   if (instruction.continue) {
-    (tmpl as any)[property] = addRecursiveProperty(endWhen);
+    (tmpl as any)[property] = addRecursiveProperty(endWhen, tmpl);
   } else {
     (tmpl as any)[property] = instruction.endWithValue;
   }
@@ -32,13 +31,14 @@ export function withRecursion<T>(
    * @param tmpl The template to be made recursive
    * @param processors Processors
    */
-  function addRecursiveProperty(endWhen: Func<[T], RecursionInstruction>) {
+  function addRecursiveProperty(endWhen: RecursionInstructorFn, tmpl: T) {
+    const instruction = getRecursionInstruction(endWhen, tmpl);
+
     const builder = createBuilderFn(() => {
-      const instruction = endWhen(tmpl);
       let result = clone(tmpl);
 
-      if (instruction.continue) {
-        (result as any)[property] = addRecursiveProperty(endWhen);
+      if (instruction.continue === true) {
+        (result as any)[property] = addRecursiveProperty(endWhen, tmpl);
       } else {
         (result as any)[property] = instruction.endWithValue;
       }
@@ -47,5 +47,22 @@ export function withRecursion<T>(
     });
 
     return createBuildable(builder, processors);
+  }
+
+  /**
+   * Gets the recursion instruction for the current recursion iteration. This instruction controls when
+   * to stop the recursion and with what value.
+   * @param instructorFn The recursion instructor function controlling when the recursion should stop
+   * and with value the recursion should stop. Recursion instructor functions avoid inifinite loops.
+   * @param tmpl The template to pass in to the instructor function.
+   */
+  function getRecursionInstruction(
+    instructorFn: RecursionInstructorFn,
+    tmpl: T,
+  ): RecursionInstruction {
+    const value = instructorFn(tmpl);
+    const result = typeof value === 'function' ? value(tmpl) : value;
+
+    return result;
   }
 }
