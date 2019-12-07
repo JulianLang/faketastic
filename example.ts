@@ -34,21 +34,13 @@ const Directory: Buildable<any> = template({
   files: use(File, quantity(2)),
 });
 
-Directory.value.directories = oneOf(
-  [
-    use(
-      Directory.value,
-      quantity(() => 1),
-    ),
-  ],
-  canBe([]),
-);
-
-// Directory.value.directories = use(
-//   { ...Directory },
-//   canBe(null, 0.3),
-//   quantity(() => 1),
-// );
+Directory.value.directories = oneOf([
+  use(
+    Directory.value,
+    quantity(() => 1),
+    canBe([]),
+  ),
+]);
 
 const output = build(Directory);
 console.log(JSON.stringify(output, null, 2));
