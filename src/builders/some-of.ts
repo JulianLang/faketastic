@@ -5,12 +5,14 @@ import {
   asBuildable,
   build,
   Buildable,
-  BuildableSymbol,
+  createBuildable,
   createProcessorFn,
   ProcessorFn,
   randomInt,
   randomItem,
 } from '../core';
+import { placeholder } from '../placeholder';
+import { AttachedFn } from '../types';
 import { cloneItems, isUndefined } from '../util';
 import { SomeOfOpts } from './types';
 
@@ -19,19 +21,19 @@ import { SomeOfOpts } from './types';
  * define how (and how many) items should be picked from the given array.
  * @param values The values to pick items from.
  * @param opts Additional options on how (many) items should be picked.
- * @param processors Processors such as `quantity`, `map` or others to apply to this `Buildable`
+ * @param attachedFns Processors such as `quantity`, `map` or others to apply to this `Buildable`
  */
 export function someOf<T>(
   values: T[],
   opts?: SomeOfOpts | ProcessorFn,
-  ...processors: ProcessorFn[]
+  ...attachedFns: AttachedFn[]
 ): Buildable<any> {
   const someOfDefaultOpts: SomeOfOpts = {
     allowDuplicates: true,
     minItems: 1,
   };
 
-  if (addIfProcessorFn(opts, processors)) {
+  if (addIfProcessorFn(opts, attachedFns)) {
     opts = undefined;
   }
 
@@ -41,11 +43,7 @@ export function someOf<T>(
     ProcessorOrders.treeStructureChanging,
   );
 
-  return {
-    [BuildableSymbol]: 'value',
-    processors: [initSomeOf, ...processors],
-    value: null,
-  };
+  return createBuildable(placeholder(), [initSomeOf, ...attachedFns]);
 
   function initSomeOfImpl(node: ObjectTreeNode) {
     const content = chooseItems();

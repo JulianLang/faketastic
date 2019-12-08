@@ -1,13 +1,13 @@
 import { isDefined } from '../../util';
-import { ProcessorFn, ProcessorSymbol, ProcessorType } from '../types';
+import { BuildCycle, ProcessorFn, ProcessorSymbol } from '../types';
 
-export function isProcessorFn(fn: any, ofType?: ProcessorType): fn is ProcessorFn {
+export function isProcessorFn(fn: any, forCycle?: BuildCycle): fn is ProcessorFn {
   if (typeof fn !== 'function') {
     return false;
   }
 
-  if (isDefined(ofType)) {
-    return (fn as any)[ProcessorSymbol] === ofType;
+  if (isDefined(forCycle)) {
+    return (fn as any)[ProcessorSymbol] === forCycle;
   } else {
     return isDefined((fn as any)[ProcessorSymbol]);
   }

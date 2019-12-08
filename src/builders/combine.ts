@@ -1,21 +1,14 @@
 import { ObjectTreeNode } from 'treelike';
 import { ProcessorOrders } from '../constants';
-import {
-  Buildable,
-  BuildableSymbol,
-  buildChild,
-  createBuildable,
-  createProcessorFn,
-  ProcessorFn,
-  PureObject,
-} from '../core';
+import { Buildable, buildChild, createBuildable, createProcessorFn, PureObject } from '../core';
 import { placeholder } from '../placeholder';
+import { AttachedFn } from '../types';
 import { clone } from '../util';
 
 export function combine<T>(
   props: PureObject<T>,
   map: (props: PureObject<T>) => any,
-  ...processors: ProcessorFn[]
+  ...attachedFns: AttachedFn[]
 ): Buildable<any> {
   const combineValuesProcessor = createProcessorFn(
     buildAndCombineValues,
@@ -23,16 +16,12 @@ export function combine<T>(
     ProcessorOrders.combineValues,
   );
 
-  return {
-    [BuildableSymbol]: 'value',
-    value: placeholder(),
-    processors: [...processors, combineValuesProcessor],
-  };
+  return createBuildable(placeholder(), [combineValuesProcessor, ...attachedFns]);
 
   function buildAndCombineValues(node: ObjectTreeNode<Buildable<T>>) {
     const clonedProps = clone(props);
     // TODO: langju: this will execute processors multiple times? what if it contains quantity() for example?
-    const buildable: Buildable<T> = createBuildable(clonedProps, processors);
+    const buildable: Buildable<T> = createBuildable(clonedProps, attachedFns);
     const builtTemplate = buildChild(buildable, node);
     const mappedValue = map(builtTemplate);
     node.value = mappedValue;

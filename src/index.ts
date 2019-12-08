@@ -1,3 +1,4 @@
+export * from './architects';
 export * from './builders';
 export * from './constants';
 export * from './converters';

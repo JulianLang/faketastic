@@ -1,16 +1,13 @@
 import { findNode, ObjectTreeNode, siblingAndSelfTraverser } from 'treelike';
 import { ProcessorOrders } from '../constants';
-import { Buildable, BuildableSymbol, createProcessorFn, isBuildable, ProcessorFn } from '../core';
+import { Buildable, createBuildable, createProcessorFn, isBuildable } from '../core';
 import { isPlaceholder, placeholder } from '../placeholder';
+import { AttachedFn } from '../types';
 import { isDefined, isUndefined } from '../util';
-export function ref<T = any>(propertyName: keyof T, ...processors: ProcessorFn[]): Buildable<any> {
+export function ref<T = any>(propertyName: keyof T, ...attachedFns: AttachedFn[]): Buildable<any> {
   const refProcessor = createProcessorFn(refImpl, 'finalizer', ProcessorOrders.ref);
 
-  return {
-    [BuildableSymbol]: 'value',
-    processors: [refProcessor, ...processors],
-    value: placeholder(`ref:${propertyName}`),
-  };
+  return createBuildable(placeholder(`ref:${propertyName}`), [refProcessor, ...attachedFns]);
 
   function refImpl(node: ObjectTreeNode) {
     const resolvedReference = tryResolveRef(node);

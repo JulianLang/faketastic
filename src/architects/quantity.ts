@@ -1,16 +1,18 @@
-import { addChildren, ObjectTreeNode, replace } from 'treelike';
-import { ProcessorOrders } from '../constants';
-import { createProcessorFn, isBuildable } from '../core';
+import { addChildren, ObjectTreeNode } from 'treelike';
+import { asBuildable, isBuildable } from '../core';
 import { Buildable, IsStickyProcessorSymbol, ProcessorFn, QuantityInsertMode } from '../core/types';
 import { Quantity } from '../core/types/quantity';
 import { getQuantity } from '../core/util/get-quantity';
-import { clone, isUndefined } from '../util';
+import { clone, extractFns, hasSymbol } from '../util';
+import { ArchitectFn } from './types';
+import { createArchitectFn } from './util';
 
 export function quantity(
   quantity: Quantity = 1,
   insertMode: QuantityInsertMode = 'createNewArray',
-) {
-  return createProcessorFn(quantityImpl, 'initializer', ProcessorOrders.treeStructureChanging);
+): ArchitectFn {
+  // Architects are executed before BuildCycle 'initializer'
+  return createArchitectFn(quantityImpl);
 
   function quantityImpl(node: ObjectTreeNode) {
     if (quantity === 1) {
@@ -18,59 +20,44 @@ export function quantity(
       return;
     }
 
-    let unstickyProcessors: ProcessorFn[] = [];
+    let stickyProcessors: ProcessorFn[] = [];
 
     if (isBuildable(node.value)) {
       /*
-        remove quantity processor from buildable to avoid infinity loop, as otherwise
+        remove quantity ArchitectFn from buildable to avoid infinity loop, as otherwise
         the newly created children will apply quantity as well leading to infinity loop.
       */
-      removeQuantityProcessor(node.value);
+      removeQuantityArchitect(node.value);
       /**
        * Processors marked as "sticky" will disengage from the original node and stick to
        * the multiplied nodes that represents the actual generated values later on. Unsticky
        * processors will not be transfered to the multiplied value nodes and be kept on original node.
        */
-      unstickyProcessors = extractUnstickyProcessors(node);
+      stickyProcessors = extractStickyProcessors(node.value);
     }
 
     const children = multiplyNode(node, quantity);
-    modifyTree(children, node);
+    const buildable = modifyTree(children, node);
 
-    if (isBuildable(node.value)) {
-      // readd previously removed unsticky processors on the original node:
-      node.value.processors = unstickyProcessors;
-    }
+    // replace unsticky processors with sticky ones:
+    buildable.processors = stickyProcessors;
   }
 
-  function modifyTree(children: ObjectTreeNode<any>[], node: ObjectTreeNode<any>) {
+  function modifyTree(children: ObjectTreeNode<any>[], node: ObjectTreeNode<any>): Buildable {
     if (insertMode === 'useParentArray') {
       insertInline(children, node);
     } else {
-      node.type = 'array';
+      // keep value as Buildable, so that previously removed, sticky processors
+      // can be readded to that Buildable:
       node.value = [];
+      node.type = 'array';
       node.children = [];
+
       addChildren(children, node);
     }
-  }
 
-  function extractUnstickyProcessors(node: ObjectTreeNode<any>) {
-    const unstickyProcessors = getUnstickyProcessors(node);
-    removeStickyProcessors(node);
-
-    return unstickyProcessors;
-  }
-
-  function removeStickyProcessors(node: ObjectTreeNode<any>) {
-    node.value.processors = node.value.processors.filter((processorFn: ProcessorFn) =>
-      isUndefined(processorFn[IsStickyProcessorSymbol]),
-    );
-  }
-
-  function getUnstickyProcessors(node: ObjectTreeNode<any>) {
-    return node.value.processors.filter((processorFn: ProcessorFn) =>
-      isUndefined(processorFn[IsStickyProcessorSymbol]),
-    );
+    node.value = asBuildable(node.value);
+    return node.value;
   }
 
   function multiplyNode(node: ObjectTreeNode, quantity: Quantity): ObjectTreeNode[] {
@@ -86,26 +73,17 @@ export function quantity(
     return nodes;
   }
 
-  function insertInline(children: ObjectTreeNode[], node: ObjectTreeNode): ObjectTreeNode {
-    if (node.parent == null || node.parent.parent == null) {
-      throw new Error(`Use quantity's "inline" parameter only on nodes having a grandparent node.`);
+  function insertInline(children: ObjectTreeNode[], node: ObjectTreeNode): void {
+    if (node.parent == null) {
+      throw new Error(`Use quantity's "inline" parameter only on nodes having a parent node.`);
     }
     if (node.parent.type !== 'array') {
       throw new Error(`Only use quantity's "inline" parameter on direct children of arrays.`);
     }
 
     const mergedChildren = merge(node.parent.children, children, node);
-    const newParent: ObjectTreeNode = {
-      ...node.parent,
-      type: 'array',
-      value: [],
-      children: mergedChildren,
-    };
-
-    replace(node.parent, newParent, node.parent.parent);
-    mergedChildren.forEach(c => (c.parent = newParent));
-
-    return newParent;
+    node.parent.children = [];
+    addChildren(mergedChildren, node.parent);
   }
 
   function merge(
@@ -126,7 +104,22 @@ export function quantity(
     return nodes;
   }
 
-  function removeQuantityProcessor(buildable: Buildable) {
-    buildable.processors = buildable.processors.filter(p => p !== quantityImpl);
+  /**
+   * Finds, removes and returns sticky ProcessorFns being present on a given Buildable.
+   * @param buildable The Buildable to extract sticky ProcessorFns from.
+   */
+  function extractStickyProcessors(buildable: Buildable): ProcessorFn[] {
+    const stickyProcessors = extractFns(
+      IsStickyProcessorSymbol,
+      buildable.processors,
+    ) as ProcessorFn[];
+
+    buildable.processors = buildable.processors.filter(p => !hasSymbol(IsStickyProcessorSymbol, p));
+
+    return stickyProcessors;
+  }
+
+  function removeQuantityArchitect(buildable: Buildable) {
+    buildable.architects = buildable.architects.filter(p => p !== quantityImpl);
   }
 }
