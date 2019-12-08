@@ -1,15 +1,17 @@
 import { addChildren, ObjectTreeNode, replace } from 'treelike';
-import { isBuildable } from '../core';
+import { asBuildable, isBuildable } from '../core';
 import { Buildable, IsStickyProcessorSymbol, ProcessorFn, QuantityInsertMode } from '../core/types';
 import { Quantity } from '../core/types/quantity';
 import { getQuantity } from '../core/util/get-quantity';
-import { clone, isUndefined } from '../util';
+import { clone, extractFns, hasSymbol } from '../util';
+import { ArchitectFn } from './types';
 import { createArchitectFn } from './util';
 
 export function quantity(
   quantity: Quantity = 1,
   insertMode: QuantityInsertMode = 'createNewArray',
-) {
+): ArchitectFn {
+  // Architects are executed before BuildCycle 'initializer'
   return createArchitectFn(quantityImpl);
 
   function quantityImpl(node: ObjectTreeNode) {
@@ -18,11 +20,11 @@ export function quantity(
       return;
     }
 
-    let unstickyProcessors: ProcessorFn[] = [];
+    let stickyProcessors: ProcessorFn[] = [];
 
     if (isBuildable(node.value)) {
       /*
-        remove quantity processor from buildable to avoid infinity loop, as otherwise
+        remove quantity ArchitectFn from buildable to avoid infinity loop, as otherwise
         the newly created children will apply quantity as well leading to infinity loop.
       */
       removeQuantityArchitect(node.value);
@@ -31,46 +33,31 @@ export function quantity(
        * the multiplied nodes that represents the actual generated values later on. Unsticky
        * processors will not be transfered to the multiplied value nodes and be kept on original node.
        */
-      unstickyProcessors = extractUnstickyProcessors(node);
+      stickyProcessors = extractStickyProcessors(node.value);
     }
 
     const children = multiplyNode(node, quantity);
-    modifyTree(children, node);
+    const buildable = modifyTree(children, node);
 
-    if (isBuildable(node.value)) {
-      // readd previously removed unsticky processors on the original node:
-      node.value.processors = unstickyProcessors;
-    }
+    // replace unsticky processors with sticky ones:
+    buildable.processors = stickyProcessors;
   }
 
-  function modifyTree(children: ObjectTreeNode<any>[], node: ObjectTreeNode<any>) {
+  function modifyTree(children: ObjectTreeNode<any>[], node: ObjectTreeNode<any>): Buildable {
     if (insertMode === 'useParentArray') {
       insertInline(children, node);
     } else {
-      node.type = 'array';
+      // keep value as Buildable, so that previously removed, sticky processors
+      // can be readded to that Buildable:
       node.value = [];
+      node.type = 'array';
       node.children = [];
+
       addChildren(children, node);
     }
-  }
 
-  function extractUnstickyProcessors(node: ObjectTreeNode<any>) {
-    const unstickyProcessors = getUnstickyProcessors(node);
-    removeStickyProcessors(node);
-
-    return unstickyProcessors;
-  }
-
-  function removeStickyProcessors(node: ObjectTreeNode<any>) {
-    node.value.processors = node.value.processors.filter((processorFn: ProcessorFn) =>
-      isUndefined(processorFn[IsStickyProcessorSymbol]),
-    );
-  }
-
-  function getUnstickyProcessors(node: ObjectTreeNode<any>) {
-    return node.value.processors.filter((processorFn: ProcessorFn) =>
-      isUndefined(processorFn[IsStickyProcessorSymbol]),
-    );
+    node.value = asBuildable(node.value);
+    return node.value;
   }
 
   function multiplyNode(node: ObjectTreeNode, quantity: Quantity): ObjectTreeNode[] {
@@ -124,6 +111,21 @@ export function quantity(
     nodes.forEach((n, index) => (n.name = index));
 
     return nodes;
+  }
+
+  /**
+   * Finds, removes and returns sticky ProcessorFns being present on a given Buildable.
+   * @param buildable The Buildable to extract sticky ProcessorFns from.
+   */
+  function extractStickyProcessors(buildable: Buildable): ProcessorFn[] {
+    const stickyProcessors = extractFns(
+      IsStickyProcessorSymbol,
+      buildable.processors,
+    ) as ProcessorFn[];
+
+    buildable.processors = buildable.processors.filter(p => !hasSymbol(IsStickyProcessorSymbol, p));
+
+    return stickyProcessors;
   }
 
   function removeQuantityArchitect(buildable: Buildable) {
