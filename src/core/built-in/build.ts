@@ -3,8 +3,8 @@ import {
   leafTraverser,
   nodeTypeOf,
   ObjectTreeNode,
-  siblingAndSelfWithChildrenTraverser,
   traverse,
+  TraverseCallbackFn,
   treeOf,
 } from 'treelike';
 import { ArchitectFn } from '../../architects';
@@ -191,7 +191,7 @@ function addAttachedFns<T = any>(attachedFns: AttachedFn[], buildable: Buildable
  * @param onNext The callback function to call for each node reached.
  */
 function runCycle<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) => void): void {
-  traverse(node, onNext, siblingAndSelfWithChildrenTraverser);
+  traverse(node, onNext, topDownSiblingTraverser);
 }
 
 /**
@@ -234,6 +234,21 @@ function sortByOrderNumber(a: ProcessorFn, b: ProcessorFn): number {
   }
 
   return result;
+}
+
+function topDownSiblingTraverser(node: ObjectTreeNode, onNext: TraverseCallbackFn): void {
+  // also include root
+  if (node.parent === undefined) {
+    onNext(node);
+  }
+
+  for (const child of node.children) {
+    onNext(child);
+  }
+
+  for (const child of node.children) {
+    topDownSiblingTraverser(child, onNext);
+  }
 }
 
 /**
