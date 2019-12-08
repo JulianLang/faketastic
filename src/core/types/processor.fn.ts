@@ -1,8 +1,8 @@
-import { ProcessorType } from './processor.types';
+import { BuildCycle } from './build.cycle';
 import { IsStickyProcessorSymbol, ProcessorOrderSymbol, ProcessorSymbol } from './symbols';
 
 export interface ProcessorFn {
-  [ProcessorSymbol]: ProcessorType;
+  [ProcessorSymbol]: BuildCycle;
   [ProcessorOrderSymbol]: number;
   [IsStickyProcessorSymbol]: boolean;
 

@@ -8,7 +8,7 @@ import {
   treeTraverser,
 } from 'treelike';
 import { Buildable, ProcessorFn, ProcessorOrderSymbol } from '../types';
-import { ProcessorType } from '../types/processor.types';
+import { BuildCycle } from '../types/build.cycle';
 import {
   asBuildable,
   getLeafBuildable,
@@ -76,16 +76,18 @@ function buildChildrenOf(node: ObjectTreeNode) {
   }
 }
 
+function runAttachedFns(cycle: BuildCycle, node: ObjectTreeNode) {}
+
 /**
  * Runs all processor functions of a specified type, being present on a given node.
- * @param type The processor type to run.
+ * @param cycle The processor type to run.
  * @param node The node to run its processors.
  */
-function runProcessors(type: ProcessorType, node: ObjectTreeNode): void {
+function runProcessors(cycle: BuildCycle, node: ObjectTreeNode): void {
   if (isBuildable(node.value)) {
     const buildable: Buildable = node.value;
     buildable.processors
-      .filter(fn => isProcessorFn(fn, type))
+      .filter(fn => isProcessorFn(fn, cycle))
       .sort(sortByOrderNumber)
       .forEach(processorFn => {
         processorFn(node);

@@ -1,15 +1,15 @@
 import { Stickiness } from '../../types';
 import {
+  BuildCycle,
   IsStickyProcessorSymbol,
   ProcessorFn,
   ProcessorOrderSymbol,
   ProcessorSymbol,
-  ProcessorType,
 } from '../types';
 
 export function createProcessorFn(
   fn: Function,
-  type: ProcessorType,
+  type: BuildCycle,
   orderNumber = 0,
   sticky: Stickiness = 'sticky',
 ): ProcessorFn {
