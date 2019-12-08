@@ -14,20 +14,8 @@
 
     $ npm start
 */
-import { build, Buildable, combine, oneOf, quantity, randomInt, ref, template, use } from './src';
-import { withRecursion } from './src/template-modifier/with-recursion';
-
-const RecursionDepth = (min = 1, max = 10) => {
-  let currentDepth = 0;
-  let targetDepth = randomInt(min, max);
-
-  return () => {
-    currentDepth += 1;
-    const shouldBreakRecursion = currentDepth > targetDepth;
-
-    return shouldBreakRecursion ? { endWithValue: [] } : { continue: true };
-  };
-};
+import { build, combine, oneOf, quantity, randomInt, ref, template, use } from './src';
+import { RecursionDepth, withRecursion } from './src/template-modifier';
 
 // @ts-ignore
 const File = template({
@@ -42,7 +30,7 @@ const File = template({
   ),
 });
 
-const Directory: Buildable<any> = template(
+const Directory = template(
   withRecursion(
     {
       name: oneOf(['A', 'B', 'C', 'D', 'E', 'F']),
