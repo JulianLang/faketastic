@@ -1,16 +1,16 @@
 import { addChildren, ObjectTreeNode, replace } from 'treelike';
-import { ProcessorOrders } from '../constants';
-import { createProcessorFn, isBuildable } from '../core';
+import { isBuildable } from '../core';
 import { Buildable, IsStickyProcessorSymbol, ProcessorFn, QuantityInsertMode } from '../core/types';
 import { Quantity } from '../core/types/quantity';
 import { getQuantity } from '../core/util/get-quantity';
 import { clone, isUndefined } from '../util';
+import { createArchitectFn } from './util';
 
 export function quantity(
   quantity: Quantity = 1,
   insertMode: QuantityInsertMode = 'createNewArray',
 ) {
-  return createProcessorFn(quantityImpl, 'initializer', ProcessorOrders.treeStructureChanging);
+  return createArchitectFn(quantityImpl);
 
   function quantityImpl(node: ObjectTreeNode) {
     if (quantity === 1) {
