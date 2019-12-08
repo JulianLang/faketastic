@@ -1,4 +1,4 @@
-import { Func } from '../../types';
+import { Func } from '../../../types';
 import { IterationState } from './iterator.state';
 
 /**

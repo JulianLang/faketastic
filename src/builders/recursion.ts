@@ -3,7 +3,7 @@ import { ProcessorOrders } from '../constants';
 import { asBuildable, buildChild, createBuildable, createProcessorFn, ProcessorFn } from '../core';
 import { placeholder } from '../placeholder';
 import { clone, isUndefined } from '../util';
-import { IterationState, RecursionIterator } from './types';
+import { IterationState, RecursionIterator } from './types/recursion';
 
 /**
  * Creates a recursive template object to be passed to `template` function.
