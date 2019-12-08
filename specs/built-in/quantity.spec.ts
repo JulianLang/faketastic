@@ -1,10 +1,46 @@
 import { createNode, ObjectTreeNode } from 'treelike';
-import { quantity } from '../../src/architects/quantity';
+import { quantity } from '../../src';
 import { build, createBuildable, createProcessorFn, template, use } from '../../src/core';
 import { includeProcessorFnSpecs } from '../spec-helpers/shared-specs';
 import { createChildTreeNode } from '../spec-helpers/spec.helper';
 
 describe('quantity processor fn', () => {
+  // it('should respect stickiness', () => {
+  //   // arrange
+  //   const stickyProcFn = createProcessorFn(
+  //     (node: ObjectTreeNode) => {
+  //       // assert
+  //       expect(node.name).toEqual(0);
+  //       expect(node.parent!.name).toEqual('a');
+  //     },
+  //     'initializer',
+  //     0,
+  //     'sticky',
+  //   );
+  //   const unstickyProcFn = createProcessorFn(
+  //     (node: ObjectTreeNode) => {
+  //       // assert
+  //       expect(node.name).toEqual('a');
+  //       expect(node.parent!.name).toEqual('$root');
+  //     },
+  //     'initializer',
+  //     0,
+  //     'unsticky',
+  //   );
+  //   const tmpl = template({
+  //     a: range(
+  //       1,
+  //       10,
+  //       quantity(() => 1),
+  //       stickyProcFn,
+  //       unstickyProcFn,
+  //     ),
+  //   });
+
+  //   // act
+  //   build(tmpl);
+  // });
+
   it('should connect the content nodes to the rest of tree', () => {
     // arrange, assert
     const assertProcessor = createProcessorFn((node: ObjectTreeNode) => {

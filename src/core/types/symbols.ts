@@ -1,3 +1,4 @@
-export const ProcessorOrderSymbol = Symbol('faketastic.processor.order');
-export const ProcessorSymbol = Symbol('faketastic.processor');
-export const IsStickyProcessorSymbol = Symbol('faketastic.processor.isSticky');
+export const ProcessorSymbol = Symbol('faketastic.fns.processor');
+export const ProcessorOrderSymbol = Symbol('faketastic.fns.processor.order');
+export const IsStickyProcessorSymbol = Symbol('faketastic.fns.processor.isSticky');
+export const ArchitectFnSymbol = Symbol('faketastic.fns.architect');
