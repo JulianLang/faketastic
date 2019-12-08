@@ -1,3 +1,4 @@
+import { ObjectTreeNode } from 'treelike';
 import { randomInt } from '../../core';
 
 /**
@@ -6,11 +7,24 @@ import { randomInt } from '../../core';
  * @param max The maximal depth level.
  */
 export function RecursionDepth(min = 1, max = 10) {
-  let currentDepth = 0;
+  let isInit = true;
+  let rootNode: ObjectTreeNode;
   let targetDepth = randomInt(min, max);
 
-  return () => {
-    currentDepth += 1;
+  return (node: ObjectTreeNode) => {
+    if (isInit) {
+      rootNode = node;
+      isInit = false;
+    }
+
+    let currentDepth = 0;
+    let currentNode = node;
+
+    while (currentNode.parent && currentNode !== rootNode) {
+      currentDepth++;
+      currentNode = currentNode.parent;
+    }
+
     const shouldBreakRecursion = currentDepth > targetDepth;
 
     return shouldBreakRecursion ? { endWithValue: [] } : { continue: true };

@@ -1,13 +1,13 @@
-import { defaultRootName, ObjectTreeNode } from 'treelike';
+import { addChildren, defaultRootName, ObjectTreeNode, treeOf } from 'treelike';
 import { ProcessorOrders } from '../constants';
-import { asBuildable, Buildable, buildChild, createBuildable, createProcessorFn } from '../core';
+import { asBuildable, Buildable, childSelector, createBuildable, createProcessorFn } from '../core';
 import { placeholder } from '../placeholder';
 import { AttachedFn } from '../types';
 import { clone, isUndefined } from '../util';
 import { IterationState, RecursionIterator } from './types/recursion';
 
 /**
- * Creates a recursive template object to be passed to `template` function.
+ * Creates a recursive property, recursing the template it lays on.
  * @param tmpl The template to be made recursive.
  * @param property The property name that should hold the template recursion.
  * @param attachedFns Processors that must include a `quantity(0, x)` or `canBe(any)` processor,
@@ -18,28 +18,42 @@ export function recursion(
   endWhen: RecursionIterator,
   ...attachedFns: AttachedFn[]
 ) {
-  const recursionInit = createProcessorFn(
-    recursionImpl,
+  const recurseNext = createProcessorFn(
+    recurseNextImpl,
     'initializer',
     ProcessorOrders.recursion,
     // quantity will transfer this processor to the multiplied nodes
     'unsticky',
   );
+  const endRecursion = createProcessorFn(
+    endRecursionImpl,
+    'initializer',
+    ProcessorOrders.recursion,
+  );
 
-  return createBuildable(placeholder(`recursion:${property}`), [recursionInit, ...attachedFns]);
+  return createBuildable(placeholder(`recursion:${property}`), [
+    recurseNext,
+    endRecursion,
+    ...attachedFns,
+  ]);
 
-  function recursionImpl(node: ObjectTreeNode) {
+  function recurseNextImpl(node: ObjectTreeNode): void {
     const rootTemplateNode = tryFindRootTemplate(node);
     const tmpl = rootTemplateNode.value;
-    const iteration = iterateNext(endWhen, tmpl);
 
-    if (iteration.continue === true) {
-      const buildableTmpl = asBuildable(tmpl);
-      const clonedTmpl: Buildable = clone(buildableTmpl);
-      clonedTmpl.value[property] = recursion(property, endWhen);
+    const buildableTmpl = asBuildable(tmpl);
+    const clonedTmpl: Buildable = clone(buildableTmpl);
+    clonedTmpl.value[property] = recursion(property, endWhen, ...attachedFns);
 
-      node.value = buildChild(clonedTmpl, node);
-    } else {
+    const recursiveTree = treeOf(clonedTmpl, childSelector);
+    addChildren(recursiveTree.children, node);
+  }
+
+  function endRecursionImpl(node: ObjectTreeNode): void {
+    const iteration = iterateNext(endWhen, node);
+
+    if (!iteration.continue) {
+      node.children = [];
       node.value = iteration.endWithValue;
     }
   }
@@ -66,11 +80,11 @@ export function recursion(
    * to stop the recursion and with what value.
    * @param iteratorFn The recursion instructor function controlling when the recursion should stop
    * and with value the recursion should stop. Recursion instructor functions avoid inifinite loops.
-   * @param tmpl The template to pass in to the instructor function.
+   * @param node The template to pass in to the instructor function.
    */
-  function iterateNext(iteratorFn: RecursionIterator, tmpl: any): IterationState {
-    const value = iteratorFn(tmpl);
-    const state = typeof value === 'function' ? value(tmpl) : value;
+  function iterateNext(iteratorFn: RecursionIterator, node: ObjectTreeNode): IterationState {
+    const value = iteratorFn(node);
+    const state = typeof value === 'function' ? value(node) : value;
 
     return state;
   }
