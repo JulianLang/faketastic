@@ -1,4 +1,4 @@
-import { nodeTypeOf, ObjectTreeNode } from 'treelike';
+import { ObjectTreeNode } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import {
   asBuildable,
@@ -27,7 +27,6 @@ export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable<an
     const builtContent = build(buildableContent);
 
     node.value = builtContent;
-    node.type = nodeTypeOf(builtContent);
   }
 
   function chooseRandomItem() {
