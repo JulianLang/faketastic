@@ -4,25 +4,22 @@ import {
   asBuildable,
   build,
   Buildable,
-  BuildableSymbol,
+  createBuildable,
   createProcessorFn,
-  ProcessorFn,
   randomInt,
 } from '../core';
+import { placeholder } from '../placeholder';
+import { AttachedFn } from '../types';
 import { clone, isDefined } from '../util';
 
-export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<any> {
+export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable<any> {
   const initOneOf = createProcessorFn(
     initOneOfImpl,
     'preprocessor',
     ProcessorOrders.treeStructureChanging,
   );
 
-  return {
-    [BuildableSymbol]: 'value',
-    processors: [initOneOf, ...processorFns],
-    value: null,
-  };
+  return createBuildable(placeholder(), [initOneOf, ...attachedFns]);
 
   function initOneOfImpl(node: ObjectTreeNode) {
     const content = chooseRandomItem();

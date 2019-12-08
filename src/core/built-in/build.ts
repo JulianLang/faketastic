@@ -7,7 +7,16 @@ import {
   treeOf,
   treeTraverser,
 } from 'treelike';
-import { Buildable, ProcessorFn, ProcessorOrderSymbol } from '../types';
+import { ArchitectFn } from '../../architects';
+import { AttachedFn } from '../../types';
+import { extractFns, hasSymbol } from '../../util';
+import {
+  ArchitectFnSymbol,
+  Buildable,
+  ProcessorFn,
+  ProcessorOrderSymbol,
+  ProcessorSymbol,
+} from '../types';
 import { BuildCycle } from '../types/build.cycle';
 import {
   asBuildable,
@@ -23,27 +32,28 @@ import {
  * @param buildable An object of interface Buildable that should get built.
  * @param quantity The amount of mock data objects that should be generated from the buildable.
  */
-export function build<R = any, T = any>(buildable: Buildable<T>, ...processors: ProcessorFn[]): R {
-  return buildChild(buildable, undefined, ...processors);
+export function build<R = any, T = any>(buildable: Buildable<T>, ...attachedFns: AttachedFn[]): R {
+  return buildChild(buildable, undefined, ...attachedFns);
 }
 
 export function buildChild<R = any, T = any>(
   buildable: Buildable<T>,
   asChildOf?: ObjectTreeNode,
-  ...processors: ProcessorFn[]
+  ...attachedFns: AttachedFn[]
 ): R {
-  buildable.processors.push(...processors);
+  addAttachedFns<T>(attachedFns, buildable);
+
   const buildableNode = treeOf(buildable, childSelector);
 
   if (isDefined(asChildOf)) {
     buildableNode.parent = asChildOf;
   }
 
-  runCycle(buildableNode, node => runProcessors('initializer', node));
-  runCycle(buildableNode, node => runProcessors('preprocessor', node));
+  runCycle(buildableNode, node => runAttachedFns('initializer', node));
+  runCycle(buildableNode, node => runAttachedFns('preprocessor', node));
   runCycle(buildableNode, node => buildNode(node));
-  runCycle(buildableNode, node => runProcessors('postprocessor', node));
-  runCycle(buildableNode, node => runProcessors('finalizer', node));
+  runCycle(buildableNode, node => runAttachedFns('postprocessor', node));
+  runCycle(buildableNode, node => runAttachedFns('finalizer', node));
 
   updateType(buildableNode);
   runReverse(buildableNode, node => finalize(node), asChildOf);
@@ -76,12 +86,34 @@ function buildChildrenOf(node: ObjectTreeNode) {
   }
 }
 
-function runAttachedFns(cycle: BuildCycle, node: ObjectTreeNode) {}
+/**
+ * Runs all AttachedFns (e.g. `ProcessorFns` and `ArchitectFns`) on a given node for the specified build-cycle.
+ * @param cycle The cycle for which to run the AttachedFns.
+ * @param node The node on which to run its AttachedFns.
+ */
+function runAttachedFns(cycle: BuildCycle, node: ObjectTreeNode): void {
+  runArchitectFns(cycle, node);
+  runProcessors(cycle, node);
+}
 
 /**
- * Runs all processor functions of a specified type, being present on a given node.
- * @param cycle The processor type to run.
- * @param node The node to run its processors.
+ * Runs all ArchitectFns on a given node for a specified build-cycle.
+ * @param cycle The cycle for which to run the ArchitectFns.
+ * @param node The node on whcih to run its ArchitectFns.
+ */
+function runArchitectFns(cycle: BuildCycle, node: ObjectTreeNode): void {
+  if (isBuildable(node.value)) {
+    const buildable: Buildable = node.value;
+    buildable.architects
+      .filter(fn => hasSymbol(ArchitectFnSymbol, fn, cycle))
+      .forEach(architectFn => architectFn(node));
+  }
+}
+
+/**
+ * Runs all ProcessorFns on a given node for a specified build-cycle.
+ * @param cycle The cycle for which to run the ProcessorFns.
+ * @param node The node on whcih to run its ProcessorFns.
  */
 function runProcessors(cycle: BuildCycle, node: ObjectTreeNode): void {
   if (isBuildable(node.value)) {
@@ -131,9 +163,26 @@ function buildNode(node: ObjectTreeNode): void {
   }
 }
 
+/**
+ * Updates the value of a node and aligns the node's `type` to the updated value.
+ * @param value The value to set on the given node.
+ * @param node The node that should udpate its value.
+ */
 function setValue(value: any, node: ObjectTreeNode) {
   node.value = value;
   updateType(node);
+}
+
+/**
+ * Adds the specified AttachedFns to a given buildable.
+ * @param attachedFns The AttachedFns to add to the buildable.
+ * @param buildable The buildable receiving the AttachedFns.
+ */
+function addAttachedFns<T = any>(attachedFns: AttachedFn[], buildable: Buildable<T>) {
+  const processors = extractFns(ProcessorSymbol, attachedFns) as ProcessorFn[];
+  const architects = extractFns(ArchitectFnSymbol, attachedFns) as ArchitectFn[];
+  buildable.processors.push(...processors);
+  buildable.architects.push(...architects);
 }
 
 /**

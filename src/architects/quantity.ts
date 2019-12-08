@@ -25,7 +25,7 @@ export function quantity(
         remove quantity processor from buildable to avoid infinity loop, as otherwise
         the newly created children will apply quantity as well leading to infinity loop.
       */
-      removeQuantityProcessor(node.value);
+      removeQuantityArchitect(node.value);
       /**
        * Processors marked as "sticky" will disengage from the original node and stick to
        * the multiplied nodes that represents the actual generated values later on. Unsticky
@@ -126,7 +126,7 @@ export function quantity(
     return nodes;
   }
 
-  function removeQuantityProcessor(buildable: Buildable) {
-    buildable.processors = buildable.processors.filter(p => p !== quantityImpl);
+  function removeQuantityArchitect(buildable: Buildable) {
+    buildable.architects = buildable.architects.filter(p => p !== quantityImpl);
   }
 }

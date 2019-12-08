@@ -1,6 +1,9 @@
+import { createArchitectFn } from '../../src';
 import {
+  Buildable,
   BuildableSymbol,
   BuilderFnSymbol,
+  createProcessorFn,
   isBuilderFunction,
   ProcessorSymbol,
 } from '../../src/core';
@@ -32,17 +35,21 @@ export function includeBuilderFnSpecs(builderFn: Function, ...params: any[]) {
 }
 
 export function includeDirectiveFnSpecs(directiveFn: Function, ...params: any[]): void {
-  it('should include given processor functions in buildable', () => {
+  it('should include given processor- and architect-functions in buildable', () => {
     // arrange
-    const processorFns: Function[] = [() => {}, () => {}, () => {}];
+    const procFn = createProcessorFn(() => {}, 'initializer');
+    const architectFn = createArchitectFn(() => {});
+    const negativeTestFn = () => {};
+    const processorFns: Function[] = [procFn, architectFn, negativeTestFn];
 
     // act
-    const buildable = directiveFn(...params, ...processorFns);
+    const buildable: Buildable = directiveFn(...params, ...processorFns);
 
     // assert
-    for (const procFn of processorFns) {
-      expect(buildable.processors).toContain(procFn);
-    }
+    expect(buildable.processors).toContain(procFn);
+    expect(buildable.architects).toContain(architectFn);
+    expect(buildable.architects).not.toContain(negativeTestFn as any);
+    expect(buildable.processors).not.toContain(negativeTestFn as any);
   });
 }
 

@@ -1,13 +1,13 @@
 import {
   addIfProcessorFn,
   Buildable,
-  BuildableSymbol,
   BuilderFn,
+  createBuildable,
   createBuilderFn,
-  ProcessorFn,
   randomDate,
 } from '../core';
 import { dateTimeParser } from '../parser';
+import { AttachedFn } from '../types';
 import { isArray, isDefined, isUndefined, isValidDate } from '../util';
 import { TimeInput } from './types';
 
@@ -54,24 +54,20 @@ const defaultFormat = 'HH:mm:ss:SSS';
  * @param latest Time string, number or date object to be used as latest allowed time. Default format is HH:mm:ss - `13:15:00`
  */
 export function time(
-  earliest?: TimeInput | null | ProcessorFn,
-  latest?: TimeInput | null | ProcessorFn,
-  ...processors: ProcessorFn[]
+  earliest?: TimeInput | null | AttachedFn,
+  latest?: TimeInput | null | AttachedFn,
+  ...attachedFns: AttachedFn[]
 ): Buildable<BuilderFn> {
   const timeBuilder = createBuilderFn(timeImpl);
 
-  if (addIfProcessorFn(earliest, processors)) {
+  if (addIfProcessorFn(earliest, attachedFns)) {
     earliest = undefined;
   }
-  if (addIfProcessorFn(latest, processors)) {
+  if (addIfProcessorFn(latest, attachedFns)) {
     latest = undefined;
   }
 
-  return {
-    [BuildableSymbol]: 'template',
-    processors,
-    value: timeBuilder,
-  };
+  return createBuildable(timeBuilder, attachedFns);
 
   // TODO: langju: simplify / maybe formalize parameter parsing:
   function timeImpl() {
