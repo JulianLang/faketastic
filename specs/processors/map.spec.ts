@@ -1,3 +1,4 @@
+import { ProcessorOrders } from '../../src';
 import { build, createBuildable } from '../../src/core';
 import { map } from '../../src/processors/map';
 import { includeProcessorFnSpecs } from '../spec-helpers/shared-specs';
@@ -32,6 +33,10 @@ describe('map processor fn', () => {
     expect(result).toEqual(expectedValue);
   });
 
-  // TODO: langju: when ref() arrived: test case for running after ref() ?
+  it('should run after ref', () => {
+    // arrange, act, assert
+    expect(ProcessorOrders.ref).toBeLessThan(ProcessorOrders.map);
+  });
+
   includeProcessorFnSpecs(map, () => {});
 });
