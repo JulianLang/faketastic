@@ -2,8 +2,8 @@ import { ObjectTreeNode } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import {
   asBuildable,
-  build,
   Buildable,
+  buildChild,
   createBuildable,
   createProcessorFn,
   randomInt,
@@ -24,7 +24,7 @@ export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable<an
   function initOneOfImpl(node: ObjectTreeNode) {
     const content = chooseRandomItem();
     const buildableContent = asBuildable(content);
-    const builtContent = build(buildableContent);
+    const builtContent = buildChild(buildableContent, node);
 
     node.value = builtContent;
   }

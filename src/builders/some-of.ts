@@ -3,8 +3,8 @@ import { ProcessorOrders } from '../constants';
 import {
   addIfProcessorFn,
   asBuildable,
-  build,
   Buildable,
+  buildChild,
   createBuildable,
   createProcessorFn,
   ProcessorFn,
@@ -48,7 +48,7 @@ export function someOf<T>(
   function initSomeOfImpl(node: ObjectTreeNode) {
     const content = chooseItems();
     const buildableContent = asBuildable(content);
-    const builtContent = build(buildableContent);
+    const builtContent = buildChild(buildableContent, node);
 
     node.type = 'array';
     node.children = [];
