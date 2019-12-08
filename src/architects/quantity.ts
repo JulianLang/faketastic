@@ -1,4 +1,4 @@
-import { addChildren, ObjectTreeNode, replace } from 'treelike';
+import { addChildren, ObjectTreeNode } from 'treelike';
 import { asBuildable, isBuildable } from '../core';
 import { Buildable, IsStickyProcessorSymbol, ProcessorFn, QuantityInsertMode } from '../core/types';
 import { Quantity } from '../core/types/quantity';
@@ -73,26 +73,17 @@ export function quantity(
     return nodes;
   }
 
-  function insertInline(children: ObjectTreeNode[], node: ObjectTreeNode): ObjectTreeNode {
-    if (node.parent == null || node.parent.parent == null) {
-      throw new Error(`Use quantity's "inline" parameter only on nodes having a grandparent node.`);
+  function insertInline(children: ObjectTreeNode[], node: ObjectTreeNode): void {
+    if (node.parent == null) {
+      throw new Error(`Use quantity's "inline" parameter only on nodes having a parent node.`);
     }
     if (node.parent.type !== 'array') {
       throw new Error(`Only use quantity's "inline" parameter on direct children of arrays.`);
     }
 
     const mergedChildren = merge(node.parent.children, children, node);
-    const newParent: ObjectTreeNode = {
-      ...node.parent,
-      type: 'array',
-      value: [],
-      children: mergedChildren,
-    };
-
-    replace(node.parent, newParent, node.parent.parent);
-    mergedChildren.forEach(c => (c.parent = newParent));
-
-    return newParent;
+    node.parent.children = [];
+    addChildren(mergedChildren, node.parent);
   }
 
   function merge(
