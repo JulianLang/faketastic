@@ -1,13 +1,8 @@
-import { addChild, ObjectTreeNode, treeOf } from 'treelike';
+import { defaultRootName, ObjectTreeNode } from 'treelike';
 import { ProcessorOrders } from '../constants';
-import {
-  asBuildable,
-  childSelector,
-  createBuildable,
-  createProcessorFn,
-  ProcessorFn,
-} from '../core';
+import { asBuildable, Buildable, buildChild, createBuildable, createProcessorFn } from '../core';
 import { placeholder } from '../placeholder';
+import { AttachedFn } from '../types';
 import { clone, isUndefined } from '../util';
 import { IterationState, RecursionIterator } from './types/recursion';
 
@@ -15,35 +10,55 @@ import { IterationState, RecursionIterator } from './types/recursion';
  * Creates a recursive template object to be passed to `template` function.
  * @param tmpl The template to be made recursive.
  * @param property The property name that should hold the template recursion.
- * @param processors Processors that must include a `quantity(0, x)` or `canBe(any)` processor,
+ * @param attachedFns Processors that must include a `quantity(0, x)` or `canBe(any)` processor,
  * being able to end the recursion at some time. Otherwise you'll get a `StackOverflow` exception.
  */
 export function recursion(
   property: string,
   endWhen: RecursionIterator,
-  ...processors: ProcessorFn[]
+  ...attachedFns: AttachedFn[]
 ) {
-  const recursionInit = createProcessorFn(recursionImpl, 'initializer', ProcessorOrders.recursion);
+  const recursionInit = createProcessorFn(
+    recursionImpl,
+    'initializer',
+    ProcessorOrders.recursion,
+    // quantity will transfer this processor to the multiplied nodes
+    'unsticky',
+  );
 
-  return createBuildable(placeholder(`recursion:${property}`), [recursionInit, ...processors]);
+  return createBuildable(placeholder(`recursion:${property}`), [recursionInit, ...attachedFns]);
 
   function recursionImpl(node: ObjectTreeNode) {
+    const rootTemplateNode = tryFindRootTemplate(node);
+    const tmpl = rootTemplateNode.value;
+    const iteration = iterateNext(endWhen, tmpl);
+
+    if (iteration.continue === true) {
+      const buildableTmpl = asBuildable(tmpl);
+      const clonedTmpl: Buildable = clone(buildableTmpl);
+      clonedTmpl.value[property] = recursion(property, endWhen);
+
+      node.value = buildChild(clonedTmpl, node);
+    } else {
+      node.value = iteration.endWithValue;
+    }
+  }
+
+  function tryFindRootTemplate(node: ObjectTreeNode<any>) {
     if (isUndefined(node.parent)) {
       throw new Error(``);
     }
 
-    const tmpl = node.parent.value;
-    const buildableTmpl = asBuildable(tmpl);
-    const clonedTmpl = clone(buildableTmpl);
-    const iteration = iterateNext(endWhen, clonedTmpl.value);
+    let tmplNode: ObjectTreeNode = node.parent;
 
-    if (iteration.continue === true) {
-      const childTree = treeOf(clonedTmpl, childSelector, node);
-      addChild(childTree, node);
-      console.log(node);
-    } else {
-      node.value = iteration.endWithValue;
+    while (tmplNode.name !== defaultRootName) {
+      if (isUndefined(tmplNode.parent)) {
+        throw new Error(`faketastic: recursion: Could not find valid root/template-node.`);
+      }
+
+      tmplNode = tmplNode.parent;
     }
+    return tmplNode;
   }
 
   /**
