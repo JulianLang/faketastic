@@ -4,6 +4,7 @@ const dummyNode: ObjectTreeNode<any> = {
   children: [],
   name: 'child',
   type: 'value',
+  isRecursionRoot: false,
   value: 'some string',
 };
 
@@ -11,6 +12,7 @@ const parentNode: ObjectTreeNode<any> = {
   children: [dummyNode],
   name: 'parent',
   type: 'object',
+  isRecursionRoot: false,
   value: {
     child: 'some string',
   },
