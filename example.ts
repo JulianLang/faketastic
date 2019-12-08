@@ -17,12 +17,13 @@
 import { build, Buildable, combine, oneOf, quantity, randomInt, ref, template, use } from './src';
 import { withRecursion } from './src/template-modifier/with-recursion';
 
-const DepthRecursionInstructor = (depth: number) => {
-  let currentDepth = 1;
+const RecursionDepth = (min = 1, max = 10) => {
+  let currentDepth = 0;
+  let targetDepth = randomInt(min, max);
 
   return () => {
     currentDepth += 1;
-    const shouldBreakRecursion = currentDepth >= depth;
+    const shouldBreakRecursion = currentDepth > targetDepth;
 
     return shouldBreakRecursion ? { endWithValue: [] } : { continue: true };
   };
@@ -48,7 +49,7 @@ const Directory: Buildable<any> = template(
       files: use(File, quantity(2)),
     },
     'directories',
-    DepthRecursionInstructor(3),
+    RecursionDepth(1, 3),
     quantity(() => randomInt(1, 3)),
   ),
 );
