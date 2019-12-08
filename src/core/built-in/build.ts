@@ -3,9 +3,9 @@ import {
   leafTraverser,
   nodeTypeOf,
   ObjectTreeNode,
+  siblingAndSelfWithChildrenTraverser,
   traverse,
   treeOf,
-  treeTraverser,
 } from 'treelike';
 import { ArchitectFn } from '../../architects';
 import { AttachedFn } from '../../types';
@@ -191,7 +191,7 @@ function addAttachedFns<T = any>(attachedFns: AttachedFn[], buildable: Buildable
  * @param onNext The callback function to call for each node reached.
  */
 function runCycle<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) => void): void {
-  traverse(node, onNext, treeTraverser);
+  traverse(node, onNext, siblingAndSelfWithChildrenTraverser);
 }
 
 /**
