@@ -73,7 +73,7 @@ export function time(
     value: timeBuilder,
   };
 
-  // TODO: langju: simplify / formalize parameter parsing:
+  // TODO: langju: simplify / maybe formalize parameter parsing:
   function timeImpl() {
     // time('now') | time('now', '16:00)
     if (earliest === 'now') {
