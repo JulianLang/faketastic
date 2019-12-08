@@ -17,6 +17,7 @@ export function range(min = 1, max = 10, ...processorFns: ProcessorFn[]): Builda
   };
 
   function rangeImpl() {
+    // TODO: langju: make min/max completely optional. `range(quantity(2))` should be valid for example.
     return randomInt(min, max);
   }
 }
