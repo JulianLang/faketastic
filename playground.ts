@@ -35,8 +35,8 @@ const Directory = template({
   files: use(File, quantity(2)),
   directories: recursion(
     'directories',
-    RecursionDepth(2, 3),
-    quantity(() => randomInt(1, 2)),
+    RecursionDepth([], 0, 1),
+    quantity(() => randomInt(0, 2)),
   ),
 });
 

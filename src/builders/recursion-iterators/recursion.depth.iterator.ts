@@ -6,12 +6,15 @@ import { randomInt } from '../../core';
  * @param min The minimal depth level.
  * @param max The maximal depth level.
  */
-export function RecursionDepth(min = 1, max = 10) {
+export function RecursionDepth(endWithValue: any, min = 1, max = 10) {
   let isInit = true;
   let rootNode: ObjectTreeNode;
   let targetDepth = randomInt(min, max);
 
   return (node: ObjectTreeNode) => {
+    if (targetDepth === 0) {
+      return { endWithValue };
+    }
     if (isInit) {
       rootNode = node;
       isInit = false;
@@ -27,6 +30,6 @@ export function RecursionDepth(min = 1, max = 10) {
 
     const shouldBreakRecursion = currentDepth > targetDepth;
 
-    return shouldBreakRecursion ? { endWithValue: [] } : { continue: true };
+    return shouldBreakRecursion ? { endWithValue } : { continue: true };
   };
 }
