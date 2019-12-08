@@ -4,6 +4,8 @@
  * @param withValue The value that should be set for the symbol.
  * @param on The value being holder of a symbol.
  */
-export function setSymbol(symbol: symbol, on: any, withValue: any = true): void {
-  on[symbol] = withValue;
+export function setSymbol<T, K extends symbol>(symbol: K, on: T, withValue: any = true): T & K {
+  (on as any)[symbol] = withValue;
+
+  return on as T & K;
 }

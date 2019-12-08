@@ -1,6 +1,19 @@
 import { setSymbol } from '../../src/util';
 
 describe('setSymbol', () => {
+  it('should return the result', () => {
+    // arrange
+    const mySymbol = Symbol('sym1');
+    const value = 42;
+    const obj: any = {};
+
+    // act
+    const obj2 = setSymbol(mySymbol, obj, value);
+
+    // assert
+    expect(obj2).toBe(obj);
+  });
+
   it('should set a given symbol with specified value on an object', () => {
     // arrange
     const mySymbol = Symbol('sym1');
