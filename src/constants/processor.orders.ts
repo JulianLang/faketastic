@@ -64,7 +64,13 @@ export const ProcessorOrders = {
    *
    * *run-before:* `unpriorized processors`
    */
-  treeStructureChanging: -4000,
+  treeStructureChanging: -4005,
+  /**
+   * **Dependencies**
+   *
+   * *run-before:* `unpriorized processors`
+   */
+  recursion: -4000,
   // -------------------------------------------------------
   // preprocessors
   // -------------------------------------------------------

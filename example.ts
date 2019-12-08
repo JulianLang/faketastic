@@ -14,8 +14,8 @@
 
     $ npm start
 */
-import { build, combine, oneOf, quantity, randomInt, ref, template, use } from './src';
-import { RecursionDepth, withRecursion } from './src/template-modifier';
+import { build, combine, extend, oneOf, quantity, randomInt, ref, template, use } from './src';
+import { recursion, RecursionDepth } from './src/builders';
 
 // @ts-ignore
 const File = template({
@@ -30,18 +30,22 @@ const File = template({
   ),
 });
 
-const Directory = template(
-  withRecursion(
-    {
-      name: oneOf(['A', 'B', 'C', 'D', 'E', 'F']),
-      files: use(File, quantity(2)),
-    },
+const Directory = template({
+  name: oneOf(['A', 'B', 'C', 'D', 'E', 'F']),
+  files: use(File, quantity(2)),
+  directories: recursion(
     'directories',
-    RecursionDepth(1, 3),
-    quantity(() => randomInt(1, 3)),
+    RecursionDepth(2, 3),
+    quantity(() => randomInt(2, 3)),
   ),
-);
+});
 
-const output = build(Directory);
-console.log(JSON.stringify(output, null, 2));
+const ExtD = extend(Directory, {
+  parent: ref('name'),
+});
+
+const output = build(ExtD);
+
+// console.log(JSON.stringify(output, null, 2));
+console.log(output);
 console.log();

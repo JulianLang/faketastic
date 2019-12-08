@@ -4,7 +4,7 @@ import { createProcessorFn, isBuildable } from '../core';
 import { Buildable, IsStickyProcessorSymbol, ProcessorFn, QuantityInsertMode } from '../core/types';
 import { Quantity } from '../core/types/quantity';
 import { getQuantity } from '../core/util/get-quantity';
-import { clone, isDefined, isUndefined } from '../util';
+import { clone, isUndefined } from '../util';
 
 export function quantity(
   quantity: Quantity = 1,
@@ -63,7 +63,7 @@ export function quantity(
 
   function removeStickyProcessors(node: ObjectTreeNode<any>) {
     node.value.processors = node.value.processors.filter((processorFn: ProcessorFn) =>
-      isDefined(processorFn[IsStickyProcessorSymbol]),
+      isUndefined(processorFn[IsStickyProcessorSymbol]),
     );
   }
 

@@ -1,6 +1,12 @@
-import { ObjectTreeNode } from 'treelike';
+import { addChild, ObjectTreeNode, treeOf } from 'treelike';
 import { ProcessorOrders } from '../constants';
-import { asBuildable, buildChild, createBuildable, createProcessorFn, ProcessorFn } from '../core';
+import {
+  asBuildable,
+  childSelector,
+  createBuildable,
+  createProcessorFn,
+  ProcessorFn,
+} from '../core';
 import { placeholder } from '../placeholder';
 import { clone, isUndefined } from '../util';
 import { IterationState, RecursionIterator } from './types/recursion';
@@ -17,11 +23,7 @@ export function recursion(
   endWhen: RecursionIterator,
   ...processors: ProcessorFn[]
 ) {
-  const recursionInit = createProcessorFn(
-    recursionImpl,
-    'initializer',
-    ProcessorOrders.treeStructureChanging,
-  );
+  const recursionInit = createProcessorFn(recursionImpl, 'initializer', ProcessorOrders.recursion);
 
   return createBuildable(placeholder(`recursion:${property}`), [recursionInit, ...processors]);
 
@@ -31,12 +33,14 @@ export function recursion(
     }
 
     const tmpl = node.parent.value;
-    const clonedTmpl = clone(tmpl);
-    const buildableTmpl = asBuildable(clonedTmpl);
-    const iteration = iterateNext(endWhen, buildableTmpl.value);
+    const buildableTmpl = asBuildable(tmpl);
+    const clonedTmpl = clone(buildableTmpl);
+    const iteration = iterateNext(endWhen, clonedTmpl.value);
 
     if (iteration.continue === true) {
-      node.value = buildChild(buildableTmpl, node);
+      const childTree = treeOf(clonedTmpl, childSelector, node);
+      addChild(childTree, node);
+      console.log(node);
     } else {
       node.value = iteration.endWithValue;
     }
