@@ -22,16 +22,17 @@ import { RecursionController, RecursionState } from './types/recursion';
  * @param attachedFns Processors that must include a `quantity(0, x)` or `canBe(any)` processor,
  * being able to end the recursion at some time. Otherwise you'll get a `StackOverflow` exception.
  */
-export function self(endWhen: RecursionController, ...attachedFns: AttachedFn[]) {
+export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[]) {
   let property = 'unknown';
   let originalTemplate: ObjectTreeNode<Buildable>;
+  let state: RecursionState;
 
   const takeTemplateSnapshot = createTreeReaderFn(snapshotOriginalTemplate, 'initializer');
   const recurseNext = createProcessorFn(
     recurseNextImpl,
     'initializer',
     ProcessorOrders.recursion,
-    // quantity will transfer this processor to the multiplied nodes
+    // quantity will transfer this processor to multiplied nodes
     'unsticky',
   );
   const endRecursion = createProcessorFn(
@@ -42,8 +43,8 @@ export function self(endWhen: RecursionController, ...attachedFns: AttachedFn[])
 
   return createBuildable(placeholder(`recursion`), [
     takeTemplateSnapshot,
-    recurseNext,
     endRecursion,
+    recurseNext,
     ...attachedFns,
   ]);
 
@@ -52,13 +53,18 @@ export function self(endWhen: RecursionController, ...attachedFns: AttachedFn[])
    * @param node The node the snapshot is initialized from.
    */
   function snapshotOriginalTemplate(node: ObjectTreeNode) {
-    if (isUndefined(node.parent) || !isBuildable(node.parent.value)) {
+    if (isUndefined(node.parent)) {
       throw CouldNotFindRootTemplateError;
     }
 
     const rootTmpl = tryFindRootTemplate(node);
-    originalTemplate = clone(rootTmpl);
-    property = node.name.toString();
+
+    if (isBuildable(rootTmpl.value)) {
+      originalTemplate = clone(rootTmpl);
+      property = node.name.toString();
+    } else {
+      throw CouldNotFindRootTemplateError;
+    }
   }
 
   /**
@@ -70,7 +76,7 @@ export function self(endWhen: RecursionController, ...attachedFns: AttachedFn[])
     const buildableTmpl = asBuildable(tmpl);
 
     const clonedTmpl: Buildable = clone(buildableTmpl);
-    clonedTmpl.value[property] = self(endWhen, ...attachedFns);
+    clonedTmpl.value[property] = itself(endWhen, ...attachedFns);
 
     node.children = [];
     node.value = buildChild(clonedTmpl, node);
@@ -81,20 +87,18 @@ export function self(endWhen: RecursionController, ...attachedFns: AttachedFn[])
    * @param node The node on which the recursion takes place.
    */
   function endRecursionImpl(node: ObjectTreeNode): void {
-    const iteration = iterateNext(endWhen, node);
+    state = checkState(endWhen, node);
 
-    if (!iteration.continue) {
+    if (!state.continue) {
       node.children = [];
-      node.value = iteration.endWithValue;
+      node.value = state.endWithValue;
+      // removeAttachedFn(recurseNextImpl, )
     }
   }
 
   function tryFindRootTemplate(node: ObjectTreeNode<any>) {
-    if (isUndefined(node.parent)) {
-      throw CouldNotFindRootTemplateError;
-    }
-
-    let tmplNode: ObjectTreeNode = node.parent;
+    // node.parent is ensured by preceeding function
+    let tmplNode: ObjectTreeNode = node.parent!;
 
     while (tmplNode.name !== defaultRootName) {
       if (isUndefined(tmplNode.parent)) {
@@ -113,7 +117,7 @@ export function self(endWhen: RecursionController, ...attachedFns: AttachedFn[])
    * and with value the recursion should stop. Recursion instructor functions avoid inifinite loops.
    * @param node The template to pass in to the instructor function.
    */
-  function iterateNext(iteratorFn: RecursionController, node: ObjectTreeNode): RecursionState {
+  function checkState(iteratorFn: RecursionController, node: ObjectTreeNode): RecursionState {
     const value = iteratorFn(node);
     const state = typeof value === 'function' ? value(node) : value;
 
