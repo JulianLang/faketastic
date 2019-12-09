@@ -14,7 +14,8 @@ import {
   template,
   use,
 } from '../../src';
-import { BuildCycleCallbackFn, Func, MutatingFn } from '../../src/types';
+import { createTreeReaderFn } from '../../src/tree-reader';
+import { AttachedFn, BuildCycleCallbackFn, Func, MutatingFn } from '../../src/types';
 
 describe('build function', () => {
   it('should run processor functions from top to buttom (treewise)', () => {
@@ -147,6 +148,46 @@ describe('build function', () => {
     // act
     // assert
     expect(() => build(buildable)).not.toThrow();
+  });
+
+  it('should execute build-cycle-callbacks in order: tree-reader, architects, processors', () => {
+    // arrange
+    const order: number[] = [];
+    const treeReaderInit = createTreeReaderFn(() => order.push(1), 'initializer');
+    const architectInit = createArchitectFn(() => order.push(2), 'initializer');
+    const processorInit = createProcessorFn(() => order.push(3), 'initializer');
+    const treeReaderPre = createTreeReaderFn(() => order.push(4), 'preprocessor');
+    const architectPre = createArchitectFn(() => order.push(5), 'preprocessor');
+    const processorPre = createProcessorFn(() => order.push(6), 'preprocessor');
+    const treeReaderPost = createTreeReaderFn(() => order.push(7), 'postprocessor');
+    const architectPost = createArchitectFn(() => order.push(8), 'postprocessor');
+    const processorPost = createProcessorFn(() => order.push(9), 'postprocessor');
+    const treeReaderFin = createTreeReaderFn(() => order.push(10), 'finalizer');
+    const architectFin = createArchitectFn(() => order.push(11), 'finalizer');
+    const processorFin = createProcessorFn(() => order.push(12), 'finalizer');
+
+    const fns: AttachedFn[] = [
+      treeReaderInit,
+      architectInit,
+      processorInit,
+      treeReaderPre,
+      architectPre,
+      processorPre,
+      treeReaderPost,
+      architectPost,
+      processorPost,
+      treeReaderFin,
+      architectFin,
+      processorFin,
+    ];
+
+    const buildable = createBuildable({}, fns);
+
+    // act
+    build(buildable);
+
+    // assert
+    expect(order).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
   });
 
   includeBuildMutatingFnsSpecs(createProcessorFn, 'processors');
