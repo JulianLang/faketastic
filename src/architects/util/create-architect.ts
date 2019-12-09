@@ -13,5 +13,5 @@ import { ArchitectFn } from '../types';
  */
 export function createArchitectFn(fn: Func<[ObjectTreeNode], void>): ArchitectFn {
   const cycle: BuildCycle = 'initializer';
-  return setSymbol(ArchitectFnSymbol, fn as any, cycle);
+  return setSymbol(ArchitectFnSymbol, fn as ArchitectFn, cycle);
 }
