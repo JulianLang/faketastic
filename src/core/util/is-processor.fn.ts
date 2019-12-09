@@ -1,5 +1,5 @@
 import { isDefined } from '../../util';
-import { BuildCycle, ProcessorFn, ProcessorSymbol } from '../types';
+import { BuildCycle, ProcessorFn, ProcessorFnSymbol } from '../types';
 
 export function isProcessorFn(fn: any, forCycle?: BuildCycle): fn is ProcessorFn {
   if (typeof fn !== 'function') {
@@ -7,8 +7,8 @@ export function isProcessorFn(fn: any, forCycle?: BuildCycle): fn is ProcessorFn
   }
 
   if (isDefined(forCycle)) {
-    return (fn as any)[ProcessorSymbol] === forCycle;
+    return (fn as any)[ProcessorFnSymbol] === forCycle;
   } else {
-    return isDefined((fn as any)[ProcessorSymbol]);
+    return isDefined((fn as any)[ProcessorFnSymbol]);
   }
 }

@@ -3,8 +3,8 @@ import {
   BuildCycle,
   IsStickyProcessorSymbol,
   ProcessorFn,
+  ProcessorFnSymbol,
   ProcessorOrderSymbol,
-  ProcessorSymbol,
 } from '../types';
 
 export function createProcessorFn(
@@ -14,7 +14,7 @@ export function createProcessorFn(
   sticky: Stickiness = 'sticky',
 ): ProcessorFn {
   const processorFn: ProcessorFn = fn as ProcessorFn;
-  processorFn[ProcessorSymbol] = type;
+  processorFn[ProcessorFnSymbol] = type;
   processorFn[ProcessorOrderSymbol] = orderNumber;
 
   if (sticky === 'sticky') {

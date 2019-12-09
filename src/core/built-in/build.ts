@@ -14,8 +14,8 @@ import {
   ArchitectFnSymbol,
   Buildable,
   ProcessorFn,
+  ProcessorFnSymbol,
   ProcessorOrderSymbol,
-  ProcessorSymbol,
 } from '../types';
 import { BuildCycle } from '../types/build.cycle';
 import {

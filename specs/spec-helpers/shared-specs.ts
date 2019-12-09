@@ -5,7 +5,7 @@ import {
   BuilderFnSymbol,
   createProcessorFn,
   isBuilderFunction,
-  ProcessorSymbol,
+  ProcessorFnSymbol,
 } from '../../src/core';
 
 export function includeProcessorFnSpecs(processorFn: Function, ...params: any[]) {
@@ -15,7 +15,7 @@ export function includeProcessorFnSpecs(processorFn: Function, ...params: any[])
     const processor = processorFn(...params);
 
     // assert
-    expect((processor as any)[ProcessorSymbol]).toBeDefined();
+    expect((processor as any)[ProcessorFnSymbol]).toBeDefined();
   });
 }
 

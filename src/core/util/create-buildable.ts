@@ -6,13 +6,13 @@ import {
   Buildable,
   BuildableSymbol,
   ProcessorFn,
-  ProcessorSymbol,
+  ProcessorFnSymbol,
 } from '../types';
 
 export function createBuildable<T>(tmpl: T, attachedFns: AttachedFn[] = []): Buildable<T> {
   const buildable: Buildable<any> = {
     [BuildableSymbol]: true,
-    processors: extractFns(ProcessorSymbol, attachedFns) as ProcessorFn[],
+    processors: extractFns(ProcessorFnSymbol, attachedFns) as ProcessorFn[],
     architects: extractFns(ArchitectFnSymbol, attachedFns) as ArchitectFn[],
     value: tmpl,
   };
