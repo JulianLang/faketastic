@@ -7,6 +7,12 @@ import { randomInt } from '../../core';
  * @param max The maximal depth level.
  */
 export function RecursionDepth(endWithValue: any, min = 1, max = 10) {
+  if (min < 0 || max < 0) {
+    throw new Error(
+      `faketastic: RecursionDepth: Invalid depth range (${min}, ${max}). Depth must not be a negative number.`,
+    );
+  }
+
   let isInit = true;
   let rootNode: ObjectTreeNode;
   let targetDepth = randomInt(min, max);
@@ -28,8 +34,6 @@ export function RecursionDepth(endWithValue: any, min = 1, max = 10) {
       currentNode = currentNode.parent;
     }
 
-    const shouldBreakRecursion = currentDepth > targetDepth;
-
-    return shouldBreakRecursion ? { endWithValue } : { continue: true };
+    return currentDepth > targetDepth ? { endWithValue } : { continue: true };
   };
 }
