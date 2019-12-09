@@ -13,7 +13,7 @@ import { createTreeReaderFn } from '../tree-reader';
 import { AttachedFn } from '../types';
 import { clone, isUndefined } from '../util';
 import { CouldNotFindRootTemplateError } from './errors';
-import { IterationState, RecursionIterator } from './types/recursion';
+import { RecursionController, RecursionState } from './types/recursion';
 
 /**
  * Creates a recursive property, recursing the template it lays on.
@@ -22,7 +22,7 @@ import { IterationState, RecursionIterator } from './types/recursion';
  * @param attachedFns Processors that must include a `quantity(0, x)` or `canBe(any)` processor,
  * being able to end the recursion at some time. Otherwise you'll get a `StackOverflow` exception.
  */
-export function self(endWhen: RecursionIterator, ...attachedFns: AttachedFn[]) {
+export function self(endWhen: RecursionController, ...attachedFns: AttachedFn[]) {
   let property = 'unknown';
   let originalTemplate: ObjectTreeNode<Buildable>;
 
@@ -113,7 +113,7 @@ export function self(endWhen: RecursionIterator, ...attachedFns: AttachedFn[]) {
    * and with value the recursion should stop. Recursion instructor functions avoid inifinite loops.
    * @param node The template to pass in to the instructor function.
    */
-  function iterateNext(iteratorFn: RecursionIterator, node: ObjectTreeNode): IterationState {
+  function iterateNext(iteratorFn: RecursionController, node: ObjectTreeNode): RecursionState {
     const value = iteratorFn(node);
     const state = typeof value === 'function' ? value(node) : value;
 
