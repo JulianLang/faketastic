@@ -1,5 +1,5 @@
 import { ArchitectFn } from '../../architects/types';
-import { ReadonlyFn } from '../../readonly';
+import { TreeReaderFn } from '../../tree-reader';
 import { ProcessorFn } from './processor.fn';
 
 export const BuildableSymbol = Symbol('Buildable');
@@ -8,5 +8,5 @@ export interface Buildable<T = any> {
   value: T;
   processors: ProcessorFn[];
   architects: ArchitectFn[];
-  readonlys: ReadonlyFn[];
+  treeReaders: TreeReaderFn[];
 }

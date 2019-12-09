@@ -9,7 +9,7 @@ import {
   isBuildable,
 } from '../core';
 import { placeholder } from '../placeholder';
-import { createReadonlyFn } from '../readonly';
+import { createTreeReaderFn } from '../tree-reader';
 import { AttachedFn } from '../types';
 import { clone, isUndefined } from '../util';
 import { CouldNotFindRootTemplateError } from './errors';
@@ -29,7 +29,7 @@ export function recursion(
 ) {
   let originalTemplate: ObjectTreeNode<Buildable>;
 
-  const takeTemplateSnapshot = createReadonlyFn(snapshotOriginalTemplate, 'initializer');
+  const takeTemplateSnapshot = createTreeReaderFn(snapshotOriginalTemplate, 'initializer');
   const recurseNext = createProcessorFn(
     recurseNextImpl,
     'initializer',
@@ -51,7 +51,7 @@ export function recursion(
   ]);
 
   /**
-   * Makes a snapshot
+   * Makes a snapshot of the parent-template the node lays in.
    * @param node The node the snapshot is initialized from.
    */
   function snapshotOriginalTemplate(node: ObjectTreeNode) {

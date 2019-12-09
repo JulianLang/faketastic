@@ -8,7 +8,7 @@ import {
   treeOf,
 } from 'treelike';
 import { ArchitectFn } from '../../architects';
-import { ReadonlyFn, ReadonlyFnSymbol } from '../../readonly';
+import { TreeReaderFn, TreeReaderFnSymbol } from '../../tree-reader';
 import { AttachedFn } from '../../types';
 import { extractFns, hasSymbol } from '../../util';
 import {
@@ -111,8 +111,8 @@ function runMutatingFns(cycle: BuildCycle, node: ObjectTreeNode): void {
  */
 function runReadonlyFns(cycle: BuildCycle, node: ObjectTreeNode): void {
   if (isBuildable(node.value)) {
-    node.value.readonlys
-      .filter(fn => hasSymbol(ReadonlyFnSymbol, fn, cycle))
+    node.value.treeReaders
+      .filter(fn => hasSymbol(TreeReaderFnSymbol, fn, cycle))
       .forEach(readonlyFn => readonlyFn(node));
   }
 }
@@ -196,10 +196,10 @@ function setValue(value: any, node: ObjectTreeNode) {
 function addAttachedFns<T = any>(attachedFns: AttachedFn[], buildable: Buildable<T>) {
   const processors = extractFns(ProcessorFnSymbol, attachedFns) as ProcessorFn[];
   const architects = extractFns(ArchitectFnSymbol, attachedFns) as ArchitectFn[];
-  const readonlys = extractFns(ReadonlyFnSymbol, attachedFns) as ReadonlyFn[];
+  const readonlys = extractFns(TreeReaderFnSymbol, attachedFns) as TreeReaderFn[];
   buildable.processors.push(...processors);
   buildable.architects.push(...architects);
-  buildable.readonlys.push(...readonlys);
+  buildable.treeReaders.push(...readonlys);
 }
 
 /**
