@@ -12,7 +12,7 @@ export function quantity(
   insertMode: QuantityInsertMode = 'createNewArray',
 ): ArchitectFn {
   // Architects are executed before BuildCycle 'initializer'
-  return createArchitectFn(quantityImpl);
+  return createArchitectFn(quantityImpl, 'initializer');
 
   function quantityImpl(node: ObjectTreeNode) {
     if (quantity === 1) {

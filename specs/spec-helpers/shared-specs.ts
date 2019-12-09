@@ -38,7 +38,7 @@ export function includeDirectiveFnSpecs(directiveFn: Function, ...params: any[])
   it('should include given processor- and architect-functions in buildable', () => {
     // arrange
     const procFn = createProcessorFn(() => {}, 'initializer');
-    const architectFn = createArchitectFn(() => {});
+    const architectFn = createArchitectFn(() => {}, 'initializer');
     const negativeTestFn = () => {};
     const processorFns: Function[] = [procFn, architectFn, negativeTestFn];
 
