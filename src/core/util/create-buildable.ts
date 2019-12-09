@@ -1,4 +1,5 @@
 import { ArchitectFn } from '../../architects';
+import { ReadonlyFn, ReadonlyFnSymbol } from '../../readonly';
 import { AttachedFn } from '../../types';
 import { extractFns } from '../../util';
 import {
@@ -14,6 +15,7 @@ export function createBuildable<T>(tmpl: T, attachedFns: AttachedFn[] = []): Bui
     [BuildableSymbol]: true,
     processors: extractFns(ProcessorFnSymbol, attachedFns) as ProcessorFn[],
     architects: extractFns(ArchitectFnSymbol, attachedFns) as ArchitectFn[],
+    readonlys: extractFns(ReadonlyFnSymbol, attachedFns) as ReadonlyFn[],
     value: tmpl,
   };
 
