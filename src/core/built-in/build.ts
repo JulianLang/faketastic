@@ -109,10 +109,12 @@ function runMutatingFns(cycle: BuildCycle, node: ObjectTreeNode): void {
  * @param cycle The cycle for which to run the ReadonlyFns.
  * @param node The node on whcih to run its ReadonlyFns.
  */
-function runReadonlyFns(cycle: BuildCycle, node: ObjectTreeNode<Buildable>): void {
-  node.value.readonlys
-    .filter(fn => hasSymbol(ReadonlyFnSymbol, fn, cycle))
-    .forEach(readonlyFn => readonlyFn(node));
+function runReadonlyFns(cycle: BuildCycle, node: ObjectTreeNode): void {
+  if (isBuildable(node.value)) {
+    node.value.readonlys
+      .filter(fn => hasSymbol(ReadonlyFnSymbol, fn, cycle))
+      .forEach(readonlyFn => readonlyFn(node));
+  }
 }
 
 /**
