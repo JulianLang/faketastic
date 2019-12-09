@@ -9,14 +9,14 @@ import {
 } from 'treelike';
 import { ArchitectFn } from '../../architects';
 import { TreeReaderFn, TreeReaderFnSymbol } from '../../tree-reader';
-import { AttachedFn } from '../../types';
+import { AttachedFn, MutatingFn } from '../../types';
 import { extractFns, hasSymbol } from '../../util';
 import {
   ArchitectFnSymbol,
   Buildable,
+  FnOrderSymbol,
   ProcessorFn,
   ProcessorFnSymbol,
-  ProcessorOrderSymbol,
 } from '../types';
 import { BuildCycle } from '../types/build.cycle';
 import { asBuildable, getLeafBuildable, isBuildable, isBuilderFunction } from '../util';
@@ -125,6 +125,7 @@ function runReadonlyFns(cycle: BuildCycle, node: ObjectTreeNode): void {
 function runArchitectFns(cycle: BuildCycle, node: ObjectTreeNode<Buildable>): void {
   node.value.architects
     .filter(fn => hasSymbol(ArchitectFnSymbol, fn, cycle))
+    .sort(sortByOrderNumber)
     .forEach(architectFn => architectFn(node));
 }
 
@@ -239,10 +240,10 @@ function runReverse<T>(
  * @param a A processor function as comparison subject.
  * @param b A processor function as comparison object.
  */
-function sortByOrderNumber(a: ProcessorFn, b: ProcessorFn): number {
+function sortByOrderNumber(a: MutatingFn, b: MutatingFn): number {
   let result = 0;
-  const orderA = a[ProcessorOrderSymbol];
-  const orderB = b[ProcessorOrderSymbol];
+  const orderA = a[FnOrderSymbol];
+  const orderB = b[FnOrderSymbol];
 
   if (orderA > orderB) {
     result = 1;

@@ -1,6 +1,5 @@
-import { ObjectTreeNode } from 'treelike';
 import { BuildCycle } from '../core';
-import { Func } from '../types';
+import { BuildCycleCallbackFn } from '../types';
 import { setSymbol } from '../util';
 import { TreeReaderFn, TreeReaderFnSymbol } from './types';
 
@@ -11,9 +10,6 @@ import { TreeReaderFn, TreeReaderFnSymbol } from './types';
  * @param fn The function to be converted into a TreeReaderFn.
  * @param forCycle The build-cycle to run the TreeReaderFn in.
  */
-export function createTreeReaderFn(
-  fn: Func<[ObjectTreeNode], void>,
-  forCycle: BuildCycle,
-): TreeReaderFn {
+export function createTreeReaderFn(fn: BuildCycleCallbackFn, forCycle: BuildCycle): TreeReaderFn {
   return setSymbol(TreeReaderFnSymbol, fn as TreeReaderFn, forCycle);
 }

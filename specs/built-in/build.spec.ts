@@ -1,17 +1,20 @@
 import { createNode, ObjectTreeNode } from 'treelike';
 import {
   build,
+  Buildable,
+  BuildCycle,
   canBe,
+  createArchitectFn,
   createBuildable,
   createBuilderFn,
   createProcessorFn,
   oneOf,
-  ProcessorFn,
   quantity,
   range,
   template,
   use,
 } from '../../src';
+import { BuildCycleCallbackFn, Func, MutatingFn } from '../../src/types';
 
 describe('build function', () => {
   it('should run processor functions from top to buttom (treewise)', () => {
@@ -101,101 +104,6 @@ describe('build function', () => {
     expect(result).toEqual(value);
   });
 
-  it('should run processor functions in correct order', () => {
-    // arrange
-    const order: number[] = [];
-    const expectedOrder: number[] = [0, 1, 2, 3];
-    const processors: ProcessorFn[] = [
-      createProcessorFn(() => order.push(0), 'initializer'),
-      createProcessorFn(() => order.push(1), 'preprocessor'),
-      createProcessorFn(() => order.push(2), 'postprocessor'),
-      createProcessorFn(() => order.push(3), 'finalizer'),
-    ];
-    const buildable = createBuildable({}, processors);
-
-    // act
-    build(buildable);
-
-    // assert
-    expect(order).toEqual(expectedOrder);
-  });
-
-  it('should run processor functions where they are located', () => {
-    // arrange
-    const nestedBuildable = createBuildable({});
-    const buildable = createBuildable({
-      a: nestedBuildable,
-    });
-
-    // assert
-    const assertCorrectNodeFn = (node: ObjectTreeNode<any>) => {
-      expect(node.name).toBe('a');
-      expect(node.value).toBe(nestedBuildable);
-    };
-
-    // ... arrange (continuation)
-    const processors: ProcessorFn[] = [
-      createProcessorFn(assertCorrectNodeFn, 'initializer'),
-      createProcessorFn(assertCorrectNodeFn, 'preprocessor'),
-      createProcessorFn(assertCorrectNodeFn, 'postprocessor'),
-      createProcessorFn(assertCorrectNodeFn, 'finalizer'),
-    ];
-
-    nestedBuildable.processors = processors;
-
-    // act
-    build(buildable);
-  });
-
-  it('should respect processor function ordering in all build cycles', () => {
-    // arrange
-    const execFirst = 0;
-    const execAfter = 1;
-
-    const initalizerOrder: number[] = [];
-    const preprocessorOrder: number[] = [];
-    const postprocessorOrder: number[] = [];
-    const finalizerOrder: number[] = [];
-    const expectedOrder = [1, 2];
-
-    const processors: ProcessorFn[] = [
-      // initializers
-      createProcessorFn(() => initalizerOrder.push(2), 'initializer', execAfter),
-      createProcessorFn(() => initalizerOrder.push(1), 'initializer', execFirst),
-      // preprocessors
-      createProcessorFn(() => preprocessorOrder.push(2), 'preprocessor', execAfter),
-      createProcessorFn(() => preprocessorOrder.push(1), 'preprocessor', execFirst),
-      // postprocessors
-      createProcessorFn(() => postprocessorOrder.push(2), 'postprocessor', execAfter),
-      createProcessorFn(() => postprocessorOrder.push(1), 'postprocessor', execFirst),
-      // finalizers
-      createProcessorFn(() => finalizerOrder.push(2), 'finalizer', execAfter),
-      createProcessorFn(() => finalizerOrder.push(1), 'finalizer', execFirst),
-    ];
-    const buildable = createBuildable({}, processors);
-
-    // negative test: arrange
-    const negativeTestOrder: number[] = [];
-    const negativeTestExpectedOrder = [2, 1];
-    const negativeTestProcessors: ProcessorFn[] = [
-      // have same prio, so the order in array should define execution order:
-      createProcessorFn(() => negativeTestOrder.push(2), 'initializer', execAfter),
-      createProcessorFn(() => negativeTestOrder.push(1), 'initializer', execAfter),
-    ];
-    const negativeTestBuildable = createBuildable({}, negativeTestProcessors);
-
-    // act
-    build(buildable);
-    build(negativeTestBuildable);
-
-    // assert
-    expect(initalizerOrder).toEqual(expectedOrder);
-    expect(preprocessorOrder).toEqual(expectedOrder);
-    expect(postprocessorOrder).toEqual(expectedOrder);
-    expect(finalizerOrder).toEqual(expectedOrder);
-    expect(negativeTestOrder).toEqual(negativeTestExpectedOrder);
-  });
-
   it('should call builder functions and assign their result as value', () => {
     // arrange
     let wasCalled = false;
@@ -240,4 +148,109 @@ describe('build function', () => {
     // assert
     expect(() => build(buildable)).not.toThrow();
   });
+
+  includeBuildMutatingFnsSpecs(createProcessorFn, 'processors');
+
+  includeBuildMutatingFnsSpecs(createArchitectFn, 'architects');
 });
+
+/** Specs testing `build`-fn to correctly run MutatingFns like `Architects` and `Processors`. */
+export function includeBuildMutatingFnsSpecs(
+  mutationFnFactory: Func<[BuildCycleCallbackFn, BuildCycle, ...any[]], MutatingFn>,
+  targetProperty: keyof Buildable,
+) {
+  it(`should run ${String(targetProperty)} functions in correct order`, () => {
+    // arrange
+    const order: number[] = [];
+    const expectedOrder: number[] = [0, 1, 2, 3];
+    const processors: MutatingFn[] = [
+      mutationFnFactory(() => order.push(0), 'initializer'),
+      mutationFnFactory(() => order.push(1), 'preprocessor'),
+      mutationFnFactory(() => order.push(2), 'postprocessor'),
+      mutationFnFactory(() => order.push(3), 'finalizer'),
+    ];
+    const buildable = createBuildable({}, processors);
+
+    // act
+    build(buildable);
+
+    // assert
+    expect(order).toEqual(expectedOrder);
+  });
+
+  it(`should run ${String(targetProperty)} functions where they are located`, () => {
+    // arrange
+    const nestedBuildable = createBuildable({});
+    const buildable = createBuildable({
+      a: nestedBuildable,
+    });
+
+    // assert
+    const assertCorrectNodeFn = (node: ObjectTreeNode<any>) => {
+      expect(node.name).toBe('a');
+      expect(node.value).toBe(nestedBuildable);
+    };
+
+    // ... arrange (continuation)
+    const fns: MutatingFn[] = [
+      mutationFnFactory(assertCorrectNodeFn, 'initializer'),
+      mutationFnFactory(assertCorrectNodeFn, 'preprocessor'),
+      mutationFnFactory(assertCorrectNodeFn, 'postprocessor'),
+      mutationFnFactory(assertCorrectNodeFn, 'finalizer'),
+    ];
+
+    nestedBuildable[targetProperty] = fns as any;
+
+    // act
+    build(buildable);
+  });
+
+  fit(`should respect ${String(targetProperty)} function ordering in all build cycles`, () => {
+    // arrange
+    const execFirst = 0;
+    const execAfter = 1;
+
+    const initalizerOrder: number[] = [];
+    const preprocessorOrder: number[] = [];
+    const postprocessorOrder: number[] = [];
+    const finalizerOrder: number[] = [];
+    const expectedOrder = [1, 2];
+
+    const fns: MutatingFn[] = [
+      // initializers
+      mutationFnFactory(() => initalizerOrder.push(2), 'initializer', execAfter),
+      mutationFnFactory(() => initalizerOrder.push(1), 'initializer', execFirst),
+      // preprocessors
+      mutationFnFactory(() => preprocessorOrder.push(2), 'preprocessor', execAfter),
+      mutationFnFactory(() => preprocessorOrder.push(1), 'preprocessor', execFirst),
+      // postprocessors
+      mutationFnFactory(() => postprocessorOrder.push(2), 'postprocessor', execAfter),
+      mutationFnFactory(() => postprocessorOrder.push(1), 'postprocessor', execFirst),
+      // finalizers
+      mutationFnFactory(() => finalizerOrder.push(2), 'finalizer', execAfter),
+      mutationFnFactory(() => finalizerOrder.push(1), 'finalizer', execFirst),
+    ];
+    const buildable = createBuildable({}, fns);
+
+    // negative test: arrange
+    const negativeTestOrder: number[] = [];
+    const negativeTestExpectedOrder = [2, 1];
+    const negativeTestProcessors: MutatingFn[] = [
+      // have same prio, so the order in array should define execution order:
+      mutationFnFactory(() => negativeTestOrder.push(2), 'initializer', execAfter),
+      mutationFnFactory(() => negativeTestOrder.push(1), 'initializer', execAfter),
+    ];
+    const negativeTestBuildable = createBuildable({}, negativeTestProcessors);
+
+    // act
+    build(buildable);
+    build(negativeTestBuildable);
+
+    // assert
+    expect(initalizerOrder).toEqual(expectedOrder);
+    expect(preprocessorOrder).toEqual(expectedOrder);
+    expect(postprocessorOrder).toEqual(expectedOrder);
+    expect(finalizerOrder).toEqual(expectedOrder);
+    expect(negativeTestOrder).toEqual(negativeTestExpectedOrder);
+  });
+}

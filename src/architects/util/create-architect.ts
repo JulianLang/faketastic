@@ -1,6 +1,5 @@
-import { ObjectTreeNode } from 'treelike';
-import { ArchitectFnSymbol, BuildCycle } from '../../core';
-import { Func } from '../../types';
+import { ArchitectFnSymbol, BuildCycle, FnOrderSymbol } from '../../core';
+import { BuildCycleCallbackFn } from '../../types';
 import { setSymbol } from '../../util';
 import { ArchitectFn } from '../types';
 
@@ -11,7 +10,13 @@ import { ArchitectFn } from '../types';
  * change the tree-structure, not its node-data.
  * @param fn The function to convert into an ArchitectFn.
  */
-export function createArchitectFn(fn: Func<[ObjectTreeNode], void>): ArchitectFn {
-  const cycle: BuildCycle = 'initializer';
-  return setSymbol(ArchitectFnSymbol, fn as ArchitectFn, cycle);
+export function createArchitectFn(
+  fn: BuildCycleCallbackFn,
+  forCycle: BuildCycle,
+  order = 0,
+): ArchitectFn {
+  const architectFn: ArchitectFn = setSymbol(ArchitectFnSymbol, fn as ArchitectFn, forCycle);
+  architectFn[FnOrderSymbol] = order;
+
+  return architectFn;
 }

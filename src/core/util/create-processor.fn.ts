@@ -1,21 +1,21 @@
-import { Stickiness } from '../../types';
+import { BuildCycleCallbackFn, Stickiness } from '../../types';
 import {
   BuildCycle,
+  FnOrderSymbol,
   IsStickyProcessorSymbol,
   ProcessorFn,
   ProcessorFnSymbol,
-  ProcessorOrderSymbol,
 } from '../types';
 
 export function createProcessorFn(
-  fn: Function,
+  fn: BuildCycleCallbackFn,
   type: BuildCycle,
   orderNumber = 0,
   sticky: Stickiness = 'sticky',
 ): ProcessorFn {
   const processorFn: ProcessorFn = fn as ProcessorFn;
   processorFn[ProcessorFnSymbol] = type;
-  processorFn[ProcessorOrderSymbol] = orderNumber;
+  processorFn[FnOrderSymbol] = orderNumber;
 
   if (sticky === 'sticky') {
     processorFn[IsStickyProcessorSymbol] = true;
