@@ -251,6 +251,12 @@ function sortByOrderNumber(a: ProcessorFn, b: ProcessorFn): number {
   return result;
 }
 
+// TODO: langju: this is not traversing as intended yet.
+/**
+ * Traverses a tree from top to down by traversing the siblings.
+ * @param node The node to start traversion from. Usually the tree's root.
+ * @param onNext The callback function to call for each and every traversed node.
+ */
 function topDownSiblingTraverser(node: ObjectTreeNode, onNext: TraverseCallbackFn): void {
   // also include root
   if (node.parent === undefined) {
