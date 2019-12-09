@@ -197,10 +197,10 @@ function setValue(value: any, node: ObjectTreeNode) {
 function addAttachedFns<T = any>(attachedFns: AttachedFn[], buildable: Buildable<T>) {
   const processors = extractFns(ProcessorFnSymbol, attachedFns) as ProcessorFn[];
   const architects = extractFns(ArchitectFnSymbol, attachedFns) as ArchitectFn[];
-  const readonlys = extractFns(TreeReaderFnSymbol, attachedFns) as TreeReaderFn[];
+  const treeReaders = extractFns(TreeReaderFnSymbol, attachedFns) as TreeReaderFn[];
   buildable.processors.push(...processors);
   buildable.architects.push(...architects);
-  buildable.treeReaders.push(...readonlys);
+  buildable.treeReaders.push(...treeReaders);
 }
 
 /**
