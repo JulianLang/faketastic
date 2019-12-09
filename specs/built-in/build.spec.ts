@@ -205,7 +205,7 @@ export function includeBuildMutatingFnsSpecs(
     build(buildable);
   });
 
-  fit(`should respect ${String(targetProperty)} function ordering in all build cycles`, () => {
+  it(`should respect ${String(targetProperty)} function ordering in all build cycles`, () => {
     // arrange
     const execFirst = 0;
     const execAfter = 1;
