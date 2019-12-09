@@ -44,22 +44,26 @@ export function buildChild<R = any, T = any>(
     buildableNode.parent = asChildOf;
   }
 
-  runCycle(buildableNode, node => runReadonlyFns('initializer', freeze(node)));
-  runCycle(buildableNode, node => runAttachedFns('initializer', node));
-
-  runCycle(buildableNode, node => runReadonlyFns('preprocessor', freeze(node)));
-  runCycle(buildableNode, node => runAttachedFns('preprocessor', node));
-  runCycle(buildableNode, node => buildNode(node));
-  runCycle(buildableNode, node => runReadonlyFns('postprocessor', freeze(node)));
-  runCycle(buildableNode, node => runAttachedFns('postprocessor', node));
-
-  runCycle(buildableNode, node => runReadonlyFns('finalizer', freeze(node)));
-  runCycle(buildableNode, node => runAttachedFns('finalizer', node));
+  runCycle('initializer', buildableNode);
+  runCycle('preprocessor', buildableNode);
+  run(buildableNode, node => buildNode(node));
+  runCycle('postprocessor', buildableNode);
+  runCycle('finalizer', buildableNode);
 
   updateType(buildableNode);
   runReverse(buildableNode, node => finalize(node), asChildOf);
 
   return buildableNode.value as any;
+}
+
+/**
+ * Runs the specified build cycle on the given node.
+ * @param cycle The cycle to run on the specified node.
+ * @param buildableNode The node to run the cycle on.
+ */
+function runCycle(cycle: BuildCycle, buildableNode: ObjectTreeNode): void {
+  run(buildableNode, node => runReadonlyFns(cycle, freeze(node)));
+  run(buildableNode, node => runMutatingFns(cycle, node));
 }
 
 function finalize(node: ObjectTreeNode): void {
@@ -88,11 +92,12 @@ function buildChildrenOf(node: ObjectTreeNode) {
 }
 
 /**
- * Runs all AttachedFns (e.g. `ProcessorFns` and `ArchitectFns`) on a given node for the specified build-cycle.
+ * Runs all tree-mutating functions (e.g. `ProcessorFns` and `ArchitectFns`) on a given node
+ * for the specified build-cycle.
  * @param cycle The cycle for which to run the AttachedFns.
  * @param node The node on which to run its AttachedFns.
  */
-function runAttachedFns(cycle: BuildCycle, node: ObjectTreeNode): void {
+function runMutatingFns(cycle: BuildCycle, node: ObjectTreeNode): void {
   if (isBuildable(node.value)) {
     runArchitectFns(cycle, node);
     runProcessors(cycle, node);
@@ -200,7 +205,7 @@ function addAttachedFns<T = any>(attachedFns: AttachedFn[], buildable: Buildable
  * @param node The node to start traversion from.
  * @param onNext The callback function to call for each node reached.
  */
-function runCycle<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) => void): void {
+function run<T>(node: ObjectTreeNode<T>, onNext: (node: ObjectTreeNode<T>) => void): void {
   traverse(node, onNext, topDownSiblingTraverser);
 }
 
