@@ -1,6 +1,7 @@
 export * from './clone';
 export * from './clone-items';
 export * from './extract.fns';
+export * from './freeze';
 export * from './get-symbol';
 export * from './has-symbol';
 export * from './is-array';
