@@ -22,11 +22,8 @@ import { IterationState, RecursionIterator } from './types/recursion';
  * @param attachedFns Processors that must include a `quantity(0, x)` or `canBe(any)` processor,
  * being able to end the recursion at some time. Otherwise you'll get a `StackOverflow` exception.
  */
-export function recursion(
-  property: string,
-  endWhen: RecursionIterator,
-  ...attachedFns: AttachedFn[]
-) {
+export function recursion(endWhen: RecursionIterator, ...attachedFns: AttachedFn[]) {
+  let property = 'unknown';
   let originalTemplate: ObjectTreeNode<Buildable>;
 
   const takeTemplateSnapshot = createTreeReaderFn(snapshotOriginalTemplate, 'initializer');
@@ -43,7 +40,7 @@ export function recursion(
     ProcessorOrders.recursion,
   );
 
-  return createBuildable(placeholder(`recursion:${property}`), [
+  return createBuildable(placeholder(`recursion`), [
     takeTemplateSnapshot,
     recurseNext,
     endRecursion,
@@ -61,6 +58,7 @@ export function recursion(
 
     const rootTmpl = tryFindRootTemplate(node);
     originalTemplate = clone(rootTmpl);
+    property = node.name.toString();
   }
 
   /**
@@ -72,7 +70,7 @@ export function recursion(
     const buildableTmpl = asBuildable(tmpl);
 
     const clonedTmpl: Buildable = clone(buildableTmpl);
-    clonedTmpl.value[property] = recursion(property, endWhen, ...attachedFns);
+    clonedTmpl.value[property] = recursion(endWhen, ...attachedFns);
 
     node.children = [];
     node.value = buildChild(clonedTmpl, node);
