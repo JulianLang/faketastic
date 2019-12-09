@@ -15,7 +15,7 @@
     $ npm start
 */
 import { build, combine, extend, oneOf, quantity, randomInt, ref, template, use } from './src';
-import { recursion, RecursionDepth } from './src/builders';
+import { RecursionDepth, self } from './src/builders';
 
 // @ts-ignore
 const File = template({
@@ -33,7 +33,7 @@ const File = template({
 const Directory = template({
   name: oneOf(['A', 'B', 'C', 'D', 'E', 'F']),
   files: use(File, quantity(2)),
-  directories: recursion(
+  directories: self(
     RecursionDepth([], 2, 3),
     quantity(() => randomInt(2, 2)),
   ),
