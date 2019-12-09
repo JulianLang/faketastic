@@ -19,7 +19,7 @@ import { recursion, RecursionDepth } from './src/builders';
 
 // @ts-ignore
 const File = template({
-  name: oneOf(['empty', 'nice', 'something']),
+  name: oneOf(['empty', 'nice', 'something', 'secret', 'unknown', 'stream']),
   extension: oneOf(['css', 'txt', 'rtf', 'docx', 'mp3']),
   fileName: combine(
     {
@@ -35,8 +35,8 @@ const Directory = template({
   files: use(File, quantity(2)),
   directories: recursion(
     'directories',
-    RecursionDepth([], 0, 1),
-    quantity(() => randomInt(0, 2)),
+    RecursionDepth([], 2, 3),
+    quantity(() => randomInt(2, 2)),
   ),
 });
 

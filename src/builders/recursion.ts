@@ -1,9 +1,18 @@
-import { addChildren, defaultRootName, ObjectTreeNode, treeOf } from 'treelike';
+import { defaultRootName, ObjectTreeNode } from 'treelike';
 import { ProcessorOrders } from '../constants';
-import { asBuildable, Buildable, childSelector, createBuildable, createProcessorFn } from '../core';
+import {
+  asBuildable,
+  Buildable,
+  buildChild,
+  createBuildable,
+  createProcessorFn,
+  isBuildable,
+} from '../core';
 import { placeholder } from '../placeholder';
+import { createReadonlyFn } from '../readonly';
 import { AttachedFn } from '../types';
 import { clone, isUndefined } from '../util';
+import { CouldNotFindRootTemplateError } from './errors';
 import { IterationState, RecursionIterator } from './types/recursion';
 
 /**
@@ -18,6 +27,9 @@ export function recursion(
   endWhen: RecursionIterator,
   ...attachedFns: AttachedFn[]
 ) {
+  let originalTemplate: ObjectTreeNode<Buildable>;
+
+  const takeTemplateSnapshot = createReadonlyFn(snapshotOriginalTemplate, 'initializer');
   const recurseNext = createProcessorFn(
     recurseNextImpl,
     'initializer',
@@ -32,23 +44,44 @@ export function recursion(
   );
 
   return createBuildable(placeholder(`recursion:${property}`), [
+    takeTemplateSnapshot,
     recurseNext,
     endRecursion,
     ...attachedFns,
   ]);
 
-  function recurseNextImpl(node: ObjectTreeNode): void {
-    const rootTemplateNode = tryFindRootTemplate(node);
-    const tmpl = rootTemplateNode.value;
+  /**
+   * Makes a snapshot
+   * @param node The node the snapshot is initialized from.
+   */
+  function snapshotOriginalTemplate(node: ObjectTreeNode) {
+    if (isUndefined(node.parent) || !isBuildable(node.parent.value)) {
+      throw CouldNotFindRootTemplateError;
+    }
 
+    const rootTmpl = tryFindRootTemplate(node);
+    originalTemplate = clone(rootTmpl);
+  }
+
+  /**
+   * Continues the recursion on the child-node(s).
+   * @param node The node holding the next recursion iteration.
+   */
+  function recurseNextImpl(node: ObjectTreeNode): void {
+    const tmpl = originalTemplate.value;
     const buildableTmpl = asBuildable(tmpl);
+
     const clonedTmpl: Buildable = clone(buildableTmpl);
     clonedTmpl.value[property] = recursion(property, endWhen, ...attachedFns);
 
-    const recursiveTree = treeOf(clonedTmpl, childSelector);
-    addChildren(recursiveTree.children, node);
+    node.children = [];
+    node.value = buildChild(clonedTmpl, node);
   }
 
+  /**
+   * Ends the recursion with a static value; so recursion is completed.
+   * @param node The node on which the recursion takes place.
+   */
   function endRecursionImpl(node: ObjectTreeNode): void {
     const iteration = iterateNext(endWhen, node);
 
@@ -60,14 +93,14 @@ export function recursion(
 
   function tryFindRootTemplate(node: ObjectTreeNode<any>) {
     if (isUndefined(node.parent)) {
-      throw new Error(``);
+      throw CouldNotFindRootTemplateError;
     }
 
     let tmplNode: ObjectTreeNode = node.parent;
 
     while (tmplNode.name !== defaultRootName) {
       if (isUndefined(tmplNode.parent)) {
-        throw new Error(`faketastic: recursion: Could not find valid root/template-node.`);
+        throw CouldNotFindRootTemplateError;
       }
 
       tmplNode = tmplNode.parent;
