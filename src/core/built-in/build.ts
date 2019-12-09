@@ -10,7 +10,7 @@ import {
 import { ArchitectFn } from '../../architects';
 import { ReadonlyFn, ReadonlyFnSymbol } from '../../readonly';
 import { AttachedFn } from '../../types';
-import { extractFns, freeze, hasSymbol } from '../../util';
+import { extractFns, hasSymbol } from '../../util';
 import {
   ArchitectFnSymbol,
   Buildable,
@@ -62,7 +62,7 @@ export function buildChild<R = any, T = any>(
  * @param buildableNode The node to run the cycle on.
  */
 function runCycle(cycle: BuildCycle, buildableNode: ObjectTreeNode): void {
-  run(buildableNode, node => runReadonlyFns(cycle, freeze(node)));
+  run(buildableNode, node => runReadonlyFns(cycle, node));
   run(buildableNode, node => runMutatingFns(cycle, node));
 }
 
