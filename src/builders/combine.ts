@@ -1,5 +1,5 @@
 import { ObjectTreeNode } from 'treelike';
-import { MutatingFnOrders } from '../constants';
+import { MutatingFnOrders, UnsetValue } from '../constants';
 import { Buildable, buildChild, createBuildable, PureObject } from '../core';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
@@ -16,7 +16,7 @@ export function combine<T>(
     MutatingFnOrders.processors.combineValues,
   );
 
-  return createBuildable(null, [combineValuesProcessor, ...attachedFns]);
+  return createBuildable(UnsetValue, [combineValuesProcessor, ...attachedFns]);
 
   function buildAndCombineValues(node: ObjectTreeNode<Buildable<T>>) {
     const clonedProps = clone(props);

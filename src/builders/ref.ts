@@ -1,5 +1,5 @@
 import { findNode, ObjectTreeNode, siblingAndSelfTraverser } from 'treelike';
-import { MutatingFnOrders } from '../constants';
+import { MutatingFnOrders, UnsetValue } from '../constants';
 import { Buildable, createBuildable, getLeafBuildable, isBuildable } from '../core';
 import { isPlaceholder, placeholder } from '../placeholder';
 import { createProcessorFn } from '../processors';
@@ -9,7 +9,7 @@ import { isBuilderFunction } from './util';
 export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): Buildable {
   const refProcessor = createProcessorFn(refImpl, 'finalizer', MutatingFnOrders.processors.ref);
 
-  return createBuildable(null, [refProcessor, ...attachedFns]);
+  return createBuildable(UnsetValue, [refProcessor, ...attachedFns]);
 
   function refImpl(node: ObjectTreeNode) {
     const resolvedReference = tryResolveRef(node);
@@ -22,9 +22,10 @@ export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): B
       const leafBuildable = getLeafBuildable(resolvedReference);
       const leafValue = leafBuildable.value;
 
+      // TODO: langju: is "BuilderFn" the only possibility for incomplete values?
       if (isBuilderFunction(leafValue)) {
-        // value has not been built yet.
-        node.value = placeholder(`ref:defer:${property}`);
+        // value has not been built yet. mark for recheck in next (outer, if any) build cycle.
+        node.value = placeholder(`ref/defer:${property}`);
       } else {
         node.value = leafValue;
       }

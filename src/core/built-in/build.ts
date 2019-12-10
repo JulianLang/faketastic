@@ -9,10 +9,12 @@ import {
 } from 'treelike';
 import { ArchitectFn } from '../../architects';
 import { isBuilderFunction } from '../../builders';
+import { UnsetValue } from '../../constants';
+import { isPlaceholder } from '../../placeholder';
 import { ProcessorFn, ProcessorFnSymbol } from '../../processors';
 import { TreeReaderFn, TreeReaderFnSymbol } from '../../tree-reader';
 import { AttachedFn, MutatingFn } from '../../types';
-import { extractFns, hasSymbol, setSymbol } from '../../util';
+import { extractFns, hasSymbol, isUndefined, setSymbol } from '../../util';
 import { ArchitectFnSymbol, Buildable, BuildRootSymbol, FnOrderSymbol } from '../types';
 import { BuildCycle } from '../types/build.cycle';
 import { asBuildable, getLeafBuildable, isBuildable } from '../util';
@@ -50,6 +52,11 @@ export function buildChild<R = any, T = any>(
 
   updateType(buildableNode);
   runReverse(buildableNode, node => finalize(node), asChildOf);
+
+  // base root:
+  if (isUndefined(buildableNode.parent)) {
+    run(buildableNode, cleanUp);
+  }
 
   return buildableNode.value as any;
 }
@@ -250,6 +257,20 @@ function sortByOrderNumber(a: MutatingFn, b: MutatingFn): number {
   }
 
   return result;
+}
+
+/**
+ * Cleans up the tree from `UnsetValue`s and `Placeholder`s.
+ * @param node The root node to begin cleaning process from.
+ */
+function cleanUp(node: ObjectTreeNode): void {
+  if (node.value === UnsetValue) {
+    console.warn(`faketastic/clean-up: Unset value found on property "${node.name}".`);
+    node.value = undefined;
+  } else if (isPlaceholder(node.value)) {
+    console.warn(`faketastic/clean-up: Placeholder found on property "${node.name}".`);
+    node.value = undefined;
+  }
 }
 
 // TODO: langju: this is not traversing as intended yet.
