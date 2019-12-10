@@ -250,16 +250,30 @@ function runReverse<T>(
   asChildOf?: ObjectTreeNode,
 ): void {
   if (isDefined(asChildOf)) {
-    // only build child's tree scope, so stop when reaching asChildOf (child's root node)
-    leafTraverser(node, onNext, node => node === asChildOf);
-    // ... but still emit rootNode as well
-    onNext(asChildOf);
+    runChildScopedReverse<T>(node, onNext, asChildOf);
   } else {
     traverse(node, onNext, leafTraverser);
   }
 
   // also include root
   onNext(node);
+}
+
+/**
+ * Runs an child-excpert of the tree reversively.
+ * @param node The node to start traversion from.
+ * @param onNext The callback function to be called for each traversed node.
+ * @param asChildOf The node that limits the child scope.
+ */
+function runChildScopedReverse<T>(
+  node: ObjectTreeNode<T>,
+  onNext: (node: ObjectTreeNode<T>) => void,
+  asChildOf: ObjectTreeNode<any>,
+) {
+  // only build child's tree scope, so stop when reaching asChildOf (child's root node)
+  leafTraverser(node, onNext, node => node === asChildOf);
+  // ... but still emit rootNode as well
+  onNext(asChildOf);
 }
 
 /**
