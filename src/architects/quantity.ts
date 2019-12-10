@@ -1,8 +1,13 @@
 import { addChildren, ObjectTreeNode } from 'treelike';
-import { asBuildable, isBuildable } from '../core';
-import { Buildable, IsStickyProcessorSymbol, ProcessorFn, QuantityInsertMode } from '../core/types';
-import { Quantity } from '../core/types/quantity';
-import { getQuantity } from '../core/util/get-quantity';
+import {
+  asBuildable,
+  Buildable,
+  getQuantity,
+  isBuildable,
+  Quantity,
+  QuantityInsertMode,
+} from '../core';
+import { IsStickyProcessorSymbol, ProcessorFn } from '../processors';
 import { clone, extractFns, hasSymbol } from '../util';
 import { ArchitectFn } from './types';
 import { createArchitectFn } from './util';

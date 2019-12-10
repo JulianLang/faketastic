@@ -1,6 +1,6 @@
 import { ArchitectFn } from '../../architects/types';
+import { ProcessorFn } from '../../processors/types';
 import { TreeReaderFn } from '../../tree-reader';
-import { ProcessorFn } from './processor.fn';
 
 export const BuildableSymbol = Symbol('Buildable');
 export interface Buildable<T = any> {

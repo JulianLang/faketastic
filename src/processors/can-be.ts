@@ -1,6 +1,7 @@
 import { ObjectTreeNode } from 'treelike';
-import { createProcessorFn, probability, ProcessorFn } from '../core';
+import { createProcessorFn, probability } from '../core';
 import { Stickiness } from '../types';
+import { ProcessorFn } from './types';
 
 export function canBe<T>(value: T, likelyhood = 0.5, sticky: Stickiness = 'sticky'): ProcessorFn {
   return createProcessorFn(canBeImpl, 'preprocessor', 0, sticky);

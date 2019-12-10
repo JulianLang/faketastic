@@ -7,11 +7,11 @@ import {
   buildChild,
   createBuildable,
   createProcessorFn,
-  ProcessorFn,
   randomInt,
   randomItem,
 } from '../core';
 import { placeholder } from '../placeholder';
+import { ProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
 import { cloneItems, isUndefined } from '../util';
 import { SomeOfOpts } from './types';

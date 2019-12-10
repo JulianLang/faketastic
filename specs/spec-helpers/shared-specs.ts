@@ -1,12 +1,12 @@
-import { createArchitectFn } from '../../src';
 import {
   Buildable,
   BuildableSymbol,
   BuilderFnSymbol,
+  createArchitectFn,
   createProcessorFn,
   isBuilderFunction,
   ProcessorFnSymbol,
-} from '../../src/core';
+} from '../../src';
 
 export function includeProcessorFnSpecs(processorFn: Function, ...params: any[]) {
   it('should return a processor fn', () => {

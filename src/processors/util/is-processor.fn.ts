@@ -1,5 +1,6 @@
+import { BuildCycle } from '../../core';
 import { isDefined } from '../../util';
-import { BuildCycle, ProcessorFn, ProcessorFnSymbol } from '../types';
+import { ProcessorFn, ProcessorFnSymbol } from '../types';
 
 export function isProcessorFn(fn: any, forCycle?: BuildCycle): fn is ProcessorFn {
   if (typeof fn !== 'function') {

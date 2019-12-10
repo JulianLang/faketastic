@@ -1,7 +1,8 @@
 import { ArchitectFn } from '../../architects';
+import { ProcessorFn, ProcessorFnSymbol } from '../../processors';
 import { AttachedFn } from '../../types';
 import { extractFns } from '../../util';
-import { ArchitectFnSymbol, Buildable, ProcessorFn, ProcessorFnSymbol } from '../types';
+import { ArchitectFnSymbol, Buildable } from '../types';
 import { template } from './template';
 
 export function use<T extends object = object>(

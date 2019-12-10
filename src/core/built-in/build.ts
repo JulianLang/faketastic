@@ -8,17 +8,11 @@ import {
   treeOf,
 } from 'treelike';
 import { ArchitectFn } from '../../architects';
+import { ProcessorFn, ProcessorFnSymbol } from '../../processors';
 import { TreeReaderFn, TreeReaderFnSymbol } from '../../tree-reader';
 import { AttachedFn, MutatingFn } from '../../types';
 import { extractFns, hasSymbol, setSymbol } from '../../util';
-import {
-  ArchitectFnSymbol,
-  Buildable,
-  BuildRootSymbol,
-  FnOrderSymbol,
-  ProcessorFn,
-  ProcessorFnSymbol,
-} from '../types';
+import { ArchitectFnSymbol, Buildable, BuildRootSymbol, FnOrderSymbol } from '../types';
 import { BuildCycle } from '../types/build.cycle';
 import { asBuildable, getLeafBuildable, isBuildable, isBuilderFunction } from '../util';
 

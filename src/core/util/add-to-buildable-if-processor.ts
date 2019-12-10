@@ -1,5 +1,5 @@
+import { isProcessorFn } from '../../processors/util/is-processor.fn';
 import { AttachedFn } from '../../types';
-import { isProcessorFn } from './is-processor.fn';
 
 /**
  * Adds the given parameter to the specified `ProcessorFn` array, if itself is a `ProcessorFn`.
