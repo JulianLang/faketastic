@@ -32,7 +32,7 @@ describe('oneOf BuilderFn', () => {
     expect(result).toBe(undefined);
   });
 
-  fit('should be nestable', () => {
+  it('should be nestable', () => {
     // arrange
     const tmpl = template({
       a: oneOf([oneOf([42]), oneOf(['A'])]),
