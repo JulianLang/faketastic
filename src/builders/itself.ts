@@ -1,5 +1,5 @@
 import { ObjectTreeNode } from 'treelike';
-import { ProcessorOrders } from '../constants';
+import { FunctionOrders } from '../constants';
 import {
   asBuildable,
   Buildable,
@@ -31,14 +31,14 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
   const recurseNext = createProcessorFn(
     recurseNextImpl,
     'initializer',
-    ProcessorOrders.recursion,
+    FunctionOrders.processors.recursion,
     // quantity will transfer this processor to multiplied nodes
     'unsticky',
   );
   const endRecursion = createProcessorFn(
     endRecursionImpl,
     'initializer',
-    ProcessorOrders.recursion,
+    FunctionOrders.processors.recursion,
   );
 
   return createBuildable(placeholder(`recursion`), [

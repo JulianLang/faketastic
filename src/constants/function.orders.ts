@@ -55,49 +55,51 @@
  * to the same property. It will have no effect on the ordering
  * of `initializer`-processors, for example.
  */
-export const ProcessorOrders = {
-  // -------------------------------------------------------
-  // initializer
-  // -------------------------------------------------------
-  /**
-   * **Dependencies**
-   *
-   * *run-before:* `unpriorized processors`
-   */
-  treeStructureChanging: -4005,
-  /**
-   * **Dependencies**
-   *
-   * *run-before:* `unpriorized processors`
-   */
-  recursion: -4000,
-  // -------------------------------------------------------
-  // preprocessors
-  // -------------------------------------------------------
+export const FunctionOrders = {
+  processors: {
+    // -------------------------------------------------------
+    // initializer
+    // -------------------------------------------------------
+    /**
+     * **Dependencies**
+     *
+     * *run-before:* `unpriorized processors`
+     */
+    treeStructureChanging: -4005,
+    /**
+     * **Dependencies**
+     *
+     * *run-before:* `unpriorized processors`
+     */
+    recursion: -4000,
+    // -------------------------------------------------------
+    // preprocessors
+    // -------------------------------------------------------
 
-  // -------------------------------------------------------
-  // postprocessors
-  // -------------------------------------------------------
+    // -------------------------------------------------------
+    // postprocessors
+    // -------------------------------------------------------
 
-  // -------------------------------------------------------
-  // finalizer
-  // -------------------------------------------------------
-  /**
-   * **Dependencies**
-   *
-   * *run-after:* `unpriorized processors`
-   */
-  ref: 4000,
-  /**
-   * **Dependencies**
-   *
-   * *run-after:* `ref()`
-   */
-  combineValues: 4010,
-  /**
-   * **Dependencies**
-   *
-   * *run-after:* `ref()`, `combineValues()`
-   */
-  map: 4015,
+    // -------------------------------------------------------
+    // finalizer
+    // -------------------------------------------------------
+    /**
+     * **Dependencies**
+     *
+     * *run-after:* `unpriorized processors`
+     */
+    ref: 4000,
+    /**
+     * **Dependencies**
+     *
+     * *run-after:* `ref()`
+     */
+    combineValues: 4010,
+    /**
+     * **Dependencies**
+     *
+     * *run-after:* `ref()`, `combineValues()`
+     */
+    map: 4015,
+  },
 } as const;
