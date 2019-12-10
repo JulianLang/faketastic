@@ -70,6 +70,10 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
    * @param node The node holding the next recursion iteration.
    */
   function recurseNextImpl(node: ObjectTreeNode): void {
+    if (!state.continue) {
+      return;
+    }
+
     const tmpl = originalTemplate.value;
     const buildableTmpl = asBuildable(tmpl);
 
