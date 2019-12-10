@@ -1,6 +1,4 @@
-import { time } from '../../src/builders/time';
-import { build, createProcessorFn, template } from '../../src/core';
-import { isDateInstance } from '../../src/util';
+import { build, createProcessorFn, isDateInstance, template, time } from '../../src';
 
 describe('time builder fn', () => {
   it('should return a time of today if no parameter is given', () => {

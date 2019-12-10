@@ -1,7 +1,8 @@
 import { findNode, ObjectTreeNode, siblingAndSelfTraverser } from 'treelike';
 import { MutatingFnOrders } from '../constants';
-import { Buildable, createBuildable, createProcessorFn, isBuildable } from '../core';
+import { Buildable, createBuildable, isBuildable } from '../core';
 import { isPlaceholder, placeholder } from '../placeholder';
+import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
 import { isDefined, isUndefined } from '../util';
 export function ref<T = any>(propertyName: keyof T, ...attachedFns: AttachedFn[]): Buildable<any> {

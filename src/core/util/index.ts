@@ -1,5 +1,3 @@
-export * from '../../processors/util/create-processor.fn';
-export * from '../../processors/util/is-processor.fn';
 export * from './add-to-buildable-if-processor';
 export * from './as-buildable';
 export * from './create-buildable';

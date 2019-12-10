@@ -1,14 +1,8 @@
 import { ObjectTreeNode } from 'treelike';
 import { MutatingFnOrders } from '../constants';
-import {
-  asBuildable,
-  Buildable,
-  buildChild,
-  createBuildable,
-  createProcessorFn,
-  isBuildable,
-} from '../core';
+import { asBuildable, Buildable, buildChild, createBuildable, isBuildable } from '../core';
 import { placeholder } from '../placeholder';
+import { createProcessorFn } from '../processors';
 import { createTreeReaderFn } from '../tree-reader';
 import { AttachedFn } from '../types';
 import { clone, findAnchestor, isUndefined, setSymbol } from '../util';
