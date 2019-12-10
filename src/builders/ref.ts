@@ -24,8 +24,8 @@ export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): B
       // TODO: langju: is "BuilderFn" the only possibility for incomplete values?
       if (isBuilderFunction(bareValue)) {
         // value has not been built yet. mark for recheck in next (outer, if any) build cycle.
-        node.value = placeholder(`ref/defer:${property}`, [refProcessor, ...attachedFns]);
-      } else {
+        node.value = placeholder(`ref/defer`, [refProcessor, ...attachedFns]);
+      } else if (!isPlaceholder(bareValue)) {
         node.value = bareValue;
       }
     }

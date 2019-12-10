@@ -51,11 +51,11 @@ export function buildChild<R = any, T = any>(
   runCycle('finalizer', buildableNode);
 
   updateType(buildableNode);
-  runReverse(buildableNode, node => finalize(node), asChildOf);
+  runReverse(buildableNode, node => writeValues(node), asChildOf);
 
   // base root:
   if (isUndefined(buildableNode.parent)) {
-    run(buildableNode, cleanUp);
+    run(buildableNode, finalize);
   }
 
   return buildableNode.value as any;
@@ -71,10 +71,15 @@ function runCycle(cycle: BuildCycle, buildableNode: ObjectTreeNode): void {
   run(buildableNode, node => runMutatingFns(cycle, node));
 }
 
-function finalize(node: ObjectTreeNode): void {
+function writeValues(node: ObjectTreeNode): void {
   // buildable has a value property which holds the actual built value.
   // However, this value can again be a buildable, until a leaf of the tree is reached
   const value = unwrapIfBuildable(node.value);
+
+  // leave placeholder untouched, they get built later on.
+  if (isPlaceholder(value)) {
+    return;
+  }
 
   setValue(value, node);
 
@@ -93,6 +98,24 @@ function buildChildrenOf(node: ObjectTreeNode) {
   for (const child of node.children) {
     // all children must have names
     node.value[child.name!] = child.value;
+  }
+}
+
+/**
+ * Finalizes the value tree by building potentially remaining `Placeholder`s.
+ * @param node The root node to begin cleaning process from.
+ */
+function finalize(node: ObjectTreeNode): void {
+  if (node.value === UnsetValue) {
+    console.warn(`faketastic/clean-up: Unset value found on property "${node.name}".`);
+    node.value = undefined;
+  } else if (isBuildable(node.value)) {
+    // Buildables other than placeholders should be built by now.
+    console.assert(isPlaceholder(node.value.value));
+
+    if (isPlaceholder(node.value.value)) {
+      node.value = buildChild(node.value, node);
+    }
   }
 }
 
@@ -257,20 +280,6 @@ function sortByOrderNumber(a: MutatingFn, b: MutatingFn): number {
   }
 
   return result;
-}
-
-/**
- * Cleans up the tree from `UnsetValue`s and `Placeholder`s.
- * @param node The root node to begin cleaning process from.
- */
-function cleanUp(node: ObjectTreeNode): void {
-  if (node.value === UnsetValue) {
-    console.warn(`faketastic/clean-up: Unset value found on property "${node.name}".`);
-    node.value = undefined;
-  } else if (isPlaceholder(node.value)) {
-    console.warn(`faketastic/clean-up: Placeholder found on property "${node.name}".`);
-    node.value = undefined;
-  }
 }
 
 // TODO: langju: this is not traversing as intended yet.
