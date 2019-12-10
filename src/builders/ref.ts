@@ -4,7 +4,7 @@ import { Buildable, createBuildable, isBuildable, unwrapIfBuildable } from '../c
 import { isPlaceholder, placeholder } from '../placeholder';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
-import { isDefined, isUndefined } from '../util';
+import { isDefined, isUndefined, isUnset } from '../util';
 import { isBuilderFunction } from './util';
 export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): Buildable {
   const refProcessor = createProcessorFn(refImpl, 'finalizer', MutatingFnOrders.processors.ref);
@@ -22,9 +22,9 @@ export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): B
       const bareValue = unwrapIfBuildable(resolvedReference.value);
 
       // TODO: langju: is "BuilderFn" the only possibility for incomplete values?
-      if (isBuilderFunction(bareValue)) {
+      if (isBuilderFunction(bareValue) || isUnset(bareValue)) {
         // value has not been built yet. mark for recheck in next (outer, if any) build cycle.
-        node.value = placeholder(`ref/defer`, [refProcessor, ...attachedFns]);
+        node.value = placeholder(`ref/defer`, {}, [refProcessor, ...attachedFns]);
       } else if (!isPlaceholder(bareValue)) {
         node.value = bareValue;
       }
@@ -47,7 +47,7 @@ export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): B
   function isMatch(node: ObjectTreeNode) {
     const hasCorrectName = node.name === property;
     const value = isBuildable(node.value) ? node.value.value : node.value;
-    const isValue = !isPlaceholder(value);
+    const isValue = !isPlaceholder(value) && !isUnset(value);
 
     return isValue && hasCorrectName;
   }
