@@ -8,7 +8,6 @@ import {
   randomInt,
   randomItem,
 } from '../core';
-import { placeholder } from '../placeholder';
 import { createProcessorFn, ProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
 import { addIfAttachedFn, cloneItems, isUndefined } from '../util';
@@ -41,7 +40,7 @@ export function someOf<T>(
     MutatingFnOrders.processors.treeStructureChanging,
   );
 
-  return createBuildable(placeholder('someOf'), [initSomeOf, ...attachedFns]);
+  return createBuildable(null, [initSomeOf, ...attachedFns]);
 
   function initSomeOfImpl(node: ObjectTreeNode) {
     const content = chooseItems();

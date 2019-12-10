@@ -1,7 +1,6 @@
 import { ObjectTreeNode } from 'treelike';
 import { MutatingFnOrders } from '../constants';
 import { asBuildable, Buildable, buildChild, createBuildable, isBuildable } from '../core';
-import { placeholder } from '../placeholder';
 import { createProcessorFn } from '../processors';
 import { createTreeReaderFn } from '../tree-reader';
 import { AttachedFn } from '../types';
@@ -35,12 +34,7 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
     MutatingFnOrders.processors.recursion,
   );
 
-  return createBuildable(placeholder(`recursion`), [
-    takeTemplateSnapshot,
-    endRecursion,
-    recurseNext,
-    ...attachedFns,
-  ]);
+  return createBuildable(null, [takeTemplateSnapshot, endRecursion, recurseNext, ...attachedFns]);
 
   /**
    * Makes a snapshot of the parent-template the node lays in.

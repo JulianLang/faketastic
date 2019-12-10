@@ -1,26 +1,33 @@
 import { findNode, ObjectTreeNode, siblingAndSelfTraverser } from 'treelike';
 import { MutatingFnOrders } from '../constants';
-import { Buildable, createBuildable, isBuildable } from '../core';
+import { Buildable, createBuildable, getLeafBuildable, isBuildable } from '../core';
 import { isPlaceholder, placeholder } from '../placeholder';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
 import { isDefined, isUndefined } from '../util';
-export function ref<T = any>(propertyName: keyof T, ...attachedFns: AttachedFn[]): Buildable {
+import { isBuilderFunction } from './util';
+export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): Buildable {
   const refProcessor = createProcessorFn(refImpl, 'finalizer', MutatingFnOrders.processors.ref);
 
-  return createBuildable(placeholder(`ref:${propertyName}`), [refProcessor, ...attachedFns]);
+  return createBuildable(null, [refProcessor, ...attachedFns]);
 
   function refImpl(node: ObjectTreeNode) {
     const resolvedReference = tryResolveRef(node);
 
     if (isUndefined(resolvedReference)) {
-      console.warn(`faketastic: Could not resolve reference to "${propertyName}"`);
+      console.warn(`faketastic: Could not resolve reference to "${property}"`);
     } else {
       // since we set the value now, children can be removed, as they have no relevance anymore
       node.children = [];
-      node.value = isBuildable(resolvedReference.value)
-        ? resolvedReference.value.value
-        : resolvedReference.value;
+      const leafBuildable = getLeafBuildable(resolvedReference);
+      const leafValue = leafBuildable.value;
+
+      if (isBuilderFunction(leafValue)) {
+        // value has not been built yet.
+        node.value = placeholder(`ref:defer:${property}`);
+      } else {
+        node.value = leafValue;
+      }
     }
   }
 
@@ -38,7 +45,7 @@ export function ref<T = any>(propertyName: keyof T, ...attachedFns: AttachedFn[]
   }
 
   function isMatch(node: ObjectTreeNode) {
-    const hasCorrectName = node.name === propertyName;
+    const hasCorrectName = node.name === property;
     const value = isBuildable(node.value) ? node.value.value : node.value;
     const isValue = !isPlaceholder(value);
 
