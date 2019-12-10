@@ -33,7 +33,7 @@ describe('self builder', () => {
     expect(result.parent.parent).toBe(endValue);
   });
 
-  fit('should be nestable', () => {
+  it('should be nestable', () => {
     // arrange
     const dirName = '.bin';
     const fileName = 'test.rtf';

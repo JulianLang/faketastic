@@ -1,4 +1,4 @@
-import { defaultRootName, ObjectTreeNode } from 'treelike';
+import { ObjectTreeNode } from 'treelike';
 import { ProcessorOrders } from '../constants';
 import {
   asBuildable,
@@ -11,9 +11,11 @@ import {
 import { placeholder } from '../placeholder';
 import { createTreeReaderFn } from '../tree-reader';
 import { AttachedFn } from '../types';
-import { clone, isUndefined } from '../util';
+import { clone, findAnchestor, isUndefined, setSymbol } from '../util';
 import { CouldNotFindRootTemplateError } from './errors';
 import { RecursionController, RecursionState } from './types/recursion';
+
+export const RecursionRootSymbol = Symbol('faketastic.recursion.root');
 
 /**
  * Creates a recursive property, recursing the template it lays on.
@@ -55,11 +57,15 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
       throw new Error(CouldNotFindRootTemplateError);
     }
 
-    const rootTmpl = tryFindRootTemplate(node);
+    const rootTmpl = node.parent;
 
     if (isBuildable(rootTmpl.value)) {
       originalTemplate = clone(rootTmpl);
       property = node.name.toString();
+
+      if (!findAnchestor(RecursionRootSymbol, node.parent, property)) {
+        setSymbol(RecursionRootSymbol, rootTmpl, property);
+      }
     } else {
       throw new Error(CouldNotFindRootTemplateError);
     }
@@ -95,20 +101,6 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
       node.children = [];
       node.value = state.endWithValue;
     }
-  }
-
-  function tryFindRootTemplate(node: ObjectTreeNode<any>) {
-    // node.parent is ensured by preceeding function
-    let tmplNode: ObjectTreeNode = node.parent!;
-
-    while (tmplNode.name !== defaultRootName) {
-      if (isUndefined(tmplNode.parent)) {
-        throw CouldNotFindRootTemplateError;
-      }
-
-      tmplNode = tmplNode.parent;
-    }
-    return tmplNode;
   }
 
   /**

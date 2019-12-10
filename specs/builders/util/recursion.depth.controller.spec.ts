@@ -1,5 +1,6 @@
 import { findNode, treeOf } from 'treelike';
-import { RecursionDepth } from '../../../src';
+import { RecursionDepth, RecursionRootSymbol } from '../../../src';
+import { setSymbol } from '../../../src/util';
 
 describe('recursion depth controller', () => {
   it('should throw for negative depths', () => {
@@ -23,9 +24,14 @@ describe('recursion depth controller', () => {
         },
       },
     });
+
     const stopNode = findNode(testTree, n => n.name === 'level4');
-    // init fn with root node
-    checkDepth(testTree);
+    /*
+      itself() marks the recursion root template with the RecursionRootSymbol
+      and the property name for distinction. To mock that out, we pass level4
+      as property name, as if this would be the name of the original template.
+    */
+    setSymbol(RecursionRootSymbol, testTree, 'level4');
 
     // act
     const result = checkDepth(stopNode!);
