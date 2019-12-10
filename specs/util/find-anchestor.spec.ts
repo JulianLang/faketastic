@@ -22,7 +22,7 @@ describe('findAnchestor helper function', () => {
     expect(anchestor).toBe(undefined);
   });
 
-  fit('should return the matching node', () => {
+  it('should return the matching node', () => {
     // arrange
     const tree = treeOf({
       1: {
