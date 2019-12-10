@@ -41,7 +41,7 @@ export function someOf<T>(
     MutatingFnOrders.processors.treeStructureChanging,
   );
 
-  return createBuildable(placeholder(), [initSomeOf, ...attachedFns]);
+  return createBuildable(placeholder('someOf'), [initSomeOf, ...attachedFns]);
 
   function initSomeOfImpl(node: ObjectTreeNode) {
     const content = chooseItems();
