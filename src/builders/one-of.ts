@@ -1,5 +1,5 @@
 import { ObjectTreeNode } from 'treelike';
-import { FunctionOrders } from '../constants';
+import { MutatingFnOrders } from '../constants';
 import {
   asBuildable,
   Buildable,
@@ -16,7 +16,7 @@ export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable<an
   const initOneOf = createProcessorFn(
     initOneOfImpl,
     'preprocessor',
-    FunctionOrders.processors.treeStructureChanging,
+    MutatingFnOrders.processors.treeStructureChanging,
   );
 
   return createBuildable(placeholder('oneOf'), [initOneOf, ...attachedFns]);

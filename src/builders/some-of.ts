@@ -1,5 +1,5 @@
 import { ObjectTreeNode } from 'treelike';
-import { FunctionOrders } from '../constants';
+import { MutatingFnOrders } from '../constants';
 import {
   addIfProcessorFn,
   asBuildable,
@@ -40,7 +40,7 @@ export function someOf<T>(
   const initSomeOf = createProcessorFn(
     initSomeOfImpl,
     'preprocessor',
-    FunctionOrders.processors.treeStructureChanging,
+    MutatingFnOrders.processors.treeStructureChanging,
   );
 
   return createBuildable(placeholder(), [initSomeOf, ...attachedFns]);

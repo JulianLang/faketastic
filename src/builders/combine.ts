@@ -1,5 +1,5 @@
 import { ObjectTreeNode } from 'treelike';
-import { FunctionOrders } from '../constants';
+import { MutatingFnOrders } from '../constants';
 import { Buildable, buildChild, createBuildable, createProcessorFn, PureObject } from '../core';
 import { placeholder } from '../placeholder';
 import { AttachedFn } from '../types';
@@ -13,7 +13,7 @@ export function combine<T>(
   const combineValuesProcessor = createProcessorFn(
     buildAndCombineValues,
     'finalizer',
-    FunctionOrders.processors.combineValues,
+    MutatingFnOrders.processors.combineValues,
   );
 
   return createBuildable(placeholder(), [combineValuesProcessor, ...attachedFns]);

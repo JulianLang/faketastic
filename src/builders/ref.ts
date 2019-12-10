@@ -1,11 +1,11 @@
 import { findNode, ObjectTreeNode, siblingAndSelfTraverser } from 'treelike';
-import { FunctionOrders } from '../constants';
+import { MutatingFnOrders } from '../constants';
 import { Buildable, createBuildable, createProcessorFn, isBuildable } from '../core';
 import { isPlaceholder, placeholder } from '../placeholder';
 import { AttachedFn } from '../types';
 import { isDefined, isUndefined } from '../util';
 export function ref<T = any>(propertyName: keyof T, ...attachedFns: AttachedFn[]): Buildable<any> {
-  const refProcessor = createProcessorFn(refImpl, 'finalizer', FunctionOrders.processors.ref);
+  const refProcessor = createProcessorFn(refImpl, 'finalizer', MutatingFnOrders.processors.ref);
 
   return createBuildable(placeholder(`ref:${propertyName}`), [refProcessor, ...attachedFns]);
 
