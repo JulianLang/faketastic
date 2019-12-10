@@ -1,7 +1,6 @@
 import { ObjectTreeNode } from 'treelike';
 import { MutatingFnOrders } from '../constants';
 import {
-  addIfProcessorFn,
   asBuildable,
   Buildable,
   buildChild,
@@ -12,7 +11,7 @@ import {
 import { placeholder } from '../placeholder';
 import { createProcessorFn, ProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
-import { cloneItems, isUndefined } from '../util';
+import { addIfAttachedFn, cloneItems, isUndefined } from '../util';
 import { SomeOfOpts } from './types';
 
 /**
@@ -32,7 +31,7 @@ export function someOf<T>(
     minItems: 1,
   };
 
-  if (addIfProcessorFn(opts, attachedFns)) {
+  if (addIfAttachedFn(opts, attachedFns)) {
     opts = undefined;
   }
 

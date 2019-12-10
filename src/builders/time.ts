@@ -1,7 +1,7 @@
-import { addIfProcessorFn, Buildable, createBuildable, randomDate } from '../core';
+import { Buildable, createBuildable, randomDate } from '../core';
 import { dateTimeParser } from '../parser';
 import { AttachedFn } from '../types';
-import { isArray, isDefined, isUndefined, isValidDate } from '../util';
+import { addIfAttachedFn, isArray, isDefined, isUndefined, isValidDate } from '../util';
 import { BuilderFn, TimeInput } from './types';
 import { createBuilderFn } from './util';
 
@@ -54,10 +54,10 @@ export function time(
 ): Buildable<BuilderFn> {
   const timeBuilder = createBuilderFn(timeImpl);
 
-  if (addIfProcessorFn(earliest, attachedFns)) {
+  if (addIfAttachedFn(earliest, attachedFns)) {
     earliest = undefined;
   }
-  if (addIfProcessorFn(latest, attachedFns)) {
+  if (addIfAttachedFn(latest, attachedFns)) {
     latest = undefined;
   }
 

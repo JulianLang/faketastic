@@ -1,3 +1,4 @@
+export * from './add-if-attached.fn';
 export * from './clone';
 export * from './clone-items';
 export * from './extract.fns';
