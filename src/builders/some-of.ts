@@ -1,5 +1,5 @@
 import { ObjectTreeNode } from 'treelike';
-import { MutatingFnOrders } from '../constants';
+import { MutatingFnOrders, UnsetValue } from '../constants';
 import {
   asBuildable,
   Buildable,
@@ -40,7 +40,7 @@ export function someOf<T>(
     MutatingFnOrders.processors.treeStructureChanging,
   );
 
-  return createBuildable(null, [initSomeOf, ...attachedFns]);
+  return createBuildable(UnsetValue, [initSomeOf, ...attachedFns]);
 
   function initSomeOfImpl(node: ObjectTreeNode) {
     const content = chooseItems();
