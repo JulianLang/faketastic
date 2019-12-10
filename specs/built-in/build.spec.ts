@@ -1,8 +1,10 @@
-import { createNode, ObjectTreeNode } from 'treelike';
+import { createNode, findNode, ObjectTreeNode, treeOf } from 'treelike';
 import {
   build,
   Buildable,
+  buildChild,
   BuildCycle,
+  BuildRootSymbol,
   canBe,
   createArchitectFn,
   createBuildable,
@@ -16,6 +18,7 @@ import {
 } from '../../src';
 import { createTreeReaderFn } from '../../src/tree-reader';
 import { AttachedFn, BuildCycleCallbackFn, Func, MutatingFn } from '../../src/types';
+import { hasSymbol } from '../../src/util';
 
 describe('build function', () => {
   it('should run processor functions from top to buttom (treewise)', () => {
@@ -188,6 +191,35 @@ describe('build function', () => {
 
     // assert
     expect(order).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+  });
+
+  it('should also include the root node passed in with buildChild', () => {
+    // arrange
+    const value = 42;
+    const tree = treeOf({
+      parent: {},
+    });
+    const parentNode = findNode(tree, n => n.name === 'parent')!;
+    const nestedBuildable = createBuildable({ a: oneOf([value]) });
+
+    // act
+    const result = buildChild(nestedBuildable, parentNode);
+
+    // assert
+    expect(result).toBeDefined();
+    expect(result.a).toEqual(value);
+  });
+
+  it('should mark root node of build() with BuildRootSymbol', () => {
+    // arrange
+    const assertTreeReader = createTreeReaderFn(node => {
+      // assert
+      expect(hasSymbol(BuildRootSymbol, node)).toBe(true);
+    }, 'initializer');
+    const buildable = createBuildable({}, [assertTreeReader]);
+
+    // act
+    build(buildable);
   });
 
   includeBuildMutatingFnsSpecs(createProcessorFn, 'processors');

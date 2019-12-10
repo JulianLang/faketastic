@@ -10,10 +10,11 @@ import {
 import { ArchitectFn } from '../../architects';
 import { TreeReaderFn, TreeReaderFnSymbol } from '../../tree-reader';
 import { AttachedFn, MutatingFn } from '../../types';
-import { extractFns, hasSymbol } from '../../util';
+import { extractFns, hasSymbol, setSymbol } from '../../util';
 import {
   ArchitectFnSymbol,
   Buildable,
+  BuildRootSymbol,
   FnOrderSymbol,
   ProcessorFn,
   ProcessorFnSymbol,
@@ -39,6 +40,7 @@ export function buildChild<R = any, T = any>(
   addAttachedFns<T>(attachedFns, buildable);
 
   const buildableNode = treeOf(buildable, childSelector);
+  setSymbol(BuildRootSymbol, buildableNode);
 
   if (isDefined(asChildOf)) {
     buildableNode.parent = asChildOf;
@@ -263,7 +265,7 @@ function sortByOrderNumber(a: MutatingFn, b: MutatingFn): number {
  */
 function topDownSiblingTraverser(node: ObjectTreeNode, onNext: TraverseCallbackFn): void {
   // also include root
-  if (node.parent === undefined) {
+  if (hasSymbol(BuildRootSymbol, node)) {
     onNext(node);
   }
 
