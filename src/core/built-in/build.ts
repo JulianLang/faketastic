@@ -42,6 +42,7 @@ export function buildChild<R = any, T = any>(
 
   if (isDefined(asChildOf)) {
     buildableNode.parent = asChildOf;
+    buildableNode.name = '$child-root';
   }
 
   runCycle('initializer', buildableNode);
