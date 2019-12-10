@@ -11,7 +11,7 @@ export function findAnchestor(symbol: symbol, from: ObjectTreeNode): ObjectTreeN
   let currentNode: ObjectTreeNode | undefined = from.parent;
 
   while (isDefined(currentNode)) {
-    if (hasSymbol(symbol, currentNode.value)) {
+    if (hasSymbol(symbol, currentNode)) {
       break;
     }
 

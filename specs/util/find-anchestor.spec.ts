@@ -32,8 +32,8 @@ describe('findAnchestor helper function', () => {
       },
     });
     const node = findNode(tree, n => n.name === '3')!;
-    const matchNode = findNode(tree, n => n.name === '2')!;
-    matchNode.value[TestSymbol] = false;
+    const matchNode: any = findNode(tree, n => n.name === '2')!;
+    matchNode[TestSymbol] = false;
 
     // act
     const anchestor = findAnchestor(TestSymbol, node);
@@ -51,8 +51,8 @@ describe('findAnchestor helper function', () => {
         },
       },
     });
-    const node = findNode(tree, n => n.name === '3')!;
-    node.value[TestSymbol] = false;
+    const node: any = findNode(tree, n => n.name === '3')!;
+    node[TestSymbol] = false;
 
     // act
     const anchestor = findAnchestor(TestSymbol, node);
