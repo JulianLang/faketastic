@@ -1,16 +1,9 @@
 import { addChildren, ObjectTreeNode } from 'treelike';
-import {
-  asBuildable,
-  Buildable,
-  getQuantity,
-  isBuildable,
-  Quantity,
-  QuantityInsertMode,
-} from '../core';
+import { asBuildable, Buildable, isBuildable } from '../core';
 import { IsStickyProcessorSymbol, ProcessorFn } from '../processors';
 import { clone, extractFns, hasSymbol } from '../util';
-import { ArchitectFn } from './types';
-import { createArchitectFn } from './util';
+import { ArchitectFn, Quantity, QuantityInsertMode } from './types';
+import { createArchitectFn, getQuantity } from './util';
 
 export function quantity(
   quantity: Quantity = 1,
