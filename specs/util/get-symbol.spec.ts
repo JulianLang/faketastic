@@ -1,16 +1,17 @@
 import { getSymbol } from '../../src/util';
 
 describe('getSymbol', () => {
+  const TestSymbol = Symbol('faketastic.test');
+
   it('should return the value of an existing symbol on an object', () => {
     // arrange
     const value = 'hello';
-    const mySymbol1 = Symbol('sym1');
     const obj = {
-      [mySymbol1]: value,
+      [TestSymbol]: value,
     };
 
     // act
-    const result = getSymbol(mySymbol1, obj);
+    const result = getSymbol(TestSymbol, obj);
 
     // assert
     expect(result).toBe(value);
@@ -19,12 +20,11 @@ describe('getSymbol', () => {
   it('should return the value of an existing symbol on an array', () => {
     // arrange
     const value = 'hello';
-    const mySymbol1 = Symbol('sym1');
     const array: any = [];
-    array[mySymbol1] = value;
+    array[TestSymbol] = value;
 
     // act
-    const result = getSymbol(mySymbol1, array);
+    const result = getSymbol(TestSymbol, array);
 
     // assert
     expect(result).toBe(value);
@@ -33,12 +33,11 @@ describe('getSymbol', () => {
   it('should return the value of an existing symbol on a function', () => {
     // arrange
     const value = 'hello';
-    const mySymbol1 = Symbol('sym1');
     const fn: any = () => {};
-    fn[mySymbol1] = value;
+    fn[TestSymbol] = value;
 
     // act
-    const result = getSymbol(mySymbol1, fn);
+    const result = getSymbol(TestSymbol, fn);
 
     // assert
     expect(result).toBe(value);
@@ -46,13 +45,18 @@ describe('getSymbol', () => {
 
   it('should return undefined when the given symbol is not present on the given value', () => {
     // arrange
-    const mySymbol1 = Symbol('sym1');
     const obj = {};
 
     // act
-    const result = getSymbol(mySymbol1, obj);
+    const result = getSymbol(TestSymbol, obj);
 
     // assert
     expect(result).toBe(undefined);
+  });
+
+  it('should return undefined if given value is null or undefined', () => {
+    // arrange, act, assert
+    expect(getSymbol(TestSymbol, null)).toBe(undefined);
+    expect(getSymbol(TestSymbol, undefined)).toBe(undefined);
   });
 });

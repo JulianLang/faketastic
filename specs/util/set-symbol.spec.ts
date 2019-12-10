@@ -1,14 +1,15 @@
 import { setSymbol } from '../../src/util';
 
 describe('setSymbol', () => {
+  const TestSymbol = Symbol('faketastic.test');
+
   it('should return the result', () => {
     // arrange
-    const mySymbol = Symbol('sym1');
     const value = 42;
     const obj: any = {};
 
     // act
-    const obj2 = setSymbol(mySymbol, obj, value);
+    const obj2 = setSymbol(TestSymbol, obj, value);
 
     // assert
     expect(obj2).toBe(obj);
@@ -16,65 +17,60 @@ describe('setSymbol', () => {
 
   it('should set a given symbol with specified value on an object', () => {
     // arrange
-    const mySymbol = Symbol('sym1');
     const value = 42;
     const obj: any = {};
 
     // act
-    setSymbol(mySymbol, obj, value);
+    setSymbol(TestSymbol, obj, value);
 
     // assert
-    expect(obj[mySymbol]).toBe(value);
+    expect(obj[TestSymbol]).toBe(value);
   });
 
   it('should set a given symbol with specified value on an array', () => {
     // arrange
-    const mySymbol = Symbol('sym1');
     const value = 42;
     const array: any = [];
 
     // act
-    setSymbol(mySymbol, array, value);
+    setSymbol(TestSymbol, array, value);
 
     // assert
-    expect(array[mySymbol]).toBe(value);
+    expect(array[TestSymbol]).toBe(value);
   });
 
   it('should set a given symbol with specified value on a function', () => {
     // arrange
-    const mySymbol = Symbol('sym1');
     const value = 42;
     const fn: any = () => {};
 
     // act
-    setSymbol(mySymbol, fn, value);
+    setSymbol(TestSymbol, fn, value);
 
     // assert
-    expect(fn[mySymbol]).toBe(value);
+    expect(fn[TestSymbol]).toBe(value);
   });
 
   it('should accept null as value', () => {
     // arrange
-    const mySymbol = Symbol('sym1');
     const value = null;
     const obj: any = {};
 
     // act
-    setSymbol(mySymbol, obj, value);
+    setSymbol(TestSymbol, obj, value);
 
     // assert
-    expect(obj[mySymbol]).toBe(value);
+    expect(obj[TestSymbol]).toBe(value);
   });
 
   it('should turn undefined into true as value (default parameter value)', () => {
     // arrange
-    const mySymbol = Symbol('sym1');
     const obj: any = {};
 
     // act
-    setSymbol(mySymbol, obj, undefined);
+    setSymbol(TestSymbol, obj, undefined);
 
     // assert
-    expect(obj[mySymbol]).toBe(true);
+    expect(obj[TestSymbol]).toBe(true);
   });
 });
