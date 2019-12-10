@@ -10,5 +10,5 @@ import { Placeholder, PlaceholderSymbol } from './types/placeholder';
 export function placeholder(typeId?: string, ...attachedFns: AttachedFn[]): Buildable<Placeholder> {
   const placeholder = setSymbol(PlaceholderSymbol, {}, typeId) as Placeholder;
 
-  return createBuildable(placeholder, attachedFns);
+  return createBuildable(placeholder, ...attachedFns);
 }
