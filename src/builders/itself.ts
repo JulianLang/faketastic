@@ -18,9 +18,7 @@ import { RecursionController, RecursionState } from './types/recursion';
 /**
  * Creates a recursive property, recursing the template it lays on.
  * @param tmpl The template to be made recursive.
- * @param property The property name that should hold the template recursion.
- * @param attachedFns Processors that must include a `quantity(0, x)` or `canBe(any)` processor,
- * being able to end the recursion at some time. Otherwise you'll get a `StackOverflow` exception.
+ * @param attachedFns ArchitectFns or ProcessorFns to be applied to the recursive property.
  */
 export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[]) {
   let property = 'unknown';
@@ -92,7 +90,6 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
     if (!state.continue) {
       node.children = [];
       node.value = state.endWithValue;
-      // removeAttachedFn(recurseNextImpl, )
     }
   }
 
@@ -111,15 +108,16 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
   }
 
   /**
-   * Gets the recursion instruction for the current recursion iteration. This instruction controls when
-   * to stop the recursion and with what value.
-   * @param iteratorFn The recursion instructor function controlling when the recursion should stop
+   * Gets the recursion state for the current iteration. This state controls when to stop the recursion
+   * and with what value.
+   * @param controllerFn The recursion instructor function controlling when the recursion should stop
    * and with value the recursion should stop. Recursion instructor functions avoid inifinite loops.
    * @param node The template to pass in to the instructor function.
    */
-  function checkState(iteratorFn: RecursionController, node: ObjectTreeNode): RecursionState {
-    const value = iteratorFn(node);
-    const state = typeof value === 'function' ? value(node) : value;
+  function checkState(controllerFn: RecursionController, node: ObjectTreeNode): RecursionState {
+    const stateOrControllerFn = controllerFn(node);
+    const state =
+      typeof stateOrControllerFn === 'function' ? stateOrControllerFn(node) : stateOrControllerFn;
 
     return state;
   }
