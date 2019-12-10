@@ -1,6 +1,6 @@
-import { build, itself, template } from '../../src';
+import { build, itself, oneOf, range, RecursionDepth, template, use } from '../../src';
 
-fdescribe('self builder', () => {
+describe('self builder', () => {
   it('should throw if used without parent template', () => {
     // arrange
     const buildable = itself(() => ({ continue: true }));
@@ -9,16 +9,15 @@ fdescribe('self builder', () => {
     expect(() => build(buildable)).toThrowMatching((err: Error) => err.message.includes('root'));
   });
 
-  fit('should find root template, even when nested', () => {
+  it('should recurse the parent template', () => {
     // arrange
-    let i = 0;
+    const name = 'Hans';
+    const age = 42;
+    const endValue = {};
     const tmpl = template({
-      level1: {
-        level2: itself(() => {
-          const breakRecursion = i++ === 1;
-          return breakRecursion ? { endWithValue: null } : { continue: true };
-        }),
-      },
+      name: oneOf([name]),
+      age: range(age, age),
+      parent: itself(RecursionDepth(endValue, 1, 1)),
     });
 
     // act
@@ -26,9 +25,54 @@ fdescribe('self builder', () => {
 
     // assert
     expect(result).toBeDefined();
-    expect(result.level1).toBeDefined();
-    expect(result.level1.level2).toBeDefined();
-    expect(result.level1.level2.level1).toBeDefined();
-    expect(result.level1.level2.level1.level2).toEqual(null);
+    expect(result.name).toEqual(name);
+    expect(result.age).toEqual(age);
+    expect(result.parent).toBeDefined();
+    expect(result.parent.name).toEqual(name);
+    expect(result.parent.age).toEqual(age);
+    expect(result.parent.parent).toBe(endValue);
+  });
+
+  fit('should be nestable', () => {
+    // arrange
+    const dirName = '.bin';
+    const fileName = 'test.rtf';
+    const fileEnd = null;
+    const dirEnd: any[] = [];
+
+    const File = template({
+      name: oneOf([fileName]),
+      symlink: itself(RecursionDepth(fileEnd, 1, 1)),
+    });
+    const Directory = template({
+      name: oneOf([dirName]),
+      file: use(File),
+      directories: itself(RecursionDepth(dirEnd, 1, 1)),
+    });
+
+    // act
+    const result = build(Directory);
+
+    // assert
+    expect(result).toBeDefined();
+    expect(result.name).toEqual(dirName);
+
+    expect(result.directories).toBeDefined();
+    expect(result.directories.name).toEqual(dirName);
+    expect(result.directories.directories).toEqual(dirEnd);
+
+    expect(result.directories.file).toBeDefined();
+    expect(result.directories.file.name).toEqual(fileName);
+
+    expect(result.directories.file.symlink).toBeDefined();
+    expect(result.directories.file.symlink.name).toEqual(fileName);
+    expect(result.directories.file.symlink.symlink).toEqual(fileEnd);
+
+    expect(result.file).toBeDefined();
+    expect(result.file.name).toEqual(fileName);
+
+    expect(result.file.symlink).toBeDefined();
+    expect(result.file.symlink.name).toEqual(fileName);
+    expect(result.file.symlink.symlink).toEqual(fileEnd);
   });
 });
