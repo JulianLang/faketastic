@@ -7,8 +7,12 @@ import { Placeholder, PlaceholderSymbol } from './types/placeholder';
  * Creates a new placeholder.
  * @param typeId (Optional) A string specifiying a placeholder type.
  */
-export function placeholder(typeId?: string, ...attachedFns: AttachedFn[]): Buildable<Placeholder> {
-  const placeholder = setSymbol(PlaceholderSymbol, {}, typeId) as Placeholder;
+export function placeholder<T>(
+  typeId?: string,
+  content?: T,
+  ...attachedFns: AttachedFn[]
+): Buildable<Placeholder> {
+  const placeholder = setSymbol(PlaceholderSymbol, content, typeId) as Placeholder;
 
   return createBuildable(placeholder, ...attachedFns);
 }
