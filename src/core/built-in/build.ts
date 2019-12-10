@@ -17,7 +17,7 @@ import { AttachedFn, MutatingFn } from '../../types';
 import { extractFns, hasSymbol, isUndefined, setSymbol } from '../../util';
 import { ArchitectFnSymbol, Buildable, BuildRootSymbol, FnOrderSymbol } from '../types';
 import { BuildCycle } from '../types/build.cycle';
-import { asBuildable, getLeafBuildable, isBuildable } from '../util';
+import { asBuildable, isBuildable, unwrapIfBuildable } from '../util';
 
 /**
  * Builds a buildable and outputs the generated mock data. The amount of objects
@@ -74,7 +74,7 @@ function runCycle(cycle: BuildCycle, buildableNode: ObjectTreeNode): void {
 function finalize(node: ObjectTreeNode): void {
   // buildable has a value property which holds the actual built value.
   // However, this value can again be a buildable, until a leaf of the tree is reached
-  const value = getLeafBuildable(node.value);
+  const value = unwrapIfBuildable(node.value);
 
   setValue(value, node);
 
@@ -154,7 +154,7 @@ function runProcessors(cycle: BuildCycle, node: ObjectTreeNode<Buildable>): void
  * @param node The node to update its type.
  */
 function updateType(node: ObjectTreeNode) {
-  const value = getLeafBuildable(node.value);
+  const value = unwrapIfBuildable(node.value);
   node.type = nodeTypeOf(value);
 }
 

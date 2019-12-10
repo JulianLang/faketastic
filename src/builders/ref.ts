@@ -1,6 +1,6 @@
 import { findNode, ObjectTreeNode, siblingAndSelfTraverser } from 'treelike';
 import { MutatingFnOrders, UnsetValue } from '../constants';
-import { Buildable, createBuildable, getLeafBuildable, isBuildable } from '../core';
+import { Buildable, createBuildable, isBuildable, unwrapIfBuildable } from '../core';
 import { isPlaceholder, placeholder } from '../placeholder';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
@@ -19,15 +19,14 @@ export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): B
     } else {
       // since we set the value now, children can be removed, as they have no relevance anymore
       node.children = [];
-      const leafBuildable = getLeafBuildable(resolvedReference);
-      const leafValue = leafBuildable.value;
+      const bareValue = unwrapIfBuildable(resolvedReference.value);
 
       // TODO: langju: is "BuilderFn" the only possibility for incomplete values?
-      if (isBuilderFunction(leafValue)) {
+      if (isBuilderFunction(bareValue)) {
         // value has not been built yet. mark for recheck in next (outer, if any) build cycle.
-        node.value = placeholder(`ref/defer:${property}`);
+        node.value = placeholder(`ref/defer:${property}`, [refProcessor, ...attachedFns]);
       } else {
-        node.value = leafValue;
+        node.value = bareValue;
       }
     }
   }
