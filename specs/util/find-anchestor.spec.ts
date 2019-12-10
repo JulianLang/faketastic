@@ -60,4 +60,48 @@ describe('findAnchestor helper function', () => {
     // assert
     expect(anchestor).toBe(undefined);
   });
+
+  it('should not find a node if the given withValue parameter does not match', () => {
+    // arrange
+    const tree = treeOf({
+      1: {
+        2: {
+          3: {},
+        },
+      },
+    });
+
+    const withValue = 42;
+    const node = findNode(tree, n => n.name === '3')!;
+    const matchNode: any = findNode(tree, n => n.name === '2')!;
+    matchNode[TestSymbol] = false;
+
+    // act
+    const anchestor = findAnchestor(TestSymbol, node, withValue);
+
+    // assert
+    expect(anchestor).toBe(undefined);
+  });
+
+  it('should find a node if the given withValue parameter does match', () => {
+    // arrange
+    const tree = treeOf({
+      1: {
+        2: {
+          3: {},
+        },
+      },
+    });
+
+    const withValue = 42;
+    const node = findNode(tree, n => n.name === '3')!;
+    const matchNode: any = findNode(tree, n => n.name === '2')!;
+    matchNode[TestSymbol] = withValue;
+
+    // act
+    const anchestor = findAnchestor(TestSymbol, node, withValue);
+
+    // assert
+    expect(anchestor).toBe(matchNode);
+  });
 });
