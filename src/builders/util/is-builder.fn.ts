@@ -1,4 +1,4 @@
-import { BuilderFnSymbol } from '../../builders';
+import { BuilderFnSymbol } from '..';
 import { isDefined } from '../../util';
 
 export function isBuilderFunction(fn: Function): boolean {
