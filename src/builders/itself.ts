@@ -52,7 +52,7 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
    */
   function snapshotOriginalTemplate(node: ObjectTreeNode) {
     if (isUndefined(node.parent)) {
-      throw CouldNotFindRootTemplateError;
+      throw new Error(CouldNotFindRootTemplateError);
     }
 
     const rootTmpl = tryFindRootTemplate(node);
@@ -61,7 +61,7 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
       originalTemplate = clone(rootTmpl);
       property = node.name.toString();
     } else {
-      throw CouldNotFindRootTemplateError;
+      throw new Error(CouldNotFindRootTemplateError);
     }
   }
 
