@@ -18,6 +18,7 @@ import { ArchitectFnSymbol, Buildable, BuildRootSymbol, FnOrderSymbol } from '..
 import { BuildCycle } from '../types/build.cycle';
 import { asBuildable, isBuildable, unwrapIfBuildable } from '../util';
 
+// TODO: langju: update docs
 /**
  * Builds a buildable and outputs the generated mock data. The amount of objects
  * being built can be configured via the second parameter.
