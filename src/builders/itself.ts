@@ -16,7 +16,7 @@ export const RecursionRootSymbol = Symbol('faketastic.recursion.root');
  * @param tmpl The template to be made recursive.
  * @param attachedFns ArchitectFns or ProcessorFns to be applied to the recursive property.
  */
-export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[]) {
+export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[]): Buildable {
   let property = 'unknown';
   let originalTemplate: ObjectTreeNode<Buildable>;
   let state: RecursionState;

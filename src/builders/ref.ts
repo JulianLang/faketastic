@@ -5,7 +5,7 @@ import { isPlaceholder, placeholder } from '../placeholder';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
 import { isDefined, isUndefined } from '../util';
-export function ref<T = any>(propertyName: keyof T, ...attachedFns: AttachedFn[]): Buildable<any> {
+export function ref<T = any>(propertyName: keyof T, ...attachedFns: AttachedFn[]): Buildable {
   const refProcessor = createProcessorFn(refImpl, 'finalizer', MutatingFnOrders.processors.ref);
 
   return createBuildable(placeholder(`ref:${propertyName}`), [refProcessor, ...attachedFns]);

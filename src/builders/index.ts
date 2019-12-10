@@ -5,4 +5,5 @@ export * from './range';
 export * from './ref';
 export * from './some-of';
 export * from './time';
+export * from './types';
 export * from './util';

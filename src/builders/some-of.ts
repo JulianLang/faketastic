@@ -26,7 +26,7 @@ export function someOf<T>(
   values: T[],
   opts?: SomeOfOpts | ProcessorFn,
   ...attachedFns: AttachedFn[]
-): Buildable<any> {
+): Buildable {
   const someOfDefaultOpts: SomeOfOpts = {
     allowDuplicates: true,
     minItems: 1,

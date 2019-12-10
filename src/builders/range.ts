@@ -1,5 +1,7 @@
-import { Buildable, BuilderFn, createBuildable, createBuilderFn, randomInt } from '../core';
+import { Buildable, createBuildable, randomInt } from '../core';
 import { AttachedFn } from '../types';
+import { BuilderFn } from './types';
+import { createBuilderFn } from './util';
 
 export function range(min = 1, max = 10, ...attachedFns: AttachedFn[]): Buildable<BuilderFn> {
   const rangeBuilder = createBuilderFn(rangeImpl);

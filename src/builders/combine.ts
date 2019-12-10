@@ -10,7 +10,7 @@ export function combine<T>(
   props: PureObject<T>,
   map: (props: PureObject<T>) => any,
   ...attachedFns: AttachedFn[]
-): Buildable<any> {
+): Buildable {
   const combineValuesProcessor = createProcessorFn(
     buildAndCombineValues,
     'finalizer',

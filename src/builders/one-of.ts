@@ -6,7 +6,7 @@ import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
 import { clone, isDefined } from '../util';
 
-export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable<any> {
+export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
   const initOneOf = createProcessorFn(
     initOneOfImpl,
     'preprocessor',
