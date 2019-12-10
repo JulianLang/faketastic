@@ -4,8 +4,12 @@
  * @param withValue The value that should be set for the symbol.
  * @param on The value being holder of a symbol.
  */
-export function setSymbol<T, K extends symbol>(symbol: K, on: T, withValue: any = true): T & K {
+export function setSymbol<T, K extends symbol, V = boolean>(
+  symbol: K,
+  on: T,
+  withValue: V = true as any,
+): T & Record<K, V> {
   (on as any)[symbol] = withValue;
 
-  return on as T & K;
+  return on as T & Record<K, V>;
 }
