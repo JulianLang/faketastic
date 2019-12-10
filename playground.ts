@@ -21,12 +21,16 @@ import { itself, RecursionDepth } from './src/builders';
 const File = template({
   name: oneOf(['empty', 'nice', 'something', 'secret', 'unknown', 'stream']),
   extension: oneOf(['css', 'txt', 'rtf', 'docx', 'mp3']),
-  fileName: combine(
+  fullName: combine(
     {
       name: ref('name'),
       ext: ref('extension'),
     },
     v => `${v.name}.${v.ext}`,
+  ),
+  link: itself(
+    RecursionDepth(null, 1, 1),
+    quantity(() => randomInt(0, 2)),
   ),
 });
 
