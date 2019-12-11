@@ -1,7 +1,6 @@
 import { ObjectTreeNode } from 'treelike';
-import { MutatingFnOrders } from '../constants';
+import { MutatingFnOrders, UnsetValue } from '../constants';
 import { asBuildable, Buildable, buildChild, createBuildable, randomInt } from '../core';
-import { placeholder } from '../placeholder';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
 import { clone, isDefined } from '../util';
@@ -13,7 +12,7 @@ export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
     MutatingFnOrders.processors.treeStructureChanging,
   );
 
-  return createBuildable(placeholder('oneOf'), [initOneOf, ...attachedFns]);
+  return createBuildable(UnsetValue, [initOneOf, ...attachedFns]);
 
   function initOneOfImpl(node: ObjectTreeNode) {
     const content = chooseRandomItem();

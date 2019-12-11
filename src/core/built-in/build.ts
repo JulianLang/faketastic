@@ -9,14 +9,16 @@ import {
 } from 'treelike';
 import { ArchitectFn } from '../../architects';
 import { isBuilderFunction } from '../../builders';
+import { isPlaceholder } from '../../placeholder';
 import { ProcessorFn, ProcessorFnSymbol } from '../../processors';
 import { TreeReaderFn, TreeReaderFnSymbol } from '../../tree-reader';
 import { AttachedFn, MutatingFn } from '../../types';
-import { extractFns, hasSymbol, setSymbol } from '../../util';
+import { extractFns, hasSymbol, isUndefined, isUnset, setSymbol } from '../../util';
 import { ArchitectFnSymbol, Buildable, BuildRootSymbol, FnOrderSymbol } from '../types';
 import { BuildCycle } from '../types/build.cycle';
-import { asBuildable, getLeafBuildable, isBuildable } from '../util';
+import { asBuildable, isBuildable, unwrapIfBuildable } from '../util';
 
+// TODO: langju: update docs
 /**
  * Builds a buildable and outputs the generated mock data. The amount of objects
  * being built can be configured via the second parameter.
@@ -49,7 +51,12 @@ export function buildChild<R = any, T = any>(
   runCycle('finalizer', buildableNode);
 
   updateType(buildableNode);
-  runReverse(buildableNode, node => finalize(node), asChildOf);
+  runReverse(buildableNode, node => writeValues(node), asChildOf);
+
+  // base root:
+  if (isUndefined(buildableNode.parent)) {
+    run(buildableNode, finalize);
+  }
 
   return buildableNode.value as any;
 }
@@ -64,10 +71,15 @@ function runCycle(cycle: BuildCycle, buildableNode: ObjectTreeNode): void {
   run(buildableNode, node => runMutatingFns(cycle, node));
 }
 
-function finalize(node: ObjectTreeNode): void {
+function writeValues(node: ObjectTreeNode): void {
   // buildable has a value property which holds the actual built value.
   // However, this value can again be a buildable, until a leaf of the tree is reached
-  const value = getLeafBuildable(node.value);
+  const value = unwrapIfBuildable(node.value);
+
+  // leave placeholder untouched, they get built later on.
+  if (isPlaceholder(value)) {
+    return;
+  }
 
   setValue(value, node);
 
@@ -86,6 +98,24 @@ function buildChildrenOf(node: ObjectTreeNode) {
   for (const child of node.children) {
     // all children must have names
     node.value[child.name!] = child.value;
+  }
+}
+
+/**
+ * Finalizes the value tree by building potentially remaining `Placeholder`s.
+ * @param node The root node to begin cleaning process from.
+ */
+function finalize(node: ObjectTreeNode): void {
+  if (isUnset(node.value)) {
+    console.warn(`faketastic/clean-up: Unset value found on property "${node.name}".`);
+    node.value = undefined;
+  } else if (isBuildable(node.value)) {
+    // Buildables other than placeholders should be built by now.
+    console.assert(isPlaceholder(node.value.value));
+
+    if (isPlaceholder(node.value.value)) {
+      node.value = buildChild(node.value, node);
+    }
   }
 }
 
@@ -147,7 +177,7 @@ function runProcessors(cycle: BuildCycle, node: ObjectTreeNode<Buildable>): void
  * @param node The node to update its type.
  */
 function updateType(node: ObjectTreeNode) {
-  const value = getLeafBuildable(node.value);
+  const value = unwrapIfBuildable(node.value);
   node.type = nodeTypeOf(value);
 }
 
@@ -221,16 +251,30 @@ function runReverse<T>(
   asChildOf?: ObjectTreeNode,
 ): void {
   if (isDefined(asChildOf)) {
-    // only build child's tree scope, so stop when reaching asChildOf (child's root node)
-    leafTraverser(node, onNext, node => node === asChildOf);
-    // ... but still emit rootNode as well
-    onNext(asChildOf);
+    runChildScopedReverse<T>(node, onNext, asChildOf);
   } else {
     traverse(node, onNext, leafTraverser);
   }
 
   // also include root
   onNext(node);
+}
+
+/**
+ * Runs an child-excpert of the tree reversively.
+ * @param node The node to start traversion from.
+ * @param onNext The callback function to be called for each traversed node.
+ * @param asChildOf The node that limits the child scope.
+ */
+function runChildScopedReverse<T>(
+  node: ObjectTreeNode<T>,
+  onNext: (node: ObjectTreeNode<T>) => void,
+  asChildOf: ObjectTreeNode<any>,
+) {
+  // only build child's tree scope, so stop when reaching asChildOf (child's root node)
+  leafTraverser(node, onNext, node => node === asChildOf);
+  // ... but still emit rootNode as well
+  onNext(asChildOf);
 }
 
 /**

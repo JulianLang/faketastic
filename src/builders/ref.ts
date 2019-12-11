@@ -1,26 +1,33 @@
 import { findNode, ObjectTreeNode, siblingAndSelfTraverser } from 'treelike';
-import { MutatingFnOrders } from '../constants';
-import { Buildable, createBuildable, isBuildable } from '../core';
+import { MutatingFnOrders, UnsetValue } from '../constants';
+import { Buildable, createBuildable, isBuildable, unwrapIfBuildable } from '../core';
 import { isPlaceholder, placeholder } from '../placeholder';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
-import { isDefined, isUndefined } from '../util';
-export function ref<T = any>(propertyName: keyof T, ...attachedFns: AttachedFn[]): Buildable {
+import { isDefined, isUndefined, isUnset } from '../util';
+import { isBuilderFunction } from './util';
+export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): Buildable {
   const refProcessor = createProcessorFn(refImpl, 'finalizer', MutatingFnOrders.processors.ref);
 
-  return createBuildable(placeholder(`ref:${propertyName}`), [refProcessor, ...attachedFns]);
+  return createBuildable(UnsetValue, [refProcessor, ...attachedFns]);
 
   function refImpl(node: ObjectTreeNode) {
     const resolvedReference = tryResolveRef(node);
 
     if (isUndefined(resolvedReference)) {
-      console.warn(`faketastic: Could not resolve reference to "${propertyName}"`);
+      console.warn(`faketastic: Could not resolve reference to "${property}"`);
     } else {
       // since we set the value now, children can be removed, as they have no relevance anymore
       node.children = [];
-      node.value = isBuildable(resolvedReference.value)
-        ? resolvedReference.value.value
-        : resolvedReference.value;
+      const bareValue = unwrapIfBuildable(resolvedReference.value);
+
+      // TODO: langju: is "BuilderFn" the only possibility for incomplete values?
+      if (isBuilderFunction(bareValue) || isUnset(bareValue)) {
+        // value has not been built yet. mark for recheck in next (outer, if any) build cycle.
+        node.value = placeholder(`ref/defer`, {}, [refProcessor, ...attachedFns]);
+      } else if (!isPlaceholder(bareValue)) {
+        node.value = bareValue;
+      }
     }
   }
 
@@ -38,9 +45,9 @@ export function ref<T = any>(propertyName: keyof T, ...attachedFns: AttachedFn[]
   }
 
   function isMatch(node: ObjectTreeNode) {
-    const hasCorrectName = node.name === propertyName;
+    const hasCorrectName = node.name === property;
     const value = isBuildable(node.value) ? node.value.value : node.value;
-    const isValue = !isPlaceholder(value);
+    const isValue = !isPlaceholder(value) && !isUnset(value);
 
     return isValue && hasCorrectName;
   }

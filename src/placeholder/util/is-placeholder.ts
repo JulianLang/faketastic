@@ -1,5 +1,5 @@
-import { isDefined, isUndefined } from '../util';
-import { Placeholder, PlaceholderSymbol } from './types/placeholder';
+import { hasSymbol, isDefined, isUndefined } from '../../util';
+import { Placeholder, PlaceholderSymbol } from '../types/placeholder';
 
 /**
  * Determines whether a given value is a placeholder. Optionally checks for a type-id string.
@@ -12,8 +12,8 @@ export function isPlaceholder(value: any, ofType?: string): value is Placeholder
   }
 
   if (isDefined(ofType)) {
-    return value[PlaceholderSymbol] === ofType;
+    return hasSymbol(PlaceholderSymbol, value, ofType);
   } else {
-    return isDefined(value[PlaceholderSymbol]);
+    return hasSymbol(PlaceholderSymbol, value);
   }
 }
