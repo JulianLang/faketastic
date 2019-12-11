@@ -18,12 +18,22 @@ import { ArchitectFnSymbol, Buildable, BuildRootSymbol, FnOrderSymbol } from '..
 import { BuildCycle } from '../types/build.cycle';
 import { asBuildable, isBuildable, unwrapIfBuildable } from '../util';
 
-// TODO: langju: update docs
 /**
- * Builds a buildable and outputs the generated mock data. The amount of objects
- * being built can be configured via the second parameter.
- * @param buildable An object of interface Buildable that should get built.
- * @param quantity The amount of mock data objects that should be generated from the buildable.
+ * **Builds a `Buildable` and returns the generated mock-data.**
+ *
+ * ---
+ *
+ * Use it only on the root temlpate of the data you want to build. If you want to
+ * build a value as part of a current build, you should use `buildChild`.
+ *
+ * ---
+ *
+ * **Please Note:** Most likely you will never want `build` within an `ArchitectFn` or
+ * `ProcessorFn`. Better use `buildChild` instead as it lets you connect the subbuild
+ * to the current build. This ensures for example that references in sub-build can be
+ * resolve values in the main-build.
+ * @param buildable The `Buildable` (e.g. return value of `template`) to build mock data from.
+ * @param attachedFns AttachedFns like (e.g. `quantity`) to apply while build.
  */
 export function build<R = any, T = any>(buildable: Buildable<T>, ...attachedFns: AttachedFn[]): R {
   return buildChild(buildable, undefined, ...attachedFns);
