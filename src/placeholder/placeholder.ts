@@ -12,7 +12,7 @@ export function placeholder<T>(
   content?: T,
   ...attachedFns: AttachedFn[]
 ): Buildable<Placeholder> {
-  const placeholder = setSymbol(PlaceholderSymbol, content, typeId) as Placeholder;
+  const placeholder = setSymbol(PlaceholderSymbol, content || {}, typeId) as Placeholder;
 
   return createBuildable(placeholder, ...attachedFns);
 }
