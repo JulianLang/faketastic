@@ -62,19 +62,5 @@ describe('ref builder function', () => {
     expect(result.b).toEqual(expectedValue);
   });
 
-  it('should warn the user if a reference could not be resolved', () => {
-    // arrange
-    spyOn(console, 'warn');
-    const buildable = template({
-      b: ref('not-existing'),
-    });
-
-    // act
-    build(buildable);
-
-    // assert
-    expect(console.warn).toHaveBeenCalledTimes(1);
-  });
-
   includeDirectiveFnSpecs(ref, 'propName');
 });

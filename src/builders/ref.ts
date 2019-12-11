@@ -13,21 +13,20 @@ export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): B
 
   function refImpl(node: ObjectTreeNode) {
     const resolvedReference = tryResolveRef(node);
-
     if (isUndefined(resolvedReference)) {
-      console.warn(`faketastic: Could not resolve reference to "${property}"`);
-    } else {
-      // since we set the value now, children can be removed, as they have no relevance anymore
-      node.children = [];
-      const bareValue = unwrapIfBuildable(resolvedReference.value);
+      return;
+    }
 
-      // TODO: langju: is "BuilderFn" the only possibility for incomplete values?
-      if (isBuilderFunction(bareValue) || isUnset(bareValue)) {
-        // value has not been built yet. mark for recheck in next (outer, if any) build cycle.
-        node.value = placeholder(`ref/defer`, {}, [refProcessor, ...attachedFns]);
-      } else if (!isPlaceholder(bareValue)) {
-        node.value = bareValue;
-      }
+    // since we set the value now, children can be removed, as they have no relevance anymore
+    node.children = [];
+    const bareValue = unwrapIfBuildable(resolvedReference.value);
+
+    // TODO: langju: is "BuilderFn" the only possibility for incomplete values?
+    if (isBuilderFunction(bareValue) || isUnset(bareValue)) {
+      // value has not been built yet. mark for recheck in next (outer, if any) build cycle.
+      node.value = placeholder(`ref/defer`, {}, [refProcessor, ...attachedFns]);
+    } else if (!isPlaceholder(bareValue)) {
+      node.value = bareValue;
     }
   }
 
