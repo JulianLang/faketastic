@@ -18,6 +18,8 @@ import { ArchitectFnSymbol, Buildable, BuildRootSymbol, FnOrderSymbol } from '..
 import { BuildCycle } from '../types/build.cycle';
 import { asBuildable, isBuildable, unwrapIfBuildable } from '../util';
 
+let currentCycle: BuildCycle = 'initializer';
+
 /**
  * **Builds a `Buildable` and returns the generated mock-data.**
  *
@@ -37,6 +39,11 @@ import { asBuildable, isBuildable, unwrapIfBuildable } from '../util';
  */
 export function build<R = any, T = any>(buildable: Buildable<T>, ...attachedFns: AttachedFn[]): R {
   return buildChild(buildable, undefined, ...attachedFns);
+}
+
+export function reevaluate(node: ObjectTreeNode): void {
+  setSymbol(BuildRootSymbol, node);
+  runCycle(currentCycle, node);
 }
 
 export function buildChild<R = any, T = any>(
@@ -77,6 +84,7 @@ export function buildChild<R = any, T = any>(
  * @param buildableNode The node to run the cycle on.
  */
 function runCycle(cycle: BuildCycle, buildableNode: ObjectTreeNode): void {
+  currentCycle = cycle;
   run(buildableNode, node => runReadonlyFns(cycle, node));
   run(buildableNode, node => runMutatingFns(cycle, node));
 }
