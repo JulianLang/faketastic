@@ -6,6 +6,7 @@ export * from './find-anchestor';
 export * from './get-symbol';
 export * from './has-symbol';
 export * from './is-array';
+export * from './is-built';
 export * from './is-date.instance';
 export * from './is-defined';
 export * from './is-undefined';

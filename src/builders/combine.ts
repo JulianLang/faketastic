@@ -1,9 +1,9 @@
 import { ObjectTreeNode } from 'treelike';
 import { MutatingFnOrders, UnsetValue } from '../constants';
-import { Buildable, buildChild, createBuildable, PureObject } from '../core';
+import { Buildable, buildChild, createBuildable, FnCalledSymbol, PureObject } from '../core';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
-import { clone } from '../util';
+import { clone, setSymbol } from '../util';
 
 export function combine<T>(
   props: PureObject<T>,
@@ -25,5 +25,7 @@ export function combine<T>(
     const builtTemplate = buildChild(buildable, node);
     const mappedValue = map(builtTemplate);
     node.value = mappedValue;
+
+    setSymbol(FnCalledSymbol, buildAndCombineValues);
   }
 }

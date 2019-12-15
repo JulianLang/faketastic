@@ -1,16 +1,17 @@
 import { ObjectTreeNode } from 'treelike';
-import { MutatingFnOrders, UnsetValue } from '../constants';
+import { UnsetValue } from '../constants';
 import {
   asBuildable,
   Buildable,
   buildChild,
   createBuildable,
+  FnCalledSymbol,
   randomInt,
   randomItem,
 } from '../core';
 import { createProcessorFn, ProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
-import { addIfAttachedFn, cloneItems, isUndefined } from '../util';
+import { addIfAttachedFn, cloneItems, isUndefined, setSymbol } from '../util';
 import { SomeOfOpts } from './types';
 
 /**
@@ -34,11 +35,7 @@ export function someOf<T>(
     opts = undefined;
   }
 
-  const initSomeOf = createProcessorFn(
-    initSomeOfImpl,
-    'preprocessor',
-    MutatingFnOrders.processors.treeStructureChanging,
-  );
+  const initSomeOf = createProcessorFn(initSomeOfImpl, 'preprocessor');
 
   return createBuildable(UnsetValue, [initSomeOf, ...attachedFns]);
 
@@ -50,6 +47,8 @@ export function someOf<T>(
     node.type = 'array';
     node.children = [];
     node.value = builtContent;
+
+    setSymbol(FnCalledSymbol, initSomeOfImpl);
   }
 
   function chooseItems(): T[] {

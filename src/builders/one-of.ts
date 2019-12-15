@@ -5,12 +5,13 @@ import {
   Buildable,
   childSelector,
   createBuildable,
+  FnCalledSymbol,
   randomInt,
   reevaluate,
 } from '../core';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
-import { clone, isDefined } from '../util';
+import { clone, isBuilt, isDefined, setSymbol } from '../util';
 
 export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
   const initOneOf = createProcessorFn(initOneOfImpl, 'initializer');
@@ -20,14 +21,25 @@ export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
   function initOneOfImpl(node: ObjectTreeNode) {
     const content = chooseRandomItem();
     const buildableContent = asBuildable(content);
+    node.value = buildableContent;
+    node.children = [];
 
-    while (true) {
-      const subTree = treeOf(buildableContent, childSelector, node);
-      subTree.parent = node.parent;
-      subTree.name = node.name;
-      copyAttributes(subTree, node);
+    setSymbol(FnCalledSymbol, initOneOfImpl);
+
+    do {
+      // detective.resetChanges();
+      // const subTree = treeOf($node.value, childSelector);
+      // subTree.parent = $node.parent;
+      // subTree.name = $node.name;
+      // copyAttributes(subTree, $node);
+      // reevaluate($node);
+
+      const subtree = treeOf(node.value, childSelector);
+      subtree.parent = node.parent;
+      subtree.name = node.name;
+      copyAttributes(subtree, node);
       reevaluate(node);
-    }
+    } while (!isBuilt(node.value, 'initializer'));
   }
 
   function chooseRandomItem() {

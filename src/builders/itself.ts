@@ -1,6 +1,13 @@
 import { ObjectTreeNode } from 'treelike';
 import { MutatingFnOrders, UnsetValue } from '../constants';
-import { asBuildable, Buildable, buildChild, createBuildable, isBuildable } from '../core';
+import {
+  asBuildable,
+  Buildable,
+  buildChild,
+  createBuildable,
+  FnCalledSymbol,
+  isBuildable,
+} from '../core';
 import { createProcessorFn } from '../processors';
 import { createTreeReaderFn } from '../tree-reader';
 import { AttachedFn } from '../types';
@@ -62,6 +69,8 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
     } else {
       throw new Error(CouldNotFindRootTemplateError);
     }
+
+    setSymbol(FnCalledSymbol, snapshotOriginalTemplate);
   }
 
   /**
@@ -81,6 +90,8 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
 
     node.children = [];
     node.value = buildChild(clonedTmpl, node);
+
+    setSymbol(FnCalledSymbol, recurseNextImpl);
   }
 
   /**
@@ -94,6 +105,8 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
       node.children = [];
       node.value = state.endWithValue;
     }
+
+    setSymbol(FnCalledSymbol, endRecursionImpl);
   }
 
   /**
