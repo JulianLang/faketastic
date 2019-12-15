@@ -6,10 +6,7 @@ import { hasSymbol } from './has-symbol';
 import { isUndefined } from './is-undefined';
 
 export function isBuilt(value: any, cycle: BuildCycle = 'finalizer'): boolean {
-  if (isUndefined(value)) {
-    return true;
-  }
-  if (!isBuildable(value)) {
+  if (isUndefined(value) || !isBuildable(value)) {
     return true;
   }
 
