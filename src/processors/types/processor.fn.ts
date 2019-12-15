@@ -1,8 +1,6 @@
-import { ObjectTreeNode } from 'treelike';
 import { FnIsStickySymbol } from '../../core/types';
-import { MutatingFn } from '../../types';
+import { BuildCycleCallbackFn, MutatingFn } from '../../types';
 
-export interface ProcessorFn extends MutatingFn {
+export interface ProcessorFn extends MutatingFn, BuildCycleCallbackFn {
   [FnIsStickySymbol]: boolean;
-  (node: ObjectTreeNode): void;
 }
