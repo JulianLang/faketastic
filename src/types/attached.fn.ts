@@ -1,5 +1,9 @@
-import { TreeReaderFn } from '../tree-reader';
-import { MutatingFn } from './mutating.fn';
+import { ObjectTreeNode } from 'treelike';
+import { AttachedFnSymbol } from '../core';
+import { AttachedFnType } from './attached.fn.type';
 
 /** AttachedFns are supported functions to be placed within a TemplateFn or DirectiveFn. */
-export type AttachedFn = MutatingFn | TreeReaderFn;
+export interface AttachedFn {
+  [AttachedFnSymbol]: AttachedFnType;
+  (node: ObjectTreeNode): void;
+}

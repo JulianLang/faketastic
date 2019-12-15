@@ -9,10 +9,10 @@ import { Placeholder, PlaceholderSymbol } from './types/placeholder';
  */
 export function placeholder<T>(
   typeId?: string,
-  content?: T,
-  ...attachedFns: AttachedFn[]
+  content: T = {} as any,
+  attachedFns: AttachedFn[] = [],
 ): Buildable<Placeholder> {
   const placeholder = setSymbol(PlaceholderSymbol, content || {}, typeId) as Placeholder;
 
-  return createBuildable(placeholder, ...attachedFns);
+  return createBuildable(placeholder, attachedFns);
 }

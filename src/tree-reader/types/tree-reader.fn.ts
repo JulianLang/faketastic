@@ -1,9 +1,8 @@
 import { ObjectTreeNode } from 'treelike';
-import { BuildCycle } from '../../core';
+import { BuildCycle, FnBuildCycleSymbol } from '../../core';
+import { AttachedFn } from '../../types';
 
-export const TreeReaderFnSymbol = Symbol('faketastic.fns.tree-reader');
-
-export interface TreeReaderFn {
-  [TreeReaderFnSymbol]: BuildCycle;
+export interface TreeReaderFn extends AttachedFn {
+  [FnBuildCycleSymbol]: BuildCycle;
   (node: ObjectTreeNode): void;
 }

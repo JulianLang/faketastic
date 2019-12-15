@@ -1,12 +1,12 @@
 import { ObjectTreeNode } from 'treelike';
-import { BuildCycle } from '../../core/types/build.cycle';
-import { FnOrderSymbol } from '../../core/types/symbols';
+import { BuildCycle, FnBuildCycleSymbol, FnOrderSymbol } from '../../core/types';
+import { AttachedFn } from '../../types';
 
-export const ProcessorFnSymbol = Symbol('faketastic.fns.processor');
-export const IsStickyProcessorSymbol = Symbol('faketastic.fns.processor.isSticky');
+// TODO: move.
+export const IsStickyProcessorSymbol = Symbol('faketastic.fns.isSticky');
 
-export interface ProcessorFn {
-  [ProcessorFnSymbol]: BuildCycle;
+export interface ProcessorFn extends AttachedFn {
+  [FnBuildCycleSymbol]: BuildCycle;
   [FnOrderSymbol]: number;
   [IsStickyProcessorSymbol]: boolean;
   (node: ObjectTreeNode): void;
