@@ -204,14 +204,6 @@ function buildNode(node: ObjectTreeNode): void {
     buildable.value = builderFn();
 
     updateType(node);
-
-    if (node.type !== 'value') {
-      // TODO: langju: should this really be done?
-      const buildableValue = asBuildable(buildable.value);
-      const built = buildChild(buildableValue, node);
-
-      setValue(built, node);
-    }
   }
 }
 
