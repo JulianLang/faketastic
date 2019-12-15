@@ -15,6 +15,7 @@ import { ProcessorFn } from '../../processors';
 import { TreeReaderFn } from '../../tree-reader';
 import { AttachedFn, AttachedFnType, MutatingFn } from '../../types';
 import {
+  cyclesOf,
   extractFns,
   hasSymbol,
   isBuilt,
@@ -28,12 +29,11 @@ import {
   Buildable,
   BuildRootSymbol,
   FnBuildCycleSymbol,
+  FnCalledSymbol,
   FnOrderSymbol,
 } from '../types';
 import { BuildCycle } from '../types/build.cycle';
 import { isBuildable, unwrapIfBuildable } from '../util';
-
-let currentCycle: BuildCycle = 'initializer';
 
 /**
  * **Builds a `Buildable` and returns the generated mock-data.**
@@ -62,12 +62,19 @@ export function rebuild(node: ObjectTreeNode, until: BuildCycle): void {
     subtree.parent = node.parent;
     subtree.name = node.name;
     copyAttributes(subtree, node);
-
     setSymbol(BuildRootSymbol, node);
-    runCycle(currentCycle, node);
+    runCyclesTo(until, node);
   } while (!isBuilt(node.value, until));
 
   removeSymbol(BuildRootSymbol, node);
+}
+
+function runCyclesTo(cycle: BuildCycle, node: ObjectTreeNode<any>) {
+  const cyclesToRun = cyclesOf(cycle);
+
+  for (const currentCycle of cyclesToRun) {
+    runCycle(currentCycle, node);
+  }
 }
 
 export function buildChild<R = any, T = any>(
@@ -108,7 +115,6 @@ export function buildChild<R = any, T = any>(
  * @param buildableNode The node to run the cycle on.
  */
 function runCycle(cycle: BuildCycle, buildableNode: ObjectTreeNode): void {
-  currentCycle = cycle;
   run(buildableNode, node => runTreeReaderFns(cycle, node));
   run(buildableNode, node => runMutatingFns(cycle, node));
 }
@@ -171,11 +177,13 @@ function runMutatingFns(cycle: BuildCycle, node: ObjectTreeNode): void {
   if (isBuildable(node.value)) {
     node.value.architects
       .filter(fn => hasSymbol(FnBuildCycleSymbol, fn, cycle))
+      .filter(fn => !hasSymbol(FnCalledSymbol, fn))
       .sort(sortByOrderNumber)
       .forEach(architectFn => architectFn(node));
 
     node.value.processors
       .filter(fn => hasSymbol(FnBuildCycleSymbol, fn, cycle))
+      .filter(fn => !hasSymbol(FnCalledSymbol, fn))
       .sort(sortByOrderNumber)
       .forEach(processorFn => {
         processorFn(node);
@@ -193,6 +201,7 @@ function runTreeReaderFns(cycle: BuildCycle, node: ObjectTreeNode): void {
   if (isBuildable(node.value)) {
     node.value.treeReaders
       .filter(fn => hasSymbol(FnBuildCycleSymbol, fn, cycle))
+      .filter(fn => !hasSymbol(FnCalledSymbol, fn))
       .forEach(treeReader => treeReader(node));
   }
 }
