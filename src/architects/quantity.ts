@@ -1,6 +1,6 @@
 import { addChildren, ObjectTreeNode } from 'treelike';
-import { asBuildable, Buildable, FnCalledSymbol, isBuildable } from '../core';
-import { IsStickyProcessorSymbol, ProcessorFn } from '../processors';
+import { asBuildable, Buildable, FnCalledSymbol, FnIsStickySymbol, isBuildable } from '../core';
+import { ProcessorFn } from '../processors';
 import { clone, extractFns, hasSymbol, setSymbol } from '../util';
 import { ArchitectFn, Quantity, QuantityInsertMode } from './types';
 import { createArchitectFn, getQuantity } from './util';
@@ -110,12 +110,9 @@ export function quantity(
    * @param buildable The Buildable to extract sticky ProcessorFns from.
    */
   function extractStickyProcessors(buildable: Buildable): ProcessorFn[] {
-    const stickyProcessors = extractFns(
-      IsStickyProcessorSymbol,
-      buildable.processors,
-    ) as ProcessorFn[];
+    const stickyProcessors = extractFns(FnIsStickySymbol, buildable.processors) as ProcessorFn[];
 
-    buildable.processors = buildable.processors.filter(p => !hasSymbol(IsStickyProcessorSymbol, p));
+    buildable.processors = buildable.processors.filter(p => !hasSymbol(FnIsStickySymbol, p));
 
     return stickyProcessors;
   }

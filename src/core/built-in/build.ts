@@ -10,11 +10,17 @@ import {
 import { ArchitectFn } from '../../architects';
 import { isBuilderFunction } from '../../builders';
 import { isPlaceholder } from '../../placeholder';
-import { ProcessorFn, ProcessorFnSymbol } from '../../processors';
-import { TreeReaderFn, TreeReaderFnSymbol } from '../../tree-reader';
-import { AttachedFn, MutatingFn } from '../../types';
+import { ProcessorFn } from '../../processors';
+import { TreeReaderFn } from '../../tree-reader';
+import { AttachedFn, AttachedFnType, MutatingFn } from '../../types';
 import { extractFns, hasSymbol, isUndefined, isUnset, setSymbol } from '../../util';
-import { ArchitectFnSymbol, Buildable, BuildRootSymbol, FnOrderSymbol } from '../types';
+import {
+  AttachedFnSymbol,
+  Buildable,
+  BuildRootSymbol,
+  FnBuildCycleSymbol,
+  FnOrderSymbol,
+} from '../types';
 import { BuildCycle } from '../types/build.cycle';
 import { asBuildable, isBuildable, unwrapIfBuildable } from '../util';
 
@@ -85,7 +91,7 @@ export function buildChild<R = any, T = any>(
  */
 function runCycle(cycle: BuildCycle, buildableNode: ObjectTreeNode): void {
   currentCycle = cycle;
-  run(buildableNode, node => runReadonlyFns(cycle, node));
+  run(buildableNode, node => runTreeReaderFns(cycle, node));
   run(buildableNode, node => runMutatingFns(cycle, node));
 }
 
@@ -145,8 +151,18 @@ function finalize(node: ObjectTreeNode): void {
  */
 function runMutatingFns(cycle: BuildCycle, node: ObjectTreeNode): void {
   if (isBuildable(node.value)) {
-    runArchitectFns(cycle, node);
-    runProcessors(cycle, node);
+    node.value.architects
+      .filter(fn => hasSymbol(FnBuildCycleSymbol, fn, cycle))
+      .sort(sortByOrderNumber)
+      .forEach(architectFn => architectFn(node));
+
+    node.value.processors
+      .filter(fn => hasSymbol(FnBuildCycleSymbol, fn, cycle))
+      .sort(sortByOrderNumber)
+      .forEach(processorFn => {
+        processorFn(node);
+        updateType(node);
+      });
   }
 }
 
@@ -155,39 +171,12 @@ function runMutatingFns(cycle: BuildCycle, node: ObjectTreeNode): void {
  * @param cycle The cycle for which to run the ReadonlyFns.
  * @param node The node on whcih to run its ReadonlyFns.
  */
-function runReadonlyFns(cycle: BuildCycle, node: ObjectTreeNode): void {
+function runTreeReaderFns(cycle: BuildCycle, node: ObjectTreeNode): void {
   if (isBuildable(node.value)) {
     node.value.treeReaders
-      .filter(fn => hasSymbol(TreeReaderFnSymbol, fn, cycle))
-      .forEach(readonlyFn => readonlyFn(node));
+      .filter(fn => hasSymbol(FnBuildCycleSymbol, fn, cycle))
+      .forEach(treeReader => treeReader(node));
   }
-}
-
-/**
- * Runs all ArchitectFns on a given node for a specified build-cycle.
- * @param cycle The cycle for which to run the ArchitectFns.
- * @param node The node on whcih to run its ArchitectFns.
- */
-function runArchitectFns(cycle: BuildCycle, node: ObjectTreeNode<Buildable>): void {
-  node.value.architects
-    .filter(fn => hasSymbol(ArchitectFnSymbol, fn, cycle))
-    .sort(sortByOrderNumber)
-    .forEach(architectFn => architectFn(node));
-}
-
-/**
- * Runs all ProcessorFns on a given node for a specified build-cycle.
- * @param cycle The cycle for which to run the ProcessorFns.
- * @param node The node on whcih to run its ProcessorFns.
- */
-function runProcessors(cycle: BuildCycle, node: ObjectTreeNode<Buildable>): void {
-  node.value.processors
-    .filter(fn => hasSymbol(ProcessorFnSymbol, fn, cycle))
-    .sort(sortByOrderNumber)
-    .forEach(processorFn => {
-      processorFn(node);
-      updateType(node);
-    });
 }
 
 /**
@@ -217,6 +206,7 @@ function buildNode(node: ObjectTreeNode): void {
     updateType(node);
 
     if (node.type !== 'value') {
+      // TODO: langju: should this really be done?
       const buildableValue = asBuildable(buildable.value);
       const built = buildChild(buildableValue, node);
 
@@ -241,9 +231,21 @@ function setValue(value: any, node: ObjectTreeNode) {
  * @param buildable The buildable receiving the AttachedFns.
  */
 function addAttachedFns<T = any>(attachedFns: AttachedFn[], buildable: Buildable<T>) {
-  const processors = extractFns(ProcessorFnSymbol, attachedFns) as ProcessorFn[];
-  const architects = extractFns(ArchitectFnSymbol, attachedFns) as ArchitectFn[];
-  const treeReaders = extractFns(TreeReaderFnSymbol, attachedFns) as TreeReaderFn[];
+  const processors = extractFns<symbol, AttachedFnType>(
+    AttachedFnSymbol,
+    attachedFns,
+    'processor',
+  ) as ProcessorFn[];
+  const architects = extractFns<symbol, AttachedFnType>(
+    AttachedFnSymbol,
+    attachedFns,
+    'architect',
+  ) as ArchitectFn[];
+  const treeReaders = extractFns<symbol, AttachedFnType>(
+    AttachedFnSymbol,
+    attachedFns,
+    'tree-reader',
+  ) as TreeReaderFn[];
   buildable.processors.push(...processors);
   buildable.architects.push(...architects);
   buildable.treeReaders.push(...treeReaders);

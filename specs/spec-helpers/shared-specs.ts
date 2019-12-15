@@ -1,11 +1,12 @@
 import {
+  AttachedFnSymbol,
   Buildable,
   BuildableSymbol,
   BuilderFnSymbol,
   createArchitectFn,
   createProcessorFn,
+  hasSymbol,
   isBuilderFunction,
-  ProcessorFnSymbol,
 } from '../../src';
 
 export function includeProcessorFnSpecs(processorFn: Function, ...params: any[]) {
@@ -15,7 +16,7 @@ export function includeProcessorFnSpecs(processorFn: Function, ...params: any[])
     const processor = processorFn(...params);
 
     // assert
-    expect((processor as any)[ProcessorFnSymbol]).toBeDefined();
+    expect(hasSymbol(AttachedFnSymbol, processor, 'processor')).toBe(true);
   });
 }
 

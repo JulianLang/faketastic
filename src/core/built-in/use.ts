@@ -1,8 +1,9 @@
 import { ArchitectFn } from '../../architects';
-import { ProcessorFn, ProcessorFnSymbol } from '../../processors';
-import { AttachedFn } from '../../types';
+import { ProcessorFn } from '../../processors';
+import { TreeReaderFn } from '../../tree-reader';
+import { AttachedFn, AttachedFnType } from '../../types';
 import { extractFns } from '../../util';
-import { ArchitectFnSymbol, Buildable } from '../types';
+import { AttachedFnSymbol, Buildable } from '../types';
 import { template } from './template';
 
 export function use<T extends object = object>(
@@ -11,8 +12,21 @@ export function use<T extends object = object>(
 ): Buildable<T> {
   const tmpl: Buildable<T> = template(value);
 
-  tmpl.processors = extractFns(ProcessorFnSymbol, attachedFns) as ProcessorFn[];
-  tmpl.architects = extractFns(ArchitectFnSymbol, attachedFns) as ArchitectFn[];
+  tmpl.treeReaders = extractFns<symbol, AttachedFnType>(
+    AttachedFnSymbol,
+    attachedFns,
+    'tree-reader',
+  ) as TreeReaderFn[];
+  tmpl.architects = extractFns<symbol, AttachedFnType>(
+    AttachedFnSymbol,
+    attachedFns,
+    'architect',
+  ) as ArchitectFn[];
+  tmpl.processors = extractFns<symbol, AttachedFnType>(
+    AttachedFnSymbol,
+    attachedFns,
+    'processor',
+  ) as ProcessorFn[];
 
   return tmpl;
 }
