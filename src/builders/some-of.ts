@@ -3,11 +3,11 @@ import { UnsetValue } from '../constants';
 import {
   asBuildable,
   Buildable,
-  buildChild,
   createBuildable,
   markFnCalled,
   randomInt,
   randomItem,
+  rebuild,
 } from '../core';
 import { createProcessorFn, ProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
@@ -42,13 +42,11 @@ export function someOf<T>(
   function initSomeOfImpl(node: ObjectTreeNode) {
     const content = chooseItems();
     const buildableContent = asBuildable(content);
-    const builtContent = buildChild(buildableContent, node);
-
-    node.type = 'array';
+    node.value = buildableContent;
     node.children = [];
-    node.value = builtContent;
 
     markFnCalled(initSomeOfImpl, node);
+    rebuild(node, 'initializer');
   }
 
   function chooseItems(): T[] {
