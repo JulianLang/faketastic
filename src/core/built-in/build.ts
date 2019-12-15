@@ -158,10 +158,11 @@ function finalize(node: ObjectTreeNode): void {
     console.warn(`faketastic/clean-up: Unset value found on property "${node.name}".`);
     node.value = undefined;
   } else if (isBuildable(node.value)) {
+    const buildable = node.value;
     // Buildables other than placeholders should be built by now.
-    console.assert(isPlaceholder(node.value.value));
+    console.assert(isPlaceholder(buildable.value));
 
-    if (isPlaceholder(node.value.value)) {
+    if (isPlaceholder(buildable.value)) {
       node.value = buildChild(node.value, node);
     }
   }
