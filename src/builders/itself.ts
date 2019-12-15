@@ -3,10 +3,10 @@ import { MutatingFnOrders, UnsetValue } from '../constants';
 import {
   asBuildable,
   Buildable,
-  buildChild,
   createBuildable,
   isBuildable,
   markFnCalled,
+  rebuild,
 } from '../core';
 import { createProcessorFn } from '../processors';
 import { createTreeReaderFn } from '../tree-reader';
@@ -89,9 +89,10 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
     clonedTmpl.value[property] = itself(endWhen, ...attachedFns);
 
     node.children = [];
-    node.value = buildChild(clonedTmpl, node);
+    node.value = clonedTmpl;
 
     markFnCalled(recurseNextImpl, node);
+    rebuild(node, 'initializer');
   }
 
   /**
