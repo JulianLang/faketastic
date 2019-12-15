@@ -1,16 +1,9 @@
 import { ObjectTreeNode } from 'treelike';
 import { UnsetValue } from '../constants';
-import {
-  asBuildable,
-  Buildable,
-  createBuildable,
-  FnCalledSymbol,
-  randomInt,
-  rebuild,
-} from '../core';
+import { asBuildable, Buildable, createBuildable, markFnCalled, randomInt, rebuild } from '../core';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
-import { clone, isDefined, setSymbol } from '../util';
+import { clone, isDefined } from '../util';
 
 export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
   const initOneOf = createProcessorFn(initOneOfImpl, 'initializer');
@@ -23,7 +16,7 @@ export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
     node.value = buildableContent;
     node.children = [];
 
-    setSymbol(FnCalledSymbol, initOneOfImpl);
+    markFnCalled(initOneOf, node);
     rebuild(node, 'initializer');
   }
 

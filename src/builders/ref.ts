@@ -1,16 +1,10 @@
 import { findNode, ObjectTreeNode, siblingAndSelfTraverser } from 'treelike';
 import { MutatingFnOrders, UnsetValue } from '../constants';
-import {
-  Buildable,
-  createBuildable,
-  FnCalledSymbol,
-  isBuildable,
-  unwrapIfBuildable,
-} from '../core';
+import { Buildable, createBuildable, isBuildable, markFnCalled, unwrapIfBuildable } from '../core';
 import { isPlaceholder, placeholder } from '../placeholder';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
-import { isDefined, isUndefined, isUnset, setSymbol } from '../util';
+import { isDefined, isUndefined, isUnset } from '../util';
 import { isBuilderFunction } from './util';
 export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): Buildable {
   const refProcessor = createProcessorFn(refImpl, 'finalizer', MutatingFnOrders.processors.ref);
@@ -35,7 +29,7 @@ export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): B
       node.value = bareValue;
     }
 
-    setSymbol(FnCalledSymbol, refImpl);
+    markFnCalled(refImpl, node);
   }
 
   function tryResolveRef(node: ObjectTreeNode<any>): ObjectTreeNode<any> | undefined {

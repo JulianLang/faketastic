@@ -177,13 +177,13 @@ function runMutatingFns(cycle: BuildCycle, node: ObjectTreeNode): void {
   if (isBuildable(node.value)) {
     node.value.architects
       .filter(fn => hasSymbol(FnBuildCycleSymbol, fn, cycle))
-      .filter(fn => !hasSymbol(FnCalledSymbol, fn))
+      .filter(fn => !hasSymbol(FnCalledSymbol, fn, node))
       .sort(sortByOrderNumber)
       .forEach(architectFn => architectFn(node));
 
     node.value.processors
       .filter(fn => hasSymbol(FnBuildCycleSymbol, fn, cycle))
-      .filter(fn => !hasSymbol(FnCalledSymbol, fn))
+      .filter(fn => !hasSymbol(FnCalledSymbol, fn, node))
       .sort(sortByOrderNumber)
       .forEach(processorFn => {
         processorFn(node);
@@ -201,7 +201,7 @@ function runTreeReaderFns(cycle: BuildCycle, node: ObjectTreeNode): void {
   if (isBuildable(node.value)) {
     node.value.treeReaders
       .filter(fn => hasSymbol(FnBuildCycleSymbol, fn, cycle))
-      .filter(fn => !hasSymbol(FnCalledSymbol, fn))
+      .filter(fn => !hasSymbol(FnCalledSymbol, fn, node))
       .forEach(treeReader => treeReader(node));
   }
 }

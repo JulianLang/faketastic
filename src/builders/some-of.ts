@@ -5,13 +5,13 @@ import {
   Buildable,
   buildChild,
   createBuildable,
-  FnCalledSymbol,
+  markFnCalled,
   randomInt,
   randomItem,
 } from '../core';
 import { createProcessorFn, ProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
-import { addIfAttachedFn, cloneItems, isUndefined, setSymbol } from '../util';
+import { addIfAttachedFn, cloneItems, isUndefined } from '../util';
 import { SomeOfOpts } from './types';
 
 /**
@@ -48,7 +48,7 @@ export function someOf<T>(
     node.children = [];
     node.value = builtContent;
 
-    setSymbol(FnCalledSymbol, initSomeOfImpl);
+    markFnCalled(initSomeOfImpl, node);
   }
 
   function chooseItems(): T[] {

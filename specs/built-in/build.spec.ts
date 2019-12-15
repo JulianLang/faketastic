@@ -364,19 +364,17 @@ describe('rebuild function', () => {
   });
 
   it('should not call attached fns, that are already called', () => {
-    // arrange
-    const fakeReader: BuildCycleCallbackFn = setSymbol(
-      FnCalledSymbol,
-      jasmine.createSpy('tree-reader', () => {}),
-    );
-    const fakeArchitect: BuildCycleCallbackFn = setSymbol(
-      FnCalledSymbol,
-      jasmine.createSpy('architect', () => {}),
-    );
-    const fakeProcessor: BuildCycleCallbackFn = setSymbol(
-      FnCalledSymbol,
-      jasmine.createSpy('processor', () => {}),
-    );
+    // arrange: pre-condition
+    const fakeReader: BuildCycleCallbackFn = jasmine
+      .createSpy('tree-reader', node => setSymbol(FnCalledSymbol, fakeReader, node))
+      .and.callThrough();
+    const fakeArchitect: BuildCycleCallbackFn = jasmine
+      .createSpy('architect', node => setSymbol(FnCalledSymbol, fakeArchitect, node))
+      .and.callThrough();
+    const fakeProcessor: BuildCycleCallbackFn = jasmine
+      .createSpy('processor', node => setSymbol(FnCalledSymbol, fakeProcessor, node))
+      .and.callThrough();
+
     const attachedFns: AttachedFn[] = [
       // tree-reader
       createTreeReaderFn(fakeReader, 'preprocessor'),
@@ -387,6 +385,19 @@ describe('rebuild function', () => {
     ];
     const buildable = createBuildable({}, attachedFns);
     const node = createNode('$root', buildable);
+
+    // act: pre-condition
+    rebuild(node, 'finalizer');
+
+    // assert: pre-condition
+    expect(fakeReader).toHaveBeenCalled();
+    expect(fakeArchitect).toHaveBeenCalled();
+    expect(fakeProcessor).toHaveBeenCalled();
+
+    // arrange
+    (fakeReader as jasmine.Spy).calls.reset();
+    (fakeArchitect as jasmine.Spy).calls.reset();
+    (fakeProcessor as jasmine.Spy).calls.reset();
 
     // act
     rebuild(node, 'finalizer');

@@ -1,7 +1,7 @@
 import { addChildren, ObjectTreeNode } from 'treelike';
-import { asBuildable, Buildable, FnCalledSymbol, FnIsStickySymbol, isBuildable } from '../core';
+import { asBuildable, Buildable, FnIsStickySymbol, isBuildable, markFnCalled } from '../core';
 import { ProcessorFn } from '../processors';
-import { clone, extractFns, hasSymbol, setSymbol } from '../util';
+import { clone, extractFns, hasSymbol } from '../util';
 import { ArchitectFn, Quantity, QuantityInsertMode } from './types';
 import { createArchitectFn, getQuantity } from './util';
 
@@ -40,8 +40,7 @@ export function quantity(
     // replace unsticky processors with sticky ones:
     buildable.processors = stickyProcessors;
 
-    // mark fn as called
-    setSymbol(FnCalledSymbol, quantityImpl);
+    markFnCalled(quantityImpl, node);
   }
 
   function modifyTree(children: ObjectTreeNode<any>[], node: ObjectTreeNode<any>): Buildable {

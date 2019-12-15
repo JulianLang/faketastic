@@ -5,8 +5,8 @@ import {
   Buildable,
   buildChild,
   createBuildable,
-  FnCalledSymbol,
   isBuildable,
+  markFnCalled,
 } from '../core';
 import { createProcessorFn } from '../processors';
 import { createTreeReaderFn } from '../tree-reader';
@@ -70,7 +70,7 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
       throw new Error(CouldNotFindRootTemplateError);
     }
 
-    setSymbol(FnCalledSymbol, snapshotOriginalTemplate);
+    markFnCalled(snapshotOriginalTemplate, node);
   }
 
   /**
@@ -91,7 +91,7 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
     node.children = [];
     node.value = buildChild(clonedTmpl, node);
 
-    setSymbol(FnCalledSymbol, recurseNextImpl);
+    markFnCalled(recurseNextImpl, node);
   }
 
   /**
@@ -106,7 +106,7 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
       node.value = state.endWithValue;
     }
 
-    setSymbol(FnCalledSymbol, endRecursionImpl);
+    markFnCalled(endRecursion, node);
   }
 
   /**
