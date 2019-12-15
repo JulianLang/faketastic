@@ -228,7 +228,7 @@ describe('build function', () => {
 });
 
 /** Specs testing `build`-fn to correctly run MutatingFns like `Architects` and `Processors`. */
-export function includeBuildMutatingFnsSpecs(
+function includeBuildMutatingFnsSpecs(
   mutationFnFactory: Func<[BuildCycleCallbackFn, BuildCycle, ...any[]], MutatingFn>,
   targetProperty: keyof Buildable,
 ) {
