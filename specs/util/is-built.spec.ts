@@ -1,6 +1,7 @@
 import {
   createArchitectFn,
   createBuildable,
+  createBuilderFn,
   createProcessorFn,
   FnCalledSymbol,
   isBuilt,
@@ -70,5 +71,23 @@ describe('isBuilt helper function', () => {
     // act, assert
     // note: did not set Symbol for treeReader.
     expect(isBuilt(buildable)).toBe(false);
+  });
+
+  it('should consider presence of builderFns for build cycles >= postprocessor', () => {
+    // arrange
+    const builderFn = createBuilderFn(() => null);
+    const buildable = createBuildable(builderFn);
+
+    // act, assert
+    expect(isBuilt(buildable, 'postprocessor')).toBe(false);
+  });
+
+  it('should not consider presence of builderFns for build cycles < postprocessor', () => {
+    // arrange
+    const builderFn = createBuilderFn(() => null);
+    const buildable = createBuildable(builderFn);
+
+    // act, assert
+    expect(isBuilt(buildable, 'preprocessor')).toBe(true);
   });
 });
