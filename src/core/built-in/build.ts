@@ -73,6 +73,11 @@ function runCyclesTo(cycle: BuildCycle, node: ObjectTreeNode<any>) {
   const cyclesToRun = cyclesOf(cycle);
 
   for (const currentCycle of cyclesToRun) {
+    // crucial: build node before postprocessing
+    if (currentCycle === 'postprocessor') {
+      buildNode(node);
+    }
+
     runCycle(currentCycle, node);
   }
 }

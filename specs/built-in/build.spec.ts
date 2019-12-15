@@ -407,4 +407,17 @@ describe('rebuild function', () => {
     expect(fakeArchitect).not.toHaveBeenCalled();
     expect(fakeProcessor).not.toHaveBeenCalled();
   });
+
+  it('should build nodes before running postprocessor', () => {
+    // arrange
+    const builderFn = createBuilderFn(() => 42);
+    const buildable = createBuildable(builderFn);
+    const node = createNode('$root', buildable);
+
+    // act
+    rebuild(node, 'finalizer');
+
+    // assert
+    expect(buildable.value).toBe(42);
+  });
 });
