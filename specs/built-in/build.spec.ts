@@ -327,3 +327,11 @@ function includeBuildMutatingFnsSpecs(
     expect(negativeTestOrder).toEqual(negativeTestExpectedOrder);
   });
 }
+
+describe('rebuild function', () => {
+  it('should run all attached fns in given cycle-range', () => {
+    // arrange
+    // act
+    // assert
+  });
+});
