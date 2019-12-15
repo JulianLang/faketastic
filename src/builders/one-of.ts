@@ -6,7 +6,7 @@ import {
   createBuildable,
   FnCalledSymbol,
   randomInt,
-  reevaluate,
+  rebuild,
 } from '../core';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
@@ -24,7 +24,7 @@ export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
     node.children = [];
 
     setSymbol(FnCalledSymbol, initOneOfImpl);
-    reevaluate(node, 'initializer');
+    rebuild(node, 'initializer');
   }
 
   function chooseRandomItem() {

@@ -56,7 +56,7 @@ export function build<R = any, T = any>(buildable: Buildable<T>, ...attachedFns:
   return buildChild(buildable, undefined, ...attachedFns);
 }
 
-export function reevaluate(node: ObjectTreeNode, until: BuildCycle): void {
+export function rebuild(node: ObjectTreeNode, until: BuildCycle): void {
   do {
     const subtree = treeOf(node.value, childSelector);
     subtree.parent = node.parent;
