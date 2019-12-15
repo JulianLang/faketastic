@@ -48,8 +48,6 @@ export function quantity(
     if (insertMode === 'useParentArray') {
       insertInline(children, node);
     } else {
-      // keep value as Buildable, so that previously removed, sticky processors
-      // can be readded to that Buildable:
       node.value = [];
       node.type = 'array';
       node.children = [];
@@ -57,6 +55,8 @@ export function quantity(
       addChildren(children, node);
     }
 
+    // keep value as Buildable, so that previously removed, sticky processors
+    // can be readded to that Buildable:
     node.value = asBuildable(node.value);
     return node.value;
   }
