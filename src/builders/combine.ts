@@ -22,6 +22,7 @@ export function combine<T>(
     const clonedProps = clone(props);
     // TODO: langju: this will execute processors multiple times? what if it contains quantity() for example?
     const buildable: Buildable<T> = createBuildable(clonedProps, attachedFns);
+    // TODO: langju: better switch to rebuild(node).
     const builtTemplate = buildChild(buildable, node);
     const mappedValue = map(builtTemplate);
     node.value = mappedValue;
