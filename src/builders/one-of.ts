@@ -27,13 +27,6 @@ export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
     setSymbol(FnCalledSymbol, initOneOfImpl);
 
     do {
-      // detective.resetChanges();
-      // const subTree = treeOf($node.value, childSelector);
-      // subTree.parent = $node.parent;
-      // subTree.name = $node.name;
-      // copyAttributes(subTree, $node);
-      // reevaluate($node);
-
       const subtree = treeOf(node.value, childSelector);
       subtree.parent = node.parent;
       subtree.name = node.name;
