@@ -1,4 +1,7 @@
-import { BuildCycle, FnCalledSymbol, isBuildable } from '../core';
+import { BuildCycle, FnBuildCycleSymbol, FnCalledSymbol, isBuildable } from '../core';
+import { AttachedFn } from '../types';
+import { cyclesOf } from './cycles-of';
+import { getSymbol } from './get-symbol';
 import { hasSymbol } from './has-symbol';
 import { isUndefined } from './is-undefined';
 
@@ -10,12 +13,17 @@ export function isBuilt(value: any, cycle: BuildCycle = 'finalizer'): boolean {
     return true;
   }
 
-  const architects = value.architects;
-  const processors = value.processors;
-  const treeReaders = value.treeReaders;
+  const attachedFns = [...value.architects, ...value.processors, ...value.treeReaders];
+  const cycles = cyclesOf(cycle);
 
-  for (const fn of [...architects, ...processors, ...treeReaders]) {
-    if (!hasSymbol(FnCalledSymbol, fn)) {
+  return allFnsCalled(attachedFns, cycles);
+}
+
+function allFnsCalled(attachedFns: AttachedFn[], inCycles: BuildCycle[]): boolean {
+  for (const fn of attachedFns) {
+    const fnCycle: BuildCycle = getSymbol(FnBuildCycleSymbol, fn);
+
+    if (inCycles.includes(fnCycle) && !hasSymbol(FnCalledSymbol, fn)) {
       return false;
     }
   }
