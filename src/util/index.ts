@@ -1,6 +1,7 @@
 export * from './add-if-attached.fn';
 export * from './clone';
 export * from './clone-items';
+export * from './compare-cycles';
 export * from './cycles-of';
 export * from './extract.fns';
 export * from './find-anchestor';

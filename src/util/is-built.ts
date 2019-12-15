@@ -1,5 +1,7 @@
+import { isBuilderFunction } from '../builders';
 import { BuildCycle, FnBuildCycleSymbol, FnCalledSymbol, isBuildable } from '../core';
 import { AttachedFn } from '../types';
+import { compareCycles } from './compare-cycles';
 import { cyclesOf } from './cycles-of';
 import { getSymbol } from './get-symbol';
 import { hasSymbol } from './has-symbol';
@@ -10,10 +12,19 @@ export function isBuilt(value: any, cycle: BuildCycle = 'finalizer'): boolean {
     return true;
   }
 
-  const attachedFns = [...value.architects, ...value.processors, ...value.treeReaders];
+  const attachedFns: AttachedFn[] = [
+    ...value.architects,
+    ...value.processors,
+    ...value.treeReaders,
+  ];
   const cycles = cyclesOf(cycle);
 
-  return allFnsCalled(attachedFns, cycles);
+  const fnsCalled = allFnsCalled(attachedFns, cycles);
+  const valueIsNoBuilderFn = compareCycles(cycle, '>=', 'postprocessor')
+    ? !isBuilderFunction(value.value)
+    : true;
+
+  return fnsCalled && valueIsNoBuilderFn;
 }
 
 function allFnsCalled(attachedFns: AttachedFn[], inCycles: BuildCycle[]): boolean {
