@@ -1,9 +1,6 @@
 import { ObjectTreeNode } from 'treelike';
-import { BuildCycle, FnBuildCycleSymbol, FnOrderSymbol } from '../../core';
-import { AttachedFn } from '../../types';
+import { MutatingFn } from '../../types';
 
-export interface ArchitectFn extends AttachedFn {
-  [FnBuildCycleSymbol]: BuildCycle;
-  [FnOrderSymbol]: number;
+export interface ArchitectFn extends MutatingFn {
   (node: ObjectTreeNode): void;
 }

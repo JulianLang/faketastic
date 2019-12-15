@@ -1,4 +1,6 @@
-import { ArchitectFn } from '../architects';
-import { ProcessorFn } from '../processors';
+import { FnOrderSymbol } from '../core';
+import { AttachedFn } from './attached.fn';
 
-export type MutatingFn = ProcessorFn | ArchitectFn;
+export interface MutatingFn extends AttachedFn {
+  [FnOrderSymbol]: number;
+}
