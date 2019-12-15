@@ -20,6 +20,6 @@ const tmpl = template({
 
 const output = build(tmpl);
 
-console.log(JSON.stringify(output, null, 2));
+// console.log(JSON.stringify(output, null, 2));
 console.log(output);
 console.log();
