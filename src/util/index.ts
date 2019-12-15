@@ -15,4 +15,5 @@ export * from './is-in-build-cycle';
 export * from './is-undefined';
 export * from './is-unset';
 export * from './is-valid.date';
+export * from './remove-symbol';
 export * from './set-symbol';
