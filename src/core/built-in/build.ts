@@ -1,4 +1,5 @@
 import {
+  copyAttributes,
   isDefined,
   leafTraverser,
   nodeTypeOf,
@@ -13,7 +14,15 @@ import { isPlaceholder } from '../../placeholder';
 import { ProcessorFn } from '../../processors';
 import { TreeReaderFn } from '../../tree-reader';
 import { AttachedFn, AttachedFnType, MutatingFn } from '../../types';
-import { extractFns, hasSymbol, isUndefined, isUnset, setSymbol } from '../../util';
+import {
+  extractFns,
+  hasSymbol,
+  isBuilt,
+  isUndefined,
+  isUnset,
+  removeSymbol,
+  setSymbol,
+} from '../../util';
 import {
   AttachedFnSymbol,
   Buildable,
@@ -22,7 +31,7 @@ import {
   FnOrderSymbol,
 } from '../types';
 import { BuildCycle } from '../types/build.cycle';
-import { asBuildable, isBuildable, unwrapIfBuildable } from '../util';
+import { isBuildable, unwrapIfBuildable } from '../util';
 
 let currentCycle: BuildCycle = 'initializer';
 
@@ -47,9 +56,18 @@ export function build<R = any, T = any>(buildable: Buildable<T>, ...attachedFns:
   return buildChild(buildable, undefined, ...attachedFns);
 }
 
-export function reevaluate(node: ObjectTreeNode): void {
-  setSymbol(BuildRootSymbol, node);
-  runCycle(currentCycle, node);
+export function reevaluate(node: ObjectTreeNode, until: BuildCycle): void {
+  do {
+    const subtree = treeOf(node.value, childSelector);
+    subtree.parent = node.parent;
+    subtree.name = node.name;
+    copyAttributes(subtree, node);
+
+    setSymbol(BuildRootSymbol, node);
+    runCycle(currentCycle, node);
+  } while (!isBuilt(node.value, until));
+
+  removeSymbol(BuildRootSymbol, node);
 }
 
 export function buildChild<R = any, T = any>(

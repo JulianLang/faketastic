@@ -1,9 +1,8 @@
-import { copyAttributes, ObjectTreeNode, treeOf } from 'treelike';
+import { ObjectTreeNode } from 'treelike';
 import { UnsetValue } from '../constants';
 import {
   asBuildable,
   Buildable,
-  childSelector,
   createBuildable,
   FnCalledSymbol,
   randomInt,
@@ -11,7 +10,7 @@ import {
 } from '../core';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
-import { clone, isBuilt, isDefined, setSymbol } from '../util';
+import { clone, isDefined, setSymbol } from '../util';
 
 export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
   const initOneOf = createProcessorFn(initOneOfImpl, 'initializer');
@@ -25,14 +24,7 @@ export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
     node.children = [];
 
     setSymbol(FnCalledSymbol, initOneOfImpl);
-
-    do {
-      const subtree = treeOf(node.value, childSelector);
-      subtree.parent = node.parent;
-      subtree.name = node.name;
-      copyAttributes(subtree, node);
-      reevaluate(node);
-    } while (!isBuilt(node.value, 'initializer'));
+    reevaluate(node, 'initializer');
   }
 
   function chooseRandomItem() {
