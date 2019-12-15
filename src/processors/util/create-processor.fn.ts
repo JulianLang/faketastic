@@ -1,6 +1,12 @@
-import { AttachedFnSymbol, BuildCycle, FnBuildCycleSymbol, FnOrderSymbol } from '../../core/types';
+import {
+  AttachedFnSymbol,
+  BuildCycle,
+  FnBuildCycleSymbol,
+  FnIsStickySymbol,
+  FnOrderSymbol,
+} from '../../core/types';
 import { BuildCycleCallbackFn, Stickiness } from '../../types';
-import { IsStickyProcessorSymbol, ProcessorFn } from '../types';
+import { ProcessorFn } from '../types';
 
 export function createProcessorFn(
   fn: BuildCycleCallbackFn,
@@ -14,7 +20,7 @@ export function createProcessorFn(
   processorFn[FnOrderSymbol] = orderNumber;
 
   if (sticky === 'sticky') {
-    processorFn[IsStickyProcessorSymbol] = true;
+    processorFn[FnIsStickySymbol] = true;
   }
 
   return fn as ProcessorFn;

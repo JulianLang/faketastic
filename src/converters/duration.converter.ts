@@ -5,7 +5,7 @@ import { isArray } from '../util';
 type TimeUnit = 'hours' | 'minutes' | 'seconds';
 type DurationInput = [number, TimeUnit];
 
-// TODO: langju: think of a better place/name, as this might be slightly more than a "parser"?
+// TODO: langju: think of a better place/name, as this might be slightly more than a "converter"?
 export function duration(
   baseDate: Date,
   minDuration: DurationInput,
