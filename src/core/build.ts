@@ -8,11 +8,12 @@ import {
   treeOf,
 } from 'treelike';
 import { ArchitectFn } from '../architects';
+import { UnsetValue } from '../constants';
 import { isPlaceholder } from '../placeholder';
 import { ProcessorFn } from '../processors';
 import { TreeReaderFn } from '../tree-reader';
 import { AttachedFn, AttachedFnType, MutatingFn } from '../types';
-import { extractFns, hasSymbol, isUndefined, isUnset, removeSymbol, setSymbol } from '../util';
+import { extractFns, hasSymbol, isUndefined, removeSymbol, setSymbol } from '../util';
 import { isValueFunction } from '../value-fns/util/is-value.fn';
 import {
   AttachedFnSymbol,
@@ -137,7 +138,7 @@ function buildChildrenOf(node: ObjectTreeNode) {
  * @param node The root node to begin cleaning process from.
  */
 function finalize(node: ObjectTreeNode): void {
-  if (isUnset(node.value)) {
+  if (node.value === UnsetValue) {
     console.warn(`faketastic/clean-up: Unset value found on property "${node.name}".`);
     node.value = undefined;
   } else if (isBuildable(node.value)) {
