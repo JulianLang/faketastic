@@ -36,19 +36,7 @@ import { BuildCycle } from '../types/build.cycle';
 import { isBuildable, unwrapIfBuildable } from '../util';
 
 /**
- * **Builds a `Buildable` and returns the generated mock-data.**
- *
- * ---
- *
- * Use it only on the root temlpate of the data you want to build. If you want to
- * build a value as part of a current build, you should use `buildChild`.
- *
- * ---
- *
- * **Please Note:** Most likely you will never want `build` within an `ArchitectFn` or
- * `ProcessorFn`. Better use `buildChild` instead as it lets you connect the subbuild
- * to the current build. This ensures for example that references in sub-build can be
- * resolve values in the main-build.
+ * Builds a `Buildable` and returns the generated mock-data.
  * @param buildable The `Buildable` (e.g. return value of `template`) to build mock data from.
  * @param attachedFns AttachedFns like (e.g. `quantity`) to apply while build.
  */
