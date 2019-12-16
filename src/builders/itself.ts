@@ -1,14 +1,14 @@
 import { ObjectTreeNode } from 'treelike';
-import { ProcessorOrders } from '../constants';
+import { MutatingFnOrders, UnsetValue } from '../constants';
 import {
   asBuildable,
   Buildable,
-  buildChild,
   createBuildable,
-  createProcessorFn,
   isBuildable,
+  markFnCalled,
+  rebuild,
 } from '../core';
-import { placeholder } from '../placeholder';
+import { createProcessorFn } from '../processors';
 import { createTreeReaderFn } from '../tree-reader';
 import { AttachedFn } from '../types';
 import { clone, findAnchestor, isUndefined, setSymbol } from '../util';
@@ -22,7 +22,7 @@ export const RecursionRootSymbol = Symbol('faketastic.recursion.root');
  * @param tmpl The template to be made recursive.
  * @param attachedFns ArchitectFns or ProcessorFns to be applied to the recursive property.
  */
-export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[]) {
+export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[]): Buildable {
   let property = 'unknown';
   let originalTemplate: ObjectTreeNode<Buildable>;
   let state: RecursionState;
@@ -31,17 +31,17 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
   const recurseNext = createProcessorFn(
     recurseNextImpl,
     'initializer',
-    ProcessorOrders.recursion,
+    MutatingFnOrders.processors.recursion,
     // quantity will transfer this processor to multiplied nodes
     'unsticky',
   );
   const endRecursion = createProcessorFn(
     endRecursionImpl,
     'initializer',
-    ProcessorOrders.recursion,
+    MutatingFnOrders.processors.recursion,
   );
 
-  return createBuildable(placeholder(`recursion`), [
+  return createBuildable(UnsetValue, [
     takeTemplateSnapshot,
     endRecursion,
     recurseNext,
@@ -69,6 +69,8 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
     } else {
       throw new Error(CouldNotFindRootTemplateError);
     }
+
+    markFnCalled(snapshotOriginalTemplate, node);
   }
 
   /**
@@ -87,7 +89,10 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
     clonedTmpl.value[property] = itself(endWhen, ...attachedFns);
 
     node.children = [];
-    node.value = buildChild(clonedTmpl, node);
+    node.value = clonedTmpl;
+
+    markFnCalled(recurseNextImpl, node);
+    rebuild(node, 'initializer');
   }
 
   /**
@@ -101,6 +106,8 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
       node.children = [];
       node.value = state.endWithValue;
     }
+
+    markFnCalled(endRecursion, node);
   }
 
   /**

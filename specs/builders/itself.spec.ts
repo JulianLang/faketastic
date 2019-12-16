@@ -1,6 +1,7 @@
 import { build, itself, oneOf, range, RecursionDepth, template, use } from '../../src';
+import { includeBuilderFnSpecs } from '../spec-helpers/shared-specs';
 
-describe('self builder', () => {
+describe('itself', () => {
   it('should throw if used without parent template', () => {
     // arrange
     const buildable = itself(() => ({ continue: true }));
@@ -75,4 +76,6 @@ describe('self builder', () => {
     expect(result.file.symlink.name).toEqual(fileName);
     expect(result.file.symlink.symlink).toEqual(fileEnd);
   });
+
+  includeBuilderFnSpecs(itself, {}, () => ({ endWithValue: [] }));
 });

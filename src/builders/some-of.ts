@@ -1,19 +1,17 @@
 import { ObjectTreeNode } from 'treelike';
-import { ProcessorOrders } from '../constants';
+import { UnsetValue } from '../constants';
 import {
-  addIfProcessorFn,
   asBuildable,
   Buildable,
-  buildChild,
   createBuildable,
-  createProcessorFn,
-  ProcessorFn,
+  markFnCalled,
   randomInt,
   randomItem,
+  rebuild,
 } from '../core';
-import { placeholder } from '../placeholder';
+import { createProcessorFn, ProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
-import { cloneItems, isUndefined } from '../util';
+import { addIfAttachedFn, cloneItems, isUndefined } from '../util';
 import { SomeOfOpts } from './types';
 
 /**
@@ -27,32 +25,28 @@ export function someOf<T>(
   values: T[],
   opts?: SomeOfOpts | ProcessorFn,
   ...attachedFns: AttachedFn[]
-): Buildable<any> {
+): Buildable {
   const someOfDefaultOpts: SomeOfOpts = {
     allowDuplicates: true,
     minItems: 1,
   };
 
-  if (addIfProcessorFn(opts, attachedFns)) {
+  if (addIfAttachedFn(opts, attachedFns)) {
     opts = undefined;
   }
 
-  const initSomeOf = createProcessorFn(
-    initSomeOfImpl,
-    'preprocessor',
-    ProcessorOrders.treeStructureChanging,
-  );
+  const initSomeOf = createProcessorFn(initSomeOfImpl, 'initializer');
 
-  return createBuildable(placeholder(), [initSomeOf, ...attachedFns]);
+  return createBuildable(UnsetValue, [initSomeOf, ...attachedFns]);
 
   function initSomeOfImpl(node: ObjectTreeNode) {
     const content = chooseItems();
     const buildableContent = asBuildable(content);
-    const builtContent = buildChild(buildableContent, node);
-
-    node.type = 'array';
+    node.value = buildableContent;
     node.children = [];
-    node.value = builtContent;
+
+    markFnCalled(initSomeOfImpl, node);
+    rebuild(node, 'initializer');
   }
 
   function chooseItems(): T[] {

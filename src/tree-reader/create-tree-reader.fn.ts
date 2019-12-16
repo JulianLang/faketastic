@@ -1,7 +1,7 @@
-import { BuildCycle } from '../core';
-import { BuildCycleCallbackFn } from '../types';
+import { AttachedFnSymbol, BuildCycle, BuildCycleCallbackFn, FnBuildCycleSymbol } from '../core';
+import { AttachedFnType } from '../types';
 import { setSymbol } from '../util';
-import { TreeReaderFn, TreeReaderFnSymbol } from './types';
+import { TreeReaderFn } from './types';
 
 /**
  * Creates a new TreeReaderFn from the given function. TreeReaderFn are executed before ArchitectFns and ProcessorFns
@@ -11,5 +11,8 @@ import { TreeReaderFn, TreeReaderFnSymbol } from './types';
  * @param forCycle The build-cycle to run the TreeReaderFn in.
  */
 export function createTreeReaderFn(fn: BuildCycleCallbackFn, forCycle: BuildCycle): TreeReaderFn {
-  return setSymbol(TreeReaderFnSymbol, fn as TreeReaderFn, forCycle);
+  const type: AttachedFnType = 'tree-reader';
+  const treeReader: TreeReaderFn = setSymbol(AttachedFnSymbol, fn as TreeReaderFn, type);
+
+  return setSymbol(FnBuildCycleSymbol, treeReader, forCycle);
 }

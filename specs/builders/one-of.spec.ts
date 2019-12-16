@@ -1,8 +1,8 @@
 import { oneOf } from '../../src/builders';
 import { build, template } from '../../src/core';
-import { includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
+import { includeBuilderFnSpecs, includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
 
-describe('oneOf BuilderFn', () => {
+describe('oneOf', () => {
   it('should throw for null at building-time', () => {
     // arrange
     const buildable = oneOf(null as any);
@@ -55,4 +55,5 @@ describe('oneOf BuilderFn', () => {
   });
 
   includeDirectiveFnSpecs(oneOf, []);
+  includeBuilderFnSpecs(oneOf, []);
 });

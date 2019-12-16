@@ -9,9 +9,10 @@ import {
   template,
   use,
 } from '../../src';
+import { includeAttachedFnSpecs } from '../spec-helpers/shared-specs';
 import { createChildTreeNode } from '../spec-helpers/spec.helper';
 
-describe('quantity architect fn', () => {
+describe('quantity', () => {
   it('should call all processor types (sticky and unsticky)', done => {
     // arrange
     let count = 0;
@@ -223,4 +224,6 @@ describe('quantity architect fn', () => {
     expect(clonedNode2.children).toEqual(node.children);
     expect(clonedNode2.type).toEqual(node.type);
   });
+
+  includeAttachedFnSpecs('architect', quantity, 2);
 });

@@ -1,37 +1,49 @@
-import { createArchitectFn } from '../../src';
 import {
+  AttachedFnSymbol,
   Buildable,
-  BuildableSymbol,
-  BuilderFnSymbol,
+  BuildCycle,
+  BuildCycleCallbackFn,
+  BuilderFn,
+  createArchitectFn,
   createProcessorFn,
-  isBuilderFunction,
-  ProcessorFnSymbol,
-} from '../../src/core';
+  FnBuildCycleSymbol,
+  FnOrderSymbol,
+  getSymbol,
+  hasSymbol,
+  isBuildable,
+  isUnset,
+  isValueFunction,
+  ValueFnSymbol,
+} from '../../src';
+import { AttachedFn, AttachedFnType, Func, MutatingFn } from '../../src/types';
 
-export function includeProcessorFnSpecs(processorFn: Function, ...params: any[]) {
-  it('should return a processor fn', () => {
-    // arrange
-    // act
-    const processor = processorFn(...params);
+export function includeAttachedFnSpecs(
+  type: AttachedFnType,
+  attachedFn: Function,
+  ...params: any[]
+) {
+  it('should return an attached fn with correct type', () => {
+    // arrange, act:
+    const fn = attachedFn(...params);
 
     // assert
-    expect((processor as any)[ProcessorFnSymbol]).toBeDefined();
+    expect(hasSymbol(AttachedFnSymbol, fn, type)).toBe(true);
   });
 }
 
-export function includeBuilderFnSpecs(builderFn: Function, ...params: any[]) {
+export function includeValueFnSpecs(valueFn: Func<any[], any>, ...params: any[]) {
   it('should add a builder function as value on the buildable', () => {
     // arrange
     // act
-    const buildable = builderFn(...params);
+    const buildable = valueFn(...params);
 
     // assert
     expect(typeof buildable.value).toEqual('function');
-    expect(typeof (buildable.value as any)[BuilderFnSymbol]).toBeDefined();
-    expect(isBuilderFunction(buildable.value)).toBe(true);
+    expect(typeof (buildable.value as any)[ValueFnSymbol]).toBeDefined();
+    expect(isValueFunction(buildable.value)).toBe(true);
   });
 
-  includeDirectiveFnSpecs(builderFn, ...params);
+  includeDirectiveFnSpecs(valueFn, ...params);
 }
 
 export function includeDirectiveFnSpecs(directiveFn: Function, ...params: any[]): void {
@@ -93,6 +105,68 @@ export function includeTemplateFnSpecs(templateFn: Function, ...additionalParams
 
     // assert
     expect(buildable).toBeDefined();
-    expect((buildable as any)[BuildableSymbol]).toBeDefined();
+    expect(isBuildable(buildable)).toBeDefined();
+  });
+}
+
+export function includeBuilderFnSpecs(builderFn: BuilderFn, ...params: any[]) {
+  it('should return a buildable with UnsetValue', () => {
+    // arrange, act
+    const buildable = builderFn(...params);
+
+    // assert
+    expect(isBuildable(buildable)).toBe(true);
+    expect(isUnset(buildable.value)).toBe(true);
+  });
+
+  it('should add at least one mutating fn', () => {
+    // arrange, act
+    const buildable = builderFn(...params);
+
+    // assert
+    const mutatingFns: MutatingFn[] = [...buildable.architects, ...buildable.processors];
+    expect(mutatingFns.length).toBeGreaterThan(0);
+  });
+}
+
+export function testMutatingFnFactory(
+  factory: Func<[BuildCycleCallbackFn, BuildCycle, number?], MutatingFn>,
+  targetType: AttachedFnType,
+) {
+  it('should set the FnBuildCycleSymbol to correct cycle', () => {
+    // arrange
+    const expectedOrder: number = 42;
+
+    // act
+    const attachedFn = factory(() => {}, 'initializer', expectedOrder);
+
+    // assert
+    expect(getSymbol(FnOrderSymbol, attachedFn)).toBe(expectedOrder);
+  });
+
+  testAttachedFnFactory(factory, targetType);
+}
+
+export function testAttachedFnFactory(
+  factory: Func<[BuildCycleCallbackFn, BuildCycle], AttachedFn>,
+  targetType: AttachedFnType,
+) {
+  it(`should set the AttachedFnSymbol to ${targetType} type`, () => {
+    // act
+    const attachedFn = factory(() => {}, 'postprocessor');
+
+    // assert
+    expect(getSymbol(AttachedFnSymbol, attachedFn)).toBe(targetType);
+  });
+
+  it('should set the FnBuildCycleSymbol to correct cycle', () => {
+    // arrange
+    const expectedCycle: BuildCycle = 'postprocessor';
+
+    // act
+    const attachedFn = factory(() => {}, expectedCycle);
+
+    // assert
+    expect(getSymbol(FnBuildCycleSymbol, attachedFn)).toBe(expectedCycle);
   });
 }

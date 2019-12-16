@@ -4,3 +4,7 @@ export * from './constants';
 export * from './converters';
 export * from './core';
 export * from './processors';
+export * from './tree-reader';
+export * from './types';
+export * from './util';
+export * from './value-fns';
