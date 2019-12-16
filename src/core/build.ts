@@ -139,7 +139,7 @@ function buildChildrenOf(node: ObjectTreeNode) {
  */
 function finalize(node: ObjectTreeNode): void {
   if (node.value === UnsetValue) {
-    console.warn(`faketastic/clean-up: Unset value found on property "${node.name}".`);
+    console.warn(`faketastic: finalize: Unset value found on property "${node.name}".`);
     node.value = undefined;
   } else if (isBuildable(node.value)) {
     const buildable = node.value;
