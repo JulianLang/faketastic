@@ -11,7 +11,7 @@ export function createPlaceholder<T extends {}>(
   typeId?: string,
   content: T = {} as any,
   attachedFns: AttachedFn[] = [],
-): Buildable<Placeholder> {
+): Buildable<Placeholder<T>> {
   const placeholder = setSymbol(PlaceholderSymbol, content || {}, typeId) as Placeholder;
 
   return createBuildable(placeholder, attachedFns);
