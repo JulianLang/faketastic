@@ -1,4 +1,4 @@
-import { range } from '../../src';
+import { createProcessorFn, range } from '../../src';
 import { includeValueFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('range', () => {
@@ -28,6 +28,24 @@ describe('range', () => {
 
     // assert
     expect(typeof value).toEqual('number');
+  });
+
+  it('should allow the user to skip min and max parameters', () => {
+    // arrange
+    const processor = createProcessorFn(() => {}, 'initializer');
+
+    // act, assert
+    expect(() => range(processor)).not.toThrow();
+  });
+
+  it('should set min to 1 and max to 10', () => {
+    // arrange
+    const processor = createProcessorFn(() => {}, 'initializer');
+    const value = range(processor).value();
+
+    // act, assert
+    expect(value).toBeGreaterThanOrEqual(1);
+    expect(value).toBeLessThanOrEqual(10);
   });
 
   includeValueFnSpecs(range, 1, 2);
