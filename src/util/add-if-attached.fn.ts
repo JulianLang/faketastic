@@ -1,5 +1,6 @@
-import { isProcessorFn } from '../processors/util/is-processor.fn';
+import { AttachedFnSymbol } from '../core';
 import { AttachedFn } from '../types';
+import { hasSymbol } from './has-symbol';
 
 /**
  * Adds the given parameter to the specified `AttachedFn` array, if itself is a `AttachedFn`.
@@ -8,11 +9,11 @@ import { AttachedFn } from '../types';
  * @param to The `AttachedFn` array to add the parameter to, if it is a `AttachedFn`.
  */
 export function addIfAttachedFn(parameter: any, to: AttachedFn[]): boolean {
-  const isProcessor = isProcessorFn(parameter);
+  const isAttachedFn = hasSymbol(AttachedFnSymbol, parameter);
 
-  if (isProcessor) {
+  if (isAttachedFn) {
     to.push(parameter);
   }
 
-  return isProcessor;
+  return isAttachedFn;
 }
