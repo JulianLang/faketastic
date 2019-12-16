@@ -9,6 +9,7 @@ import {
   template,
   use,
 } from '../../src';
+import { includeAttachedFnSpecs } from '../spec-helpers/shared-specs';
 import { createChildTreeNode } from '../spec-helpers/spec.helper';
 
 describe('quantity', () => {
@@ -223,4 +224,6 @@ describe('quantity', () => {
     expect(clonedNode2.children).toEqual(node.children);
     expect(clonedNode2.type).toEqual(node.type);
   });
+
+  includeAttachedFnSpecs('quantity', 'architect', quantity, 2);
 });
