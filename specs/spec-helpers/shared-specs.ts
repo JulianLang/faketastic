@@ -1,16 +1,21 @@
 import {
   AttachedFnSymbol,
   Buildable,
+  BuildCycle,
+  BuildCycleCallbackFn,
   BuilderFn,
   createArchitectFn,
   createProcessorFn,
+  FnBuildCycleSymbol,
+  FnOrderSymbol,
+  getSymbol,
   hasSymbol,
   isBuildable,
   isUnset,
   isValueFunction,
   ValueFnSymbol,
 } from '../../src';
-import { AttachedFnType, Func, MutatingFn } from '../../src/types';
+import { AttachedFn, AttachedFnType, Func, MutatingFn } from '../../src/types';
 
 export function includeAttachedFnSpecs(
   type: AttachedFnType,
@@ -121,5 +126,47 @@ export function includeBuilderFnSpecs(builderFn: BuilderFn, ...params: any[]) {
     // assert
     const mutatingFns: MutatingFn[] = [...buildable.architects, ...buildable.processors];
     expect(mutatingFns.length).toBeGreaterThan(0);
+  });
+}
+
+export function testMutatingFnFactory(
+  factory: Func<[BuildCycleCallbackFn, BuildCycle, number?], MutatingFn>,
+  targetType: AttachedFnType,
+) {
+  it('should set the FnBuildCycleSymbol to correct cycle', () => {
+    // arrange
+    const expectedOrder: number = 42;
+
+    // act
+    const attachedFn = factory(() => {}, 'initializer', expectedOrder);
+
+    // assert
+    expect(getSymbol(FnOrderSymbol, attachedFn)).toBe(expectedOrder);
+  });
+
+  testAttachedFnFactory(factory, targetType);
+}
+
+export function testAttachedFnFactory(
+  factory: Func<[BuildCycleCallbackFn, BuildCycle], AttachedFn>,
+  targetType: AttachedFnType,
+) {
+  it(`should set the AttachedFnSymbol to ${targetType} type`, () => {
+    // act
+    const attachedFn = factory(() => {}, 'postprocessor');
+
+    // assert
+    expect(getSymbol(AttachedFnSymbol, attachedFn)).toBe(targetType);
+  });
+
+  it('should set the FnBuildCycleSymbol to correct cycle', () => {
+    // arrange
+    const expectedCycle: BuildCycle = 'postprocessor';
+
+    // act
+    const attachedFn = factory(() => {}, expectedCycle);
+
+    // assert
+    expect(getSymbol(FnBuildCycleSymbol, attachedFn)).toBe(expectedCycle);
   });
 }
