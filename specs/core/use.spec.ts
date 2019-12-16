@@ -1,4 +1,4 @@
-import { use } from '../../src/core/built-in/use';
+import { use } from '../../src/core';
 import { includeTransparentTemplateFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('use', () => {

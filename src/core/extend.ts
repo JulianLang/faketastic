@@ -1,7 +1,7 @@
-import { AttachedFn } from '../../types';
-import { clone } from '../../util';
-import { Buildable, PureObject } from '../types';
-import { createBuildable, unwrapIfBuildable } from '../util';
+import { AttachedFn } from '../types';
+import { clone } from '../util';
+import { Buildable, PureObject } from './types';
+import { createBuildable, unwrapIfBuildable } from './util';
 
 export function extend<T, K>(
   tmpl: PureObject<T>,

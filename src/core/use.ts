@@ -1,10 +1,10 @@
-import { ArchitectFn } from '../../architects';
-import { ProcessorFn } from '../../processors';
-import { TreeReaderFn } from '../../tree-reader';
-import { AttachedFn, AttachedFnType } from '../../types';
-import { extractFns } from '../../util';
-import { AttachedFnSymbol, Buildable } from '../types';
+import { ArchitectFn } from '../architects';
+import { ProcessorFn } from '../processors';
+import { TreeReaderFn } from '../tree-reader';
+import { AttachedFn, AttachedFnType } from '../types';
+import { extractFns } from '../util';
 import { template } from './template';
+import { AttachedFnSymbol, Buildable } from './types';
 
 export function use<T extends object = object>(
   value: T,

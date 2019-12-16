@@ -8,13 +8,13 @@ import {
   TraverseCallbackFn,
   treeOf,
 } from 'treelike';
-import { ArchitectFn } from '../../architects';
-import { isPlaceholder } from '../../placeholder';
-import { ProcessorFn } from '../../processors';
-import { TreeReaderFn } from '../../tree-reader';
-import { AttachedFn, AttachedFnType, MutatingFn } from '../../types';
-import { extractFns, hasSymbol, isUndefined, isUnset, removeSymbol, setSymbol } from '../../util';
-import { isValueFunction } from '../../value-fns/util/is-value.fn';
+import { ArchitectFn } from '../architects';
+import { isPlaceholder } from '../placeholder';
+import { ProcessorFn } from '../processors';
+import { TreeReaderFn } from '../tree-reader';
+import { AttachedFn, AttachedFnType, MutatingFn } from '../types';
+import { extractFns, hasSymbol, isUndefined, isUnset, removeSymbol, setSymbol } from '../util';
+import { isValueFunction } from '../value-fns/util/is-value.fn';
 import {
   AttachedFnSymbol,
   Buildable,
@@ -22,9 +22,9 @@ import {
   FnBuildCycleSymbol,
   FnCalledSymbol,
   FnOrderSymbol,
-} from '../types';
-import { BuildCycle } from '../types/build.cycle';
-import { cyclesOf, isBuildable, isBuilt, unwrapIfBuildable } from '../util';
+} from './types';
+import { BuildCycle } from './types/build.cycle';
+import { cyclesOf, isBuildable, isBuilt, unwrapIfBuildable } from './util';
 
 /**
  * Builds a `Buildable` and returns the generated mock-data.
