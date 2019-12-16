@@ -3,11 +3,11 @@ import {
   createBuildable,
   createBuilderFn,
   createProcessorFn,
+  createTreeReaderFn,
   FnCalledSymbol,
   isBuilt,
   setSymbol,
 } from '../../src';
-import { createTreeReaderFn } from '../../src/tree-reader';
 
 describe('isBuilt helper function', () => {
   it('should return true if all fns are marked as called', () => {

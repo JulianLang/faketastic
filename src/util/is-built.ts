@@ -1,8 +1,13 @@
-import { isBuilderFunction } from '../builders';
-import { BuildCycle, FnBuildCycleSymbol, FnCalledSymbol, isBuildable } from '../core';
+import {
+  BuildCycle,
+  compareCycles,
+  cyclesOf,
+  FnBuildCycleSymbol,
+  FnCalledSymbol,
+  isBuildable,
+} from '../core';
+import { isBuilderFunction } from '../generators';
 import { AttachedFn } from '../types';
-import { compareCycles } from './compare-cycles';
-import { cyclesOf } from './cycles-of';
 import { getSymbol } from './get-symbol';
 import { hasSymbol } from './has-symbol';
 import { isUndefined } from './is-undefined';

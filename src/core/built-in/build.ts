@@ -9,13 +9,12 @@ import {
   treeOf,
 } from 'treelike';
 import { ArchitectFn } from '../../architects';
-import { isBuilderFunction } from '../../builders';
+import { isBuilderFunction } from '../../generators/util/is-builder.fn';
 import { isPlaceholder } from '../../placeholder';
 import { ProcessorFn } from '../../processors';
 import { TreeReaderFn } from '../../tree-reader';
 import { AttachedFn, AttachedFnType, MutatingFn } from '../../types';
 import {
-  cyclesOf,
   extractFns,
   hasSymbol,
   isBuilt,
@@ -33,7 +32,7 @@ import {
   FnOrderSymbol,
 } from '../types';
 import { BuildCycle } from '../types/build.cycle';
-import { isBuildable, unwrapIfBuildable } from '../util';
+import { cyclesOf, isBuildable, unwrapIfBuildable } from '../util';
 
 /**
  * Builds a `Buildable` and returns the generated mock-data.

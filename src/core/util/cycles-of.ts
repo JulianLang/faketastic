@@ -1,4 +1,4 @@
-import { BuildCycle } from '../core';
+import { BuildCycle } from '..';
 
 export function cyclesOf(cycle: BuildCycle): BuildCycle[] {
   const cycles: BuildCycle[] = ['initializer', 'preprocessor', 'postprocessor', 'finalizer'];

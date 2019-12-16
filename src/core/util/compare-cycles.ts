@@ -1,5 +1,5 @@
-import { BuildCycle } from '../core';
-import { ComparisonOperator } from '../types';
+import { BuildCycle } from '..';
+import { ComparisonOperator } from '../../types';
 
 export function compareCycles(a: BuildCycle, operator: ComparisonOperator, b: BuildCycle): boolean {
   const valueOfA = cycleToNumber(a);

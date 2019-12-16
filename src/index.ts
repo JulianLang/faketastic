@@ -5,4 +5,5 @@ export * from './converters';
 export * from './core';
 export * from './generators';
 export * from './processors';
+export * from './tree-reader';
 export * from './util';

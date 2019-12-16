@@ -1,9 +1,9 @@
-import { BuilderFn, TimeInput } from '../builders/types';
-import { createBuilderFn } from '../builders/util';
 import { Buildable, createBuildable, randomDate } from '../core';
 import { dateTimeParser } from '../parser';
 import { AttachedFn } from '../types';
-import { addIfAttachedFn, isArray, isDefined, isUndefined, isValidDate } from '../util';
+import { addIfAttachedFn, isArray, isDefined, isUndefined } from '../util';
+import { BuilderFn, TimeInput } from './types';
+import { createBuilderFn, isValidDate } from './util';
 
 // hours : minutes : seconds : milliseconds
 const defaultFormat = 'HH:mm:ss:SSS';
