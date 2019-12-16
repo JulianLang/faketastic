@@ -18,11 +18,10 @@ export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): B
       return;
     }
 
-    // since we set the value now, children can be removed, as they have no relevance anymore
+    // since we set the value now, ensure children are removed, as they have no relevance anyways
     node.children = [];
     const bareValue = unwrapIfBuildable(resolvedReference.value);
 
-    // TODO: langju: is "ValueFn" the only possibility for incomplete values?
     if (isValueFunction(bareValue) || isUnset(bareValue)) {
       // value has not been built yet. mark for recheck after build cycle.
       node.value = createPlaceholder(`ref/defer`, {}, [refProcessor, ...attachedFns]);
