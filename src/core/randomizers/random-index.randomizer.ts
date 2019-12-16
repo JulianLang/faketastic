@@ -1,4 +1,4 @@
-import { randomInt } from './random-int.generator';
+import { randomInt } from './random-int.randomizer';
 
 /**
  * Gets a random, yet valid index for a given array.
