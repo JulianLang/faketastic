@@ -1,6 +1,6 @@
 import { randomInt } from '../../src/core/randomizers/random-int.randomizer';
 
-describe('generators: randomInt(min, max)', () => {
+describe('randomInt', () => {
   it('should return a number', () => {
     // arrange
     // act

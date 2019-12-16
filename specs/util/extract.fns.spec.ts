@@ -1,6 +1,6 @@
 import { extractFns, setSymbol } from '../../src/util';
 
-describe('extractFns helper', () => {
+describe('extractFns', () => {
   it('should return all functions having the given symbol', () => {
     // arrange
     const MySymb1 = Symbol('sym1');

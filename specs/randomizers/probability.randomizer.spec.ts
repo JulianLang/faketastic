@@ -1,6 +1,6 @@
 import { probability } from '../../src/core/randomizers/probability.randomizer';
 
-describe('generators: probability(n)', () => {
+describe('probability', () => {
   it('should return a boolean', () => {
     // arrange
     // act

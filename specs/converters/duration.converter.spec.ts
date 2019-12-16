@@ -1,6 +1,6 @@
 import { duration } from '../../src/converters';
 
-describe('duration parser', () => {
+describe('duration', () => {
   it('should return a date adding the specified min/max duration', () => {
     // arrange
     const date = new Date(2019, 11, 1, 13, 0, 0);

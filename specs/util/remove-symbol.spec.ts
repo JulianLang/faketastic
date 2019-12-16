@@ -1,6 +1,6 @@
 import { removeSymbol } from '../../src';
 
-describe('removeSymbol helper function', () => {
+describe('removeSymbol', () => {
   const TestSymbol = Symbol('test');
 
   it('should remove the specified symbol from the given value', () => {

@@ -4,7 +4,7 @@ import {
   includeTransparentTemplateFnSpecs,
 } from '../spec-helpers/shared-specs';
 
-describe('extend template fn', () => {
+describe('extend', () => {
   it('should merge templates', () => {
     // arrange
     const obj1 = {

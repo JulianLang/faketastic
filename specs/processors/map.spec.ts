@@ -2,7 +2,7 @@ import { build, createBuildable } from '../../src/core';
 import { map } from '../../src/processors/map';
 import { includeProcessorFnSpecs } from '../spec-helpers/shared-specs';
 
-describe('map processor fn', () => {
+describe('map', () => {
   it('should call the mapFn with the buildable`s value it is located on', () => {
     // arrange
     const mapFn = jasmine.createSpy('mapFn', (v, _) => v).and.callThrough();

@@ -1,7 +1,7 @@
 import { findNode, treeOf } from 'treelike';
 import { findAnchestor } from '../../src/util';
 
-describe('findAnchestor helper function', () => {
+describe('findAnchestor', () => {
   const TestSymbol = Symbol('faketastic.test');
 
   it('should return undefined if there is no matching node', () => {

@@ -2,7 +2,7 @@ import { build, createBuildable } from '../../src/core';
 import { canBe } from '../../src/processors/can-be';
 import { includeProcessorFnSpecs } from '../spec-helpers/shared-specs';
 
-describe('canBe processor function', () => {
+describe('canBe', () => {
   it('should replace the value of a node with the specified one', () => {
     // arrange
     const expectedValue = 42;

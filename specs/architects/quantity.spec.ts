@@ -11,7 +11,7 @@ import {
 } from '../../src';
 import { createChildTreeNode } from '../spec-helpers/spec.helper';
 
-describe('quantity architect fn', () => {
+describe('quantity', () => {
   it('should call all processor types (sticky and unsticky)', done => {
     // arrange
     let count = 0;

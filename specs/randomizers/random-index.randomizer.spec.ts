@@ -1,6 +1,6 @@
 import { randomIndex } from '../../src/core/randomizers/random-index.randomizer';
 
-describe('generators: randomIndex', () => {
+describe('randomIndex', () => {
   it('should throw for null and undefined', () => {
     // arrange
     const nullInput = null;

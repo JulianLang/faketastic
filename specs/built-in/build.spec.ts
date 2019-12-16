@@ -22,7 +22,7 @@ import { createTreeReaderFn } from '../../src/tree-reader';
 import { AttachedFn, BuildCycleCallbackFn, Func, MutatingFn } from '../../src/types';
 import { hasSymbol, setSymbol } from '../../src/util';
 
-describe('build function', () => {
+describe('build', () => {
   it('should run processor functions from top to buttom (treewise)', () => {
     // arrange
     const order: number[] = [];
@@ -330,7 +330,7 @@ function includeBuildMutatingFnsSpecs(
   });
 }
 
-describe('rebuild function', () => {
+describe('rebuild', () => {
   it('should run all attached fns in given cycle-range', () => {
     // arrange
     const fakeReader: BuildCycleCallbackFn = jasmine

@@ -1,6 +1,6 @@
 import { dateTimeParser } from '../../src/parser/date-time.parser';
 
-describe('date time formatter', () => {
+describe('dateTimeParser', () => {
   it('should accept timestamp', () => {
     // arrange
     const timeInput = 1574497160206; // 2019-11-23 08:19:20.206 (UTC)

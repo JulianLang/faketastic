@@ -9,7 +9,7 @@ import {
   setSymbol,
 } from '../../src';
 
-describe('isBuilt helper function', () => {
+describe('isBuilt', () => {
   it('should return true if all fns are marked as called', () => {
     // arrange
     const treeReader = createTreeReaderFn(() => {}, 'initializer');

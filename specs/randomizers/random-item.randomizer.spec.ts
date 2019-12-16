@@ -1,6 +1,6 @@
 import { randomItem } from '../../src/core/randomizers/random-item.randomizer';
 
-describe('generators: randomItem', () => {
+describe('randomItem', () => {
   it('should return null for an empty array', () => {
     // arrange
     const array: any[] = [];
