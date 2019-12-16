@@ -1,7 +1,6 @@
 import {
   AttachedFnSymbol,
   Buildable,
-  BuildableSymbol,
   BuilderFn,
   createArchitectFn,
   createProcessorFn,
@@ -101,7 +100,7 @@ export function includeTemplateFnSpecs(templateFn: Function, ...additionalParams
 
     // assert
     expect(buildable).toBeDefined();
-    expect((buildable as any)[BuildableSymbol]).toBeDefined();
+    expect(isBuildable(buildable)).toBeDefined();
   });
 }
 
