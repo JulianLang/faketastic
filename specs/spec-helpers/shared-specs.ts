@@ -16,7 +16,7 @@ export function includeAttachedFnSpecs(
   attachedFn: Function,
   ...params: any[]
 ) {
-  it(`[${name}] should return a processor fn`, () => {
+  it(`[${name}] should return an attached fn with correct type`, () => {
     // arrange, act:
     const fn = attachedFn(...params);
 
