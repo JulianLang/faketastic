@@ -10,7 +10,7 @@ import {
   isValueFunction,
   ValueFnSymbol,
 } from '../../src';
-import { AttachedFnType, Func } from '../../src/types';
+import { AttachedFnType, Func, MutatingFn } from '../../src/types';
 
 export function includeAttachedFnSpecs(
   type: AttachedFnType,
@@ -112,5 +112,14 @@ export function includeBuilderFnSpecs(builderFn: BuilderFn, ...params: any[]) {
     // assert
     expect(isBuildable(buildable)).toBe(true);
     expect(isUnset(buildable.value)).toBe(true);
+  });
+
+  it('should add at least one mutating fn', () => {
+    // arrange, act
+    const buildable = builderFn(...params);
+
+    // assert
+    const mutatingFns: MutatingFn[] = [...buildable.architects, ...buildable.processors];
+    expect(mutatingFns.length).toBeGreaterThan(0);
   });
 }
