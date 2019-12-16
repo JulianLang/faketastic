@@ -1,6 +1,6 @@
 import { build, createBuildable } from '../../src/core';
 import { canBe } from '../../src/processors/can-be';
-import { includeProcessorFnSpecs } from '../spec-helpers/shared-specs';
+import { includeAttachedFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('canBe', () => {
   it('should replace the value of a node with the specified one', () => {
@@ -30,5 +30,5 @@ describe('canBe', () => {
     expect(built).toEqual(template);
   });
 
-  includeProcessorFnSpecs('canBe', canBe, 'any value');
+  includeAttachedFnSpecs('canBe', 'processor', canBe, 'any value');
 });

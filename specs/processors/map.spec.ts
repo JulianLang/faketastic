@@ -1,6 +1,6 @@
 import { build, createBuildable } from '../../src/core';
 import { map } from '../../src/processors/map';
-import { includeProcessorFnSpecs } from '../spec-helpers/shared-specs';
+import { includeAttachedFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('map', () => {
   it('should call the mapFn with the buildable`s value it is located on', () => {
@@ -33,5 +33,5 @@ describe('map', () => {
   });
 
   // TODO: langju: when ref() arrived: test case for running after ref() ?
-  includeProcessorFnSpecs('map', map, () => {});
+  includeAttachedFnSpecs('map', 'processor', map, () => {});
 });

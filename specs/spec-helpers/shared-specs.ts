@@ -8,16 +8,20 @@ import {
   isValueFunction,
   ValueFnSymbol,
 } from '../../src';
-import { Func } from '../../src/types';
+import { AttachedFnType, Func } from '../../src/types';
 
-export function includeProcessorFnSpecs(name: string, processorFn: Function, ...params: any[]) {
+export function includeAttachedFnSpecs(
+  name: string,
+  type: AttachedFnType,
+  attachedFn: Function,
+  ...params: any[]
+) {
   it(`[${name}] should return a processor fn`, () => {
-    // arrange
-    // act
-    const processor = processorFn(...params);
+    // arrange, act:
+    const fn = attachedFn(...params);
 
     // assert
-    expect(hasSymbol(AttachedFnSymbol, processor, 'processor')).toBe(true);
+    expect(hasSymbol(AttachedFnSymbol, fn, type)).toBe(true);
   });
 }
 
