@@ -1,6 +1,6 @@
 import moment from 'moment';
-import { TimeInput } from '../generators';
 import { isUndefined } from '../util';
+import { TimeInput } from '../value-fns';
 import { tryParse } from './try-parse.fn';
 import { ParserFn } from './types';
 

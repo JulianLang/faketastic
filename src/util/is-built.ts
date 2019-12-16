@@ -6,8 +6,8 @@ import {
   FnCalledSymbol,
   isBuildable,
 } from '../core';
-import { isBuilderFunction } from '../generators';
 import { AttachedFn } from '../types';
+import { isValueFunction } from '../value-fns';
 import { getSymbol } from './get-symbol';
 import { hasSymbol } from './has-symbol';
 import { isUndefined } from './is-undefined';
@@ -26,7 +26,7 @@ export function isBuilt(value: any, cycle: BuildCycle = 'finalizer'): boolean {
 
   const fnsCalled = allFnsCalled(attachedFns, cycles);
   const valueIsNoBuilderFn = compareCycles(cycle, '>=', 'postprocessor')
-    ? !isBuilderFunction(value.value)
+    ? !isValueFunction(value.value)
     : true;
 
   return fnsCalled && valueIsNoBuilderFn;

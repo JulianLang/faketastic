@@ -9,7 +9,6 @@ import {
   treeOf,
 } from 'treelike';
 import { ArchitectFn } from '../../architects';
-import { isBuilderFunction } from '../../generators/util/is-builder.fn';
 import { isPlaceholder } from '../../placeholder';
 import { ProcessorFn } from '../../processors';
 import { TreeReaderFn } from '../../tree-reader';
@@ -23,6 +22,7 @@ import {
   removeSymbol,
   setSymbol,
 } from '../../util';
+import { isValueFunction } from '../../value-fns/util/is-value.fn';
 import {
   AttachedFnSymbol,
   Buildable,
@@ -219,7 +219,7 @@ function buildNode(node: ObjectTreeNode): void {
 
   const buildable = node.value;
 
-  if (isBuilderFunction(buildable.value)) {
+  if (isValueFunction(buildable.value)) {
     const builderFn = buildable.value;
     buildable.value = builderFn();
 

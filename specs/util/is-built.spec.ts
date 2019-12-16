@@ -1,9 +1,9 @@
 import {
   createArchitectFn,
   createBuildable,
-  createBuilderFn,
   createProcessorFn,
   createTreeReaderFn,
+  createValueFn,
   FnCalledSymbol,
   isBuilt,
   setSymbol,
@@ -75,7 +75,7 @@ describe('isBuilt helper function', () => {
 
   it('should consider presence of builderFns for build cycles >= postprocessor', () => {
     // arrange
-    const builderFn = createBuilderFn(() => null);
+    const builderFn = createValueFn(() => null);
     const buildable = createBuildable(builderFn);
 
     // act, assert
@@ -84,7 +84,7 @@ describe('isBuilt helper function', () => {
 
   it('should not consider presence of builderFns for build cycles < postprocessor', () => {
     // arrange
-    const builderFn = createBuilderFn(() => null);
+    const builderFn = createValueFn(() => null);
     const buildable = createBuildable(builderFn);
 
     // act, assert

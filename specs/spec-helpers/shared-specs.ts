@@ -2,11 +2,11 @@ import {
   AttachedFnSymbol,
   Buildable,
   BuildableSymbol,
-  BuilderFnSymbol,
   createArchitectFn,
   createProcessorFn,
   hasSymbol,
-  isBuilderFunction,
+  isValueFunction,
+  ValueFnSymbol,
 } from '../../src';
 
 export function includeProcessorFnSpecs(processorFn: Function, ...params: any[]) {
@@ -28,8 +28,8 @@ export function includeBuilderFnSpecs(builderFn: Function, ...params: any[]) {
 
     // assert
     expect(typeof buildable.value).toEqual('function');
-    expect(typeof (buildable.value as any)[BuilderFnSymbol]).toBeDefined();
-    expect(isBuilderFunction(buildable.value)).toBe(true);
+    expect(typeof (buildable.value as any)[ValueFnSymbol]).toBeDefined();
+    expect(isValueFunction(buildable.value)).toBe(true);
   });
 
   includeDirectiveFnSpecs(builderFn, ...params);

@@ -8,8 +8,8 @@ import {
   canBe,
   createArchitectFn,
   createBuildable,
-  createBuilderFn,
   createProcessorFn,
+  createValueFn,
   FnCalledSymbol,
   oneOf,
   quantity,
@@ -115,7 +115,7 @@ describe('build function', () => {
     let wasCalled = false;
     const value = 'value';
 
-    const builderFn = createBuilderFn(() => {
+    const builderFn = createValueFn(() => {
       wasCalled = true;
       return value;
     });
@@ -410,7 +410,7 @@ describe('rebuild function', () => {
 
   it('should build nodes before running postprocessor', () => {
     // arrange
-    const builderFn = createBuilderFn(() => 42);
+    const builderFn = createValueFn(() => 42);
     const buildable = createBuildable(builderFn);
     const node = createNode('$root', buildable);
 

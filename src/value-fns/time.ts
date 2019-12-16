@@ -2,8 +2,8 @@ import { Buildable, createBuildable, randomDate } from '../core';
 import { dateTimeParser } from '../parser';
 import { AttachedFn } from '../types';
 import { addIfAttachedFn, isArray, isDefined, isUndefined } from '../util';
-import { BuilderFn, TimeInput } from './types';
-import { createBuilderFn, isValidDate } from './util';
+import { TimeInput, ValueFn } from './types';
+import { createValueFn, isValidDate } from './util';
 
 // hours : minutes : seconds : milliseconds
 const defaultFormat = 'HH:mm:ss:SSS';
@@ -51,8 +51,8 @@ export function time(
   earliest?: TimeInput | null | AttachedFn,
   latest?: TimeInput | null | AttachedFn,
   ...attachedFns: AttachedFn[]
-): Buildable<BuilderFn> {
-  const timeBuilder = createBuilderFn(timeImpl);
+): Buildable<ValueFn> {
+  const timeBuilder = createValueFn(timeImpl);
 
   if (addIfAttachedFn(earliest, attachedFns)) {
     earliest = undefined;
