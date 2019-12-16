@@ -1,4 +1,5 @@
 import { ObjectTreeNode, TraverseCallbackFn } from 'treelike';
+import { isUndefined } from 'util';
 import { hasSymbol } from '../../util';
 import { BuildRootSymbol } from '../types';
 
@@ -21,7 +22,7 @@ import { BuildRootSymbol } from '../types';
  */
 export function topDownSiblingTraverser(node: ObjectTreeNode, onNext: TraverseCallbackFn): void {
   // also include root
-  if (hasSymbol(BuildRootSymbol, node)) {
+  if (hasSymbol(BuildRootSymbol, node) || isUndefined(node.parent)) {
     onNext(node);
   }
 
