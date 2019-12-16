@@ -54,5 +54,5 @@ describe('oneOf', () => {
     expect(result).toBe(42);
   });
 
-  includeDirectiveFnSpecs('oneOf', oneOf, []);
+  includeDirectiveFnSpecs(oneOf, []);
 });

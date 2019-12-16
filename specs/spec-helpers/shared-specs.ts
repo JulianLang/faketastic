@@ -2,21 +2,23 @@ import {
   AttachedFnSymbol,
   Buildable,
   BuildableSymbol,
+  BuilderFn,
   createArchitectFn,
   createProcessorFn,
   hasSymbol,
+  isBuildable,
+  isUnset,
   isValueFunction,
   ValueFnSymbol,
 } from '../../src';
 import { AttachedFnType, Func } from '../../src/types';
 
 export function includeAttachedFnSpecs(
-  name: string,
   type: AttachedFnType,
   attachedFn: Function,
   ...params: any[]
 ) {
-  it(`[${name}] should return an attached fn with correct type`, () => {
+  it('should return an attached fn with correct type', () => {
     // arrange, act:
     const fn = attachedFn(...params);
 
@@ -25,8 +27,8 @@ export function includeAttachedFnSpecs(
   });
 }
 
-export function includeValueFnSpecs(name: string, valueFn: Func<any[], any>, ...params: any[]) {
-  it(`[${name}] should add a builder function as value on the buildable`, () => {
+export function includeValueFnSpecs(valueFn: Func<any[], any>, ...params: any[]) {
+  it('should add a builder function as value on the buildable', () => {
     // arrange
     // act
     const buildable = valueFn(...params);
@@ -37,15 +39,11 @@ export function includeValueFnSpecs(name: string, valueFn: Func<any[], any>, ...
     expect(isValueFunction(buildable.value)).toBe(true);
   });
 
-  includeDirectiveFnSpecs(name, valueFn, ...params);
+  includeDirectiveFnSpecs(valueFn, ...params);
 }
 
-export function includeDirectiveFnSpecs(
-  name: string,
-  directiveFn: Function,
-  ...params: any[]
-): void {
-  it(`[${name}] should include given processor- and architect-functions in buildable`, () => {
+export function includeDirectiveFnSpecs(directiveFn: Function, ...params: any[]): void {
+  it('should include given processor- and architect-functions in buildable', () => {
     // arrange
     const procFn = createProcessorFn(() => {}, 'initializer');
     const architectFn = createArchitectFn(() => {}, 'initializer');
@@ -64,11 +62,10 @@ export function includeDirectiveFnSpecs(
 }
 
 export function includeTransparentTemplateFnSpecs(
-  name: string,
   templateFn: Function,
   ...additionalParams: any[]
 ) {
-  it(`[${name}] should include a deep clone of the given template`, () => {
+  it('should include a deep clone of the given template', () => {
     // arrange
     const obj1 = {
       name: 'string',
@@ -93,15 +90,11 @@ export function includeTransparentTemplateFnSpecs(
     expect(clonedB === tmpl.b).toBe(true);
   });
 
-  includeTemplateFnSpecs(name, templateFn, ...additionalParams);
+  includeTemplateFnSpecs(templateFn, ...additionalParams);
 }
 
-export function includeTemplateFnSpecs(
-  name: string,
-  templateFn: Function,
-  ...additionalParams: any[]
-) {
-  it(`[${name}] should return a buildable`, () => {
+export function includeTemplateFnSpecs(templateFn: Function, ...additionalParams: any[]) {
+  it('should return a buildable', () => {
     // arrange
     // act
     const buildable = templateFn(...additionalParams);
@@ -109,5 +102,16 @@ export function includeTemplateFnSpecs(
     // assert
     expect(buildable).toBeDefined();
     expect((buildable as any)[BuildableSymbol]).toBeDefined();
+  });
+}
+
+export function includeBuilderFnSpecs(builderFn: BuilderFn, ...params: any[]) {
+  it('should return a buildable with UnsetValue', () => {
+    // arrange, act
+    const buildable = builderFn(...params);
+
+    // assert
+    expect(isBuildable(builderFn)).toBe(true);
+    expect(isUnset(buildable.value)).toBe(true);
   });
 }

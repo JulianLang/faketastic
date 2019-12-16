@@ -30,5 +30,5 @@ describe('canBe', () => {
     expect(built).toEqual(template);
   });
 
-  includeAttachedFnSpecs('canBe', 'processor', canBe, 'any value');
+  includeAttachedFnSpecs('processor', canBe, 'any value');
 });

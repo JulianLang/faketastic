@@ -1,7 +1,7 @@
 import { combine, ref } from '../../src/builders';
 import { build, template } from '../../src/core';
 import { Func } from '../../src/types';
-import { includeTemplateFnSpecs } from '../spec-helpers/shared-specs';
+import { includeBuilderFnSpecs, includeTemplateFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('combine', () => {
   it('should call the map function', () => {
@@ -39,5 +39,6 @@ describe('combine', () => {
     expect(built.b).toEqual(expectedValue);
   });
 
-  includeTemplateFnSpecs('combine', combine, {}, () => {});
+  includeTemplateFnSpecs(combine, {}, () => {});
+  includeBuilderFnSpecs(combine, {}, () => {});
 });

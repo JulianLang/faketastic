@@ -225,5 +225,5 @@ describe('quantity', () => {
     expect(clonedNode2.type).toEqual(node.type);
   });
 
-  includeAttachedFnSpecs('quantity', 'architect', quantity, 2);
+  includeAttachedFnSpecs('architect', quantity, 2);
 });
