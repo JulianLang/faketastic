@@ -1,4 +1,4 @@
-import { duration } from '../../src/constructors';
+import { duration } from '../../src/factories';
 
 describe('duration', () => {
   it('should return a date adding the specified min/max duration', () => {
