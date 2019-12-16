@@ -7,7 +7,7 @@ import { Placeholder, PlaceholderSymbol } from './types/placeholder';
  * Creates a new placeholder.
  * @param typeId (Optional) A string specifiying a placeholder type.
  */
-export function placeholder<T extends {}>(
+export function createPlaceholder<T extends {}>(
   typeId?: string,
   content: T = {} as any,
   attachedFns: AttachedFn[] = [],
