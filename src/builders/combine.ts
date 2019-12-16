@@ -1,38 +1,32 @@
 import { ObjectTreeNode } from 'treelike';
-import { ProcessorOrders } from '../constants';
-import {
-  build,
-  Buildable,
-  BuildableSymbol,
-  createBuildable,
-  createProcessorFn,
-  ProcessorFn,
-  PureObject,
-} from '../core';
+import { MutatingFnOrders, UnsetValue } from '../constants';
+import { Buildable, buildChild, createBuildable, markFnCalled, PureObject } from '../core';
+import { createProcessorFn } from '../processors';
+import { AttachedFn } from '../types';
 import { clone } from '../util';
 
 export function combine<T>(
   props: PureObject<T>,
   map: (props: PureObject<T>) => any,
-  ...processors: ProcessorFn[]
-): Buildable<any> {
+  ...attachedFns: AttachedFn[]
+): Buildable {
   const combineValuesProcessor = createProcessorFn(
     buildAndCombineValues,
     'finalizer',
-    ProcessorOrders.combineValues,
+    MutatingFnOrders.processors.combineValues,
   );
 
-  return {
-    [BuildableSymbol]: 'value',
-    value: null,
-    processors: [...processors, combineValuesProcessor],
-  };
+  return createBuildable(UnsetValue, [combineValuesProcessor, ...attachedFns]);
 
   function buildAndCombineValues(node: ObjectTreeNode<Buildable<T>>) {
     const clonedProps = clone(props);
-    const buildable: Buildable<T> = createBuildable(clonedProps, processors);
-    const builtTemplate = build(buildable);
+    // TODO: langju: this will execute processors multiple times? what if it contains quantity() for example?
+    const buildable: Buildable<T> = createBuildable(clonedProps, attachedFns);
+    // TODO: langju: better switch to rebuild(node).
+    const builtTemplate = buildChild(buildable, node);
     const mappedValue = map(builtTemplate);
     node.value = mappedValue;
+
+    markFnCalled(buildAndCombineValues, node);
   }
 }

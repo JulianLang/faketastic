@@ -2,11 +2,11 @@
   "name": "faketastic",
   "version": "0.0.21",
   "description": "A library to help you with modelling data entities and generate them as mock data.",
-  "main": "./dist/index.js",
+  "main": "./dist/src/index.js",
   "private": false,
   "scripts": {
     "build": "npx rimraf ./dist && npx tsc -p .",
-    "start": "ts-node ./example.ts",
+    "start": "ts-node ./playground.ts",
     "test": "jasmine-ts --reporter=jasmine-console-reporter --config=jasmine.json",
     "test:coverage": "npx nyc -e .ts -x \"*.spec.ts\" --reporter=html jasmine-ts --reporter=jasmine-console-reporter --config=jasmine.json",
     "test:watch": "nodemon --quiet --ext ts --exec 'jasmine-ts --reporter=jasmine-console-reporter --config=jasmine.json'"
@@ -46,6 +46,6 @@
   "dependencies": {
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "treelike": "0.0.12"
+    "treelike": "0.0.19"
   }
 }

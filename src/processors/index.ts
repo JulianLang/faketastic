@@ -1,3 +1,4 @@
 export * from './can-be';
 export * from './map';
-export * from './quantity';
+export * from './types';
+export * from './util';

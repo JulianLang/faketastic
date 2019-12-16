@@ -1,16 +1,17 @@
-import { copyAttributes, ObjectTreeNode, treeOf } from 'treelike';
-import { ProcessorOrders } from '../constants';
+import { ObjectTreeNode } from 'treelike';
+import { UnsetValue } from '../constants';
 import {
-  addIfProcessorFn,
+  asBuildable,
   Buildable,
-  BuildableSymbol,
-  childSelector,
-  createProcessorFn,
-  ProcessorFn,
+  createBuildable,
+  markFnCalled,
   randomInt,
   randomItem,
+  rebuild,
 } from '../core';
-import { cloneItems, isDefined, isUndefined } from '../util';
+import { createProcessorFn, ProcessorFn } from '../processors';
+import { AttachedFn } from '../types';
+import { addIfAttachedFn, cloneItems, isUndefined } from '../util';
 import { SomeOfOpts } from './types';
 
 /**
@@ -18,39 +19,34 @@ import { SomeOfOpts } from './types';
  * define how (and how many) items should be picked from the given array.
  * @param values The values to pick items from.
  * @param opts Additional options on how (many) items should be picked.
- * @param processors Processors such as `quantity`, `map` or others to apply to this `Buildable`
+ * @param attachedFns Processors such as `quantity`, `map` or others to apply to this `Buildable`
  */
 export function someOf<T>(
   values: T[],
   opts?: SomeOfOpts | ProcessorFn,
-  ...processors: ProcessorFn[]
-): Buildable<any> {
+  ...attachedFns: AttachedFn[]
+): Buildable {
   const someOfDefaultOpts: SomeOfOpts = {
     allowDuplicates: true,
-    minItems: 2,
+    minItems: 1,
   };
 
-  if (addIfProcessorFn(opts, processors)) {
+  if (addIfAttachedFn(opts, attachedFns)) {
     opts = undefined;
   }
 
-  const initSomeOf = createProcessorFn(init, 'preprocessor', ProcessorOrders.treeStructureChanging);
+  const initSomeOf = createProcessorFn(initSomeOfImpl, 'initializer');
 
-  return {
-    [BuildableSymbol]: 'value',
-    processors: [initSomeOf, ...processors],
-    value: null,
-  };
+  return createBuildable(UnsetValue, [initSomeOf, ...attachedFns]);
 
-  function init(node: ObjectTreeNode) {
+  function initSomeOfImpl(node: ObjectTreeNode) {
     const content = chooseItems();
-    const contentRoot = treeOf(content, childSelector);
+    const buildableContent = asBuildable(content);
+    node.value = buildableContent;
+    node.children = [];
 
-    if (isDefined(node.parent)) {
-      contentRoot.name = node.name;
-    }
-
-    copyAttributes(contentRoot, node);
+    markFnCalled(initSomeOfImpl, node);
+    rebuild(node, 'initializer');
   }
 
   function chooseItems(): T[] {

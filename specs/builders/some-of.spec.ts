@@ -1,8 +1,9 @@
-import { build } from '../../src';
+import { build, template } from '../../src';
 import { someOf } from '../../src/builders';
+import { includeBuilderFnSpecs } from '../spec-helpers/shared-specs';
 
-describe('someOf builder function', () => {
-  it('should return at least "2" and at max "values.length" items', () => {
+describe('someOf', () => {
+  it('should return at least 1 and at max "values.length" items', () => {
     for (let i = 0; i < 1000; i++) {
       // arrange
       const values = [1, 2, 3, 4, 5, 6];
@@ -13,7 +14,7 @@ describe('someOf builder function', () => {
 
       // assert
       expect(result).toBeDefined();
-      expect(result.length).toBeGreaterThanOrEqual(2);
+      expect(result.length).toBeGreaterThanOrEqual(1);
       expect(result.length).toBeLessThanOrEqual(values.length);
     }
   });
@@ -139,4 +140,28 @@ describe('someOf builder function', () => {
     // assert
     expect(() => build(buildable)).toThrow();
   });
+
+  it('should be nestable', () => {
+    // arrange
+    const tmpl = template({
+      a: someOf([someOf(['A'], { maxItems: 1 })], { maxItems: 1 }),
+    });
+
+    // act
+    const result = build(tmpl);
+
+    // assert
+    expect(result.a).toEqual([['A']]);
+  });
+
+  it('should be directly buildable', () => {
+    // arrange
+    // act
+    const result = build(someOf([42], { maxItems: 1 }));
+
+    // assert
+    expect(result).toEqual([42]);
+  });
+
+  includeBuilderFnSpecs(someOf, [1, 2, 3]);
 });

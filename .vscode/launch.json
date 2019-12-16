@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "program": "${workspaceRoot}/node_modules/ts-node/dist/bin.js",
-      "args": ["./example.ts"],
+      "args": ["./playground.ts"],
       "env": {
         "NODE_PATH": "."
       }

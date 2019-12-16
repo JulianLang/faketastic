@@ -1,33 +1,23 @@
-import { copyAttributes, ObjectTreeNode, treeOf } from 'treelike';
-import { ProcessorOrders } from '../constants';
-import {
-  Buildable,
-  BuildableSymbol,
-  childSelector,
-  createProcessorFn,
-  ProcessorFn,
-  randomInt,
-} from '../core';
+import { ObjectTreeNode } from 'treelike';
+import { UnsetValue } from '../constants';
+import { asBuildable, Buildable, createBuildable, markFnCalled, randomInt, rebuild } from '../core';
+import { createProcessorFn } from '../processors';
+import { AttachedFn } from '../types';
 import { clone, isDefined } from '../util';
 
-export function oneOf(values: any[], ...processorFns: ProcessorFn[]): Buildable<any> {
-  const initOneOf = createProcessorFn(init, 'preprocessor', ProcessorOrders.treeStructureChanging);
+export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
+  const initOneOf = createProcessorFn(initOneOfImpl, 'initializer');
 
-  return {
-    [BuildableSymbol]: 'value',
-    processors: [initOneOf, ...processorFns],
-    value: null,
-  };
+  return createBuildable(UnsetValue, [initOneOf, ...attachedFns]);
 
-  function init(node: ObjectTreeNode) {
+  function initOneOfImpl(node: ObjectTreeNode) {
     const content = chooseRandomItem();
-    const contentRoot = treeOf(content, childSelector);
+    const buildableContent = asBuildable(content);
+    node.value = buildableContent;
+    node.children = [];
 
-    if (isDefined(node.parent)) {
-      contentRoot.name = node.name;
-    }
-
-    copyAttributes(contentRoot, node);
+    markFnCalled(initOneOf, node);
+    rebuild(node, 'initializer');
   }
 
   function chooseRandomItem() {

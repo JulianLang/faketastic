@@ -1,8 +1,8 @@
 import { oneOf } from '../../src/builders';
-import { build } from '../../src/core';
-import { includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
+import { build, template } from '../../src/core';
+import { includeBuilderFnSpecs, includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
 
-describe('oneOf BuilderFn', () => {
+describe('oneOf', () => {
   it('should throw for null at building-time', () => {
     // arrange
     const buildable = oneOf(null as any);
@@ -32,5 +32,28 @@ describe('oneOf BuilderFn', () => {
     expect(result).toBe(undefined);
   });
 
+  it('should be nestable', () => {
+    // arrange
+    const tmpl = template({
+      a: oneOf([oneOf([42]), oneOf(['A'])]),
+    });
+
+    // act
+    const result = build(tmpl);
+
+    // assert
+    expect(result.a === 'A' || result.a === 42).toBe(true);
+  });
+
+  it('should be directly buildable', () => {
+    // arrange
+    // act
+    const result = build(oneOf([42]));
+
+    // assert
+    expect(result).toBe(42);
+  });
+
   includeDirectiveFnSpecs(oneOf, []);
+  includeBuilderFnSpecs(oneOf, []);
 });
