@@ -4,5 +4,6 @@ export * from './create-buildable';
 export * from './cycles-of';
 export * from './is-buildable';
 export * from './is-buildable-array';
+export * from './is-built';
 export * from './mark-fn.called';
 export * from './unwrap-if-buildable';
