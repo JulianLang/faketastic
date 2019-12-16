@@ -26,10 +26,10 @@ export function quantity(
         the newly created children will apply quantity as well leading to infinity loop.
       */
       removeQuantityArchitect(node.value);
-      /**
-       * Processors marked as "sticky" will disengage from the original node and stick to
-       * the multiplied nodes that represents the actual generated values later on. Unsticky
-       * processors will not be transfered to the multiplied value nodes and be kept on original node.
+      /*
+        Processors marked as "sticky" will stick to the original node and won't be transferred to
+        the multiplied nodes that represents the actual generated values later on. Unsticky
+        processors will not be transfered to the multiplied value nodes and be kept on original node.
        */
       stickyProcessors = extractStickyProcessors(node.value);
     }
