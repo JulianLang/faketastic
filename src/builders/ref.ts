@@ -1,6 +1,6 @@
 import { findNode, ObjectTreeNode, siblingAndSelfTraverser } from 'treelike';
 import { MutatingFnOrders, UnsetValue } from '../constants';
-import { Buildable, createBuildable, isBuildable, unwrapIfBuildable } from '../core';
+import { Buildable, createBuildable, isBuildable, markFnCalled, unwrapIfBuildable } from '../core';
 import { isPlaceholder, placeholder } from '../placeholder';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
@@ -23,11 +23,13 @@ export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): B
 
     // TODO: langju: is "BuilderFn" the only possibility for incomplete values?
     if (isBuilderFunction(bareValue) || isUnset(bareValue)) {
-      // value has not been built yet. mark for recheck in next (outer, if any) build cycle.
+      // value has not been built yet. mark for recheck after build cycle.
       node.value = placeholder(`ref/defer`, {}, [refProcessor, ...attachedFns]);
     } else if (!isPlaceholder(bareValue)) {
       node.value = bareValue;
     }
+
+    markFnCalled(refImpl, node);
   }
 
   function tryResolveRef(node: ObjectTreeNode<any>): ObjectTreeNode<any> | undefined {

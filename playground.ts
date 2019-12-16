@@ -1,6 +1,7 @@
 import { build, combine, oneOf, range, ref, template } from './src';
 
 const tmpl = template({
+  // x: oneOf([oneOf([oneOf([2])])]),
   testA: oneOf([ref('range1'), ref('range2')]),
   testB: ref('range3'),
   range1: range(11, 20),

@@ -1,25 +1,23 @@
 import { ObjectTreeNode } from 'treelike';
-import { MutatingFnOrders, UnsetValue } from '../constants';
-import { asBuildable, Buildable, buildChild, createBuildable, randomInt } from '../core';
+import { UnsetValue } from '../constants';
+import { asBuildable, Buildable, createBuildable, markFnCalled, randomInt, rebuild } from '../core';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
 import { clone, isDefined } from '../util';
 
 export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
-  const initOneOf = createProcessorFn(
-    initOneOfImpl,
-    'preprocessor',
-    MutatingFnOrders.processors.treeStructureChanging,
-  );
+  const initOneOf = createProcessorFn(initOneOfImpl, 'initializer');
 
   return createBuildable(UnsetValue, [initOneOf, ...attachedFns]);
 
   function initOneOfImpl(node: ObjectTreeNode) {
     const content = chooseRandomItem();
     const buildableContent = asBuildable(content);
-    const builtContent = buildChild(buildableContent, node);
+    node.value = buildableContent;
+    node.children = [];
 
-    node.value = builtContent;
+    markFnCalled(initOneOf, node);
+    rebuild(node, 'initializer');
   }
 
   function chooseRandomItem() {

@@ -10,15 +10,17 @@ import {
   createBuildable,
   createBuilderFn,
   createProcessorFn,
+  FnCalledSymbol,
   oneOf,
   quantity,
   range,
+  rebuild,
   template,
   use,
 } from '../../src';
 import { createTreeReaderFn } from '../../src/tree-reader';
 import { AttachedFn, BuildCycleCallbackFn, Func, MutatingFn } from '../../src/types';
-import { hasSymbol } from '../../src/util';
+import { hasSymbol, setSymbol } from '../../src/util';
 
 describe('build function', () => {
   it('should run processor functions from top to buttom (treewise)', () => {
@@ -228,7 +230,7 @@ describe('build function', () => {
 });
 
 /** Specs testing `build`-fn to correctly run MutatingFns like `Architects` and `Processors`. */
-export function includeBuildMutatingFnsSpecs(
+function includeBuildMutatingFnsSpecs(
   mutationFnFactory: Func<[BuildCycleCallbackFn, BuildCycle, ...any[]], MutatingFn>,
   targetProperty: keyof Buildable,
 ) {
@@ -327,3 +329,95 @@ export function includeBuildMutatingFnsSpecs(
     expect(negativeTestOrder).toEqual(negativeTestExpectedOrder);
   });
 }
+
+describe('rebuild function', () => {
+  it('should run all attached fns in given cycle-range', () => {
+    // arrange
+    const fakeReader: BuildCycleCallbackFn = jasmine
+      .createSpy('tree-reader', () => setSymbol(FnCalledSymbol, fakeReader))
+      .and.callThrough();
+    const fakeArchitect: BuildCycleCallbackFn = jasmine
+      .createSpy('architect', () => setSymbol(FnCalledSymbol, fakeArchitect))
+      .and.callThrough();
+    const fakeProcessor: BuildCycleCallbackFn = jasmine
+      .createSpy('processor', () => setSymbol(FnCalledSymbol, fakeProcessor))
+      .and.callThrough();
+
+    const attachedFns: AttachedFn[] = [
+      // tree-reader
+      createTreeReaderFn(fakeReader, 'preprocessor'),
+      // architect
+      createArchitectFn(fakeArchitect, 'postprocessor'),
+      // processor
+      createProcessorFn(fakeProcessor, 'finalizer'),
+    ];
+    const buildable = createBuildable({}, attachedFns);
+    const node = createNode('$root', buildable);
+
+    // act
+    rebuild(node, 'finalizer');
+
+    // assert
+    expect(fakeReader).toHaveBeenCalledTimes(1);
+    expect(fakeArchitect).toHaveBeenCalledTimes(1);
+    expect(fakeProcessor).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not call attached fns, that are already called', () => {
+    // arrange: pre-condition
+    const fakeReader: BuildCycleCallbackFn = jasmine
+      .createSpy('tree-reader', node => setSymbol(FnCalledSymbol, fakeReader, node))
+      .and.callThrough();
+    const fakeArchitect: BuildCycleCallbackFn = jasmine
+      .createSpy('architect', node => setSymbol(FnCalledSymbol, fakeArchitect, node))
+      .and.callThrough();
+    const fakeProcessor: BuildCycleCallbackFn = jasmine
+      .createSpy('processor', node => setSymbol(FnCalledSymbol, fakeProcessor, node))
+      .and.callThrough();
+
+    const attachedFns: AttachedFn[] = [
+      // tree-reader
+      createTreeReaderFn(fakeReader, 'preprocessor'),
+      // architect
+      createArchitectFn(fakeArchitect, 'postprocessor'),
+      // processor
+      createProcessorFn(fakeProcessor, 'finalizer'),
+    ];
+    const buildable = createBuildable({}, attachedFns);
+    const node = createNode('$root', buildable);
+
+    // act: pre-condition
+    rebuild(node, 'finalizer');
+
+    // assert: pre-condition
+    expect(fakeReader).toHaveBeenCalled();
+    expect(fakeArchitect).toHaveBeenCalled();
+    expect(fakeProcessor).toHaveBeenCalled();
+
+    // arrange
+    (fakeReader as jasmine.Spy).calls.reset();
+    (fakeArchitect as jasmine.Spy).calls.reset();
+    (fakeProcessor as jasmine.Spy).calls.reset();
+
+    // act
+    rebuild(node, 'finalizer');
+
+    // assert
+    expect(fakeReader).not.toHaveBeenCalled();
+    expect(fakeArchitect).not.toHaveBeenCalled();
+    expect(fakeProcessor).not.toHaveBeenCalled();
+  });
+
+  it('should build nodes before running postprocessor', () => {
+    // arrange
+    const builderFn = createBuilderFn(() => 42);
+    const buildable = createBuildable(builderFn);
+    const node = createNode('$root', buildable);
+
+    // act
+    rebuild(node, 'finalizer');
+
+    // assert
+    expect(buildable.value).toBe(42);
+  });
+});

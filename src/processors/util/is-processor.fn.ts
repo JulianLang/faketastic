@@ -1,6 +1,6 @@
-import { BuildCycle } from '../../core';
-import { isDefined } from '../../util';
-import { ProcessorFn, ProcessorFnSymbol } from '../types';
+import { AttachedFnSymbol, BuildCycle, FnBuildCycleSymbol } from '../../core';
+import { hasSymbol, isDefined } from '../../util';
+import { ProcessorFn } from '../types';
 
 export function isProcessorFn(fn: any, forCycle?: BuildCycle): fn is ProcessorFn {
   if (typeof fn !== 'function') {
@@ -8,8 +8,8 @@ export function isProcessorFn(fn: any, forCycle?: BuildCycle): fn is ProcessorFn
   }
 
   if (isDefined(forCycle)) {
-    return (fn as any)[ProcessorFnSymbol] === forCycle;
+    return hasSymbol(AttachedFnSymbol, fn) && hasSymbol(FnBuildCycleSymbol, fn, forCycle);
   } else {
-    return isDefined((fn as any)[ProcessorFnSymbol]);
+    return hasSymbol(AttachedFnSymbol, fn);
   }
 }

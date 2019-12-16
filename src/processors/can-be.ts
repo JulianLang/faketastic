@@ -1,5 +1,5 @@
 import { ObjectTreeNode } from 'treelike';
-import { probability } from '../core';
+import { markFnCalled, probability } from '../core';
 import { Stickiness } from '../types';
 import { ProcessorFn } from './types';
 import { createProcessorFn } from './util';
@@ -21,5 +21,7 @@ export function canBe<T>(value: T, likelyhood = 0.5, sticky: Stickiness = 'stick
       node.children = [];
       node.value = value;
     }
+
+    markFnCalled(canBeImpl, node);
   }
 }

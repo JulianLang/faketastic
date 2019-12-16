@@ -1,5 +1,5 @@
-import { ArchitectFnSymbol, BuildCycle, FnOrderSymbol } from '../../core';
-import { BuildCycleCallbackFn } from '../../types';
+import { AttachedFnSymbol, BuildCycle, FnBuildCycleSymbol, FnOrderSymbol } from '../../core';
+import { AttachedFnType, BuildCycleCallbackFn } from '../../types';
 import { setSymbol } from '../../util';
 import { ArchitectFn } from '../types';
 
@@ -15,8 +15,10 @@ export function createArchitectFn(
   forCycle: BuildCycle,
   order = 0,
 ): ArchitectFn {
-  const architectFn: ArchitectFn = setSymbol(ArchitectFnSymbol, fn as ArchitectFn, forCycle);
+  const type: AttachedFnType = 'architect';
+  const architectFn: ArchitectFn = setSymbol(AttachedFnSymbol, fn as ArchitectFn, type);
   architectFn[FnOrderSymbol] = order;
+  architectFn[FnBuildCycleSymbol] = forCycle;
 
   return architectFn;
 }
