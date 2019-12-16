@@ -23,8 +23,10 @@ import {
   rebuild,
   setSymbol,
   template,
+  UnsetValue,
   use,
 } from '../../src';
+import { createPlaceholder } from '../../src/placeholder';
 
 describe('build', () => {
   it('should run processor functions from top to buttom (treewise)', () => {
@@ -62,6 +64,32 @@ describe('build', () => {
     // assert
     expect(result.a).toBe(null);
     expect(result.b).toBe(undefined);
+  });
+
+  it('should leave placeholders untouched', () => {
+    // arrange
+    const buildable = createPlaceholder();
+    const negativeTest = createBuildable(42);
+
+    // act
+    const result = build(buildable);
+    const negativeResult = build(negativeTest);
+
+    // assert
+    expect(result).toBe(buildable);
+    expect(negativeResult).toBe(42);
+  });
+
+  it('should warn the user when UnsetValue was detected in finalize', () => {
+    // arrange
+    spyOn(console, 'warn');
+    const buildable = createBuildable(UnsetValue);
+
+    // act
+    build(buildable);
+
+    // assert
+    expect(console.warn).toHaveBeenCalledTimes(1);
   });
 
   it('should be nestable', () => {
