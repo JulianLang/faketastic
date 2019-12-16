@@ -1,5 +1,5 @@
 import { findNode, treeOf } from 'treelike';
-import { findAnchestor } from '../../src/util';
+import { findAnchestor } from '../../../src/util';
 
 describe('findAnchestor', () => {
   const TestSymbol = Symbol('faketastic.test');

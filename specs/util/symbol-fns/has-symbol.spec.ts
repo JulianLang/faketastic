@@ -1,4 +1,4 @@
-import { hasSymbol } from '../../src/util';
+import { hasSymbol } from '../../../src/util';
 
 describe('hasSymbol', () => {
   it('should return true if the symbol is present', () => {

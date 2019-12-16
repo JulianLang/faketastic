@@ -1,4 +1,4 @@
-import { removeSymbol } from '../../src';
+import { removeSymbol } from '../../../src';
 
 describe('removeSymbol', () => {
   const TestSymbol = Symbol('test');

@@ -1,4 +1,4 @@
-import { setSymbol } from '../../src/util';
+import { setSymbol } from '../../../src/util';
 
 describe('setSymbol', () => {
   const TestSymbol = Symbol('faketastic.test');

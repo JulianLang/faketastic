@@ -1,4 +1,4 @@
-import { extractFns, setSymbol } from '../../src/util';
+import { extractFns, setSymbol } from '../../../src/util';
 
 describe('extractFns', () => {
   it('should return all functions having the given symbol', () => {
