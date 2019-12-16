@@ -1,6 +1,6 @@
 import { ObjectTreeNode } from 'treelike';
+import { isDefined } from '../is-defined';
 import { hasSymbol } from './has-symbol';
-import { isDefined } from './is-defined';
 
 /**
  * Tries to find a specified symbol on the values of the given node's anchestors.

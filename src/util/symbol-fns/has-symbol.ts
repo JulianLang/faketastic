@@ -1,5 +1,5 @@
-import { isDefined } from './is-defined';
-import { isUndefined } from './is-undefined';
+import { isDefined } from '../is-defined';
+import { isUndefined } from '../is-undefined';
 
 /**
  * Determines

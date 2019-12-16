@@ -1,5 +1,5 @@
 import { UnsetSymbol } from '../constants';
-import { hasSymbol } from './has-symbol';
+import { hasSymbol } from './symbol-fns';
 
 /**
  * Determines whether a given value is `UnsetValue`.

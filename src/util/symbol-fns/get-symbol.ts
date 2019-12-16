@@ -1,4 +1,4 @@
-import { isUndefined } from './is-undefined';
+import { isUndefined } from '../is-undefined';
 
 /**
  * Gets the value of a specified symbol on a given value.

@@ -1,5 +1,5 @@
-import { AttachedFnSymbol } from '../core';
-import { AttachedFn } from '../types';
+import { AttachedFnSymbol } from '../../core';
+import { AttachedFn } from '../../types';
 import { hasSymbol } from './has-symbol';
 
 /**

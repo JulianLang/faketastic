@@ -8,9 +8,8 @@ import {
 } from '../core';
 import { AttachedFn } from '../types';
 import { isValueFunction } from '../value-fns';
-import { getSymbol } from './get-symbol';
-import { hasSymbol } from './has-symbol';
 import { isUndefined } from './is-undefined';
+import { getSymbol, hasSymbol } from './symbol-fns';
 
 export function isBuilt(value: any, cycle: BuildCycle = 'finalizer'): boolean {
   if (isUndefined(value) || !isBuildable(value)) {
