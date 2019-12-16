@@ -2,6 +2,6 @@
 export const PlaceholderSymbol = Symbol('faketastic.placeholder');
 
 /** Placeholders are objects that holds the place for a future value. */
-export interface Placeholder {
-  [PlaceholderSymbol]: string;
+export interface Placeholder<T = any> {
+  [PlaceholderSymbol]: T;
 }

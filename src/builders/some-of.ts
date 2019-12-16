@@ -1,17 +1,17 @@
 import { ObjectTreeNode } from 'treelike';
-import { ProcessorOrders } from '../constants';
+import { UnsetValue } from '../constants';
 import {
-  addIfProcessorFn,
   asBuildable,
-  build,
   Buildable,
-  BuildableSymbol,
-  createProcessorFn,
-  ProcessorFn,
+  createBuildable,
+  markFnCalled,
   randomInt,
   randomItem,
+  rebuild,
 } from '../core';
-import { cloneItems, isUndefined } from '../util';
+import { createProcessorFn, ProcessorFn } from '../processors';
+import { AttachedFn } from '../types';
+import { addIfAttachedFn, cloneItems, isUndefined } from '../util';
 import { SomeOfOpts } from './types';
 
 /**
@@ -19,42 +19,34 @@ import { SomeOfOpts } from './types';
  * define how (and how many) items should be picked from the given array.
  * @param values The values to pick items from.
  * @param opts Additional options on how (many) items should be picked.
- * @param processors Processors such as `quantity`, `map` or others to apply to this `Buildable`
+ * @param attachedFns Processors such as `quantity`, `map` or others to apply to this `Buildable`
  */
 export function someOf<T>(
   values: T[],
   opts?: SomeOfOpts | ProcessorFn,
-  ...processors: ProcessorFn[]
-): Buildable<any> {
+  ...attachedFns: AttachedFn[]
+): Buildable {
   const someOfDefaultOpts: SomeOfOpts = {
     allowDuplicates: true,
     minItems: 1,
   };
 
-  if (addIfProcessorFn(opts, processors)) {
+  if (addIfAttachedFn(opts, attachedFns)) {
     opts = undefined;
   }
 
-  const initSomeOf = createProcessorFn(
-    initSomeOfImpl,
-    'preprocessor',
-    ProcessorOrders.treeStructureChanging,
-  );
+  const initSomeOf = createProcessorFn(initSomeOfImpl, 'initializer');
 
-  return {
-    [BuildableSymbol]: 'value',
-    processors: [initSomeOf, ...processors],
-    value: null,
-  };
+  return createBuildable(UnsetValue, [initSomeOf, ...attachedFns]);
 
   function initSomeOfImpl(node: ObjectTreeNode) {
     const content = chooseItems();
     const buildableContent = asBuildable(content);
-    const builtContent = build(buildableContent);
-
-    node.type = 'array';
+    node.value = buildableContent;
     node.children = [];
-    node.value = builtContent;
+
+    markFnCalled(initSomeOfImpl, node);
+    rebuild(node, 'initializer');
   }
 
   function chooseItems(): T[] {

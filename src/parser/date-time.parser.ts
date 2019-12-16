@@ -1,6 +1,6 @@
 import moment from 'moment';
-import { TimeInput } from '../builders/types';
 import { isUndefined } from '../util';
+import { isValidDate, TimeInput } from '../value-fns';
 import { tryParse } from './try-parse.fn';
 import { ParserFn } from './types';
 
@@ -22,10 +22,8 @@ function fromNumber(input: TimeInput): Date | null {
 
   try {
     const date = new Date(input);
-    const timestamp = date.getTime();
-    const isValid = timestamp > 0;
 
-    return isValid ? date : null;
+    return isValidDate(date) ? date : null;
   } catch {
     return null;
   }

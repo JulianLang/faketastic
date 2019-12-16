@@ -1,8 +1,10 @@
 import { combine, oneOf, ref } from '../../src/builders';
 import { build, template } from '../../src/core';
-import { includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
+import { includeBuilderFnSpecs, includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
 
-describe('ref builder function', () => {
+describe('ref', () => {
+  // TODO: langju: add test case for resolving reference sitting in childtree
+
   it('should not reference matching placeholder nodes', () => {
     // arrange
     const expectedValue = 42;
@@ -62,19 +64,6 @@ describe('ref builder function', () => {
     expect(result.b).toEqual(expectedValue);
   });
 
-  it('should warn the user if a reference could not be resolved', () => {
-    // arrange
-    spyOn(console, 'warn');
-    const buildable = template({
-      b: ref('not-existing'),
-    });
-
-    // act
-    build(buildable);
-
-    // assert
-    expect(console.warn).toHaveBeenCalledTimes(1);
-  });
-
   includeDirectiveFnSpecs(ref, 'propName');
+  includeBuilderFnSpecs(ref, 'propName');
 });
