@@ -110,7 +110,7 @@ export function includeBuilderFnSpecs(builderFn: BuilderFn, ...params: any[]) {
     const buildable = builderFn(...params);
 
     // assert
-    expect(isBuildable(builderFn)).toBe(true);
+    expect(isBuildable(buildable)).toBe(true);
     expect(isUnset(buildable.value)).toBe(true);
   });
 }
