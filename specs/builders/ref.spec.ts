@@ -62,5 +62,5 @@ describe('ref', () => {
     expect(result.b).toEqual(expectedValue);
   });
 
-  includeDirectiveFnSpecs(ref, 'propName');
+  includeDirectiveFnSpecs('ref', ref, 'propName');
 });

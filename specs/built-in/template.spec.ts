@@ -14,5 +14,5 @@ describe('template', () => {
     expect(isBuildable(buildable.value)).toBe(false);
   });
 
-  includeTransparentTemplateFnSpecs(template, {});
+  includeTransparentTemplateFnSpecs('template', template, {});
 });

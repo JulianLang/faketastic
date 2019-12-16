@@ -39,5 +39,5 @@ describe('combine', () => {
     expect(built.b).toEqual(expectedValue);
   });
 
-  includeTemplateFnSpecs(combine, {}, () => {});
+  includeTemplateFnSpecs('combine', combine, {}, () => {});
 });

@@ -30,5 +30,5 @@ describe('range', () => {
     expect(typeof value).toEqual('number');
   });
 
-  includeValueFnSpecs(range, 1, 2);
+  includeValueFnSpecs('range', range, 1, 2);
 });

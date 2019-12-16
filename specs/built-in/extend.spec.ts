@@ -62,6 +62,6 @@ describe('extend', () => {
     expect(value.a).not.toBe(obj2);
   });
 
-  includeTransparentTemplateFnSpecs(extend, {});
-  includeDirectiveFnSpecs(extend, {}, {});
+  includeTransparentTemplateFnSpecs('extend', extend, {});
+  includeDirectiveFnSpecs('extend', extend, {}, {});
 });

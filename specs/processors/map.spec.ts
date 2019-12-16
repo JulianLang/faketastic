@@ -33,5 +33,5 @@ describe('map', () => {
   });
 
   // TODO: langju: when ref() arrived: test case for running after ref() ?
-  includeProcessorFnSpecs(map, () => {});
+  includeProcessorFnSpecs('map', map, () => {});
 });
