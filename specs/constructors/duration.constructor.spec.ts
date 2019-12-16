@@ -1,4 +1,4 @@
-import { duration } from '../../src/converters';
+import { duration } from '../../src/constructors';
 
 describe('duration', () => {
   it('should return a date adding the specified min/max duration', () => {
