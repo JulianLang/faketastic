@@ -13,15 +13,7 @@ import { isPlaceholder } from '../../placeholder';
 import { ProcessorFn } from '../../processors';
 import { TreeReaderFn } from '../../tree-reader';
 import { AttachedFn, AttachedFnType, MutatingFn } from '../../types';
-import {
-  extractFns,
-  hasSymbol,
-  isBuilt,
-  isUndefined,
-  isUnset,
-  removeSymbol,
-  setSymbol,
-} from '../../util';
+import { extractFns, hasSymbol, isUndefined, isUnset, removeSymbol, setSymbol } from '../../util';
 import { isValueFunction } from '../../value-fns/util/is-value.fn';
 import {
   AttachedFnSymbol,
@@ -32,7 +24,7 @@ import {
   FnOrderSymbol,
 } from '../types';
 import { BuildCycle } from '../types/build.cycle';
-import { cyclesOf, isBuildable, unwrapIfBuildable } from '../util';
+import { cyclesOf, isBuildable, isBuilt, unwrapIfBuildable } from '../util';
 
 /**
  * Builds a `Buildable` and returns the generated mock-data.
