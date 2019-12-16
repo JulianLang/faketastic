@@ -1,4 +1,4 @@
-import { randomInt } from '../../src/core/randomizers/random-int.randomizer';
+import { randomInt } from '../../../src/core/randomizers/random-int.randomizer';
 
 describe('randomInt', () => {
   it('should return a number', () => {

@@ -1,4 +1,4 @@
-import { probability } from '../../src/core/randomizers/probability.randomizer';
+import { probability } from '../../../src/core/randomizers/probability.randomizer';
 
 describe('probability', () => {
   it('should return a boolean', () => {

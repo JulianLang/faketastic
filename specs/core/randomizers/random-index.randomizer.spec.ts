@@ -1,4 +1,4 @@
-import { randomIndex } from '../../src/core/randomizers/random-index.randomizer';
+import { randomIndex } from '../../../src/core/randomizers/random-index.randomizer';
 
 describe('randomIndex', () => {
   it('should throw for null and undefined', () => {
