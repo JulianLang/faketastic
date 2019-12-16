@@ -1,26 +1,30 @@
 import { createNode, findNode, ObjectTreeNode, treeOf } from 'treelike';
 import {
+  AttachedFn,
   build,
   Buildable,
   buildChild,
   BuildCycle,
+  BuildCycleCallbackFn,
   BuildRootSymbol,
   canBe,
   createArchitectFn,
   createBuildable,
   createProcessorFn,
+  createTreeReaderFn,
   createValueFn,
   FnCalledSymbol,
+  Func,
+  hasSymbol,
+  MutatingFn,
   oneOf,
   quantity,
   range,
   rebuild,
+  setSymbol,
   template,
   use,
 } from '../../src';
-import { createTreeReaderFn } from '../../src/tree-reader';
-import { AttachedFn, BuildCycleCallbackFn, Func, MutatingFn } from '../../src/types';
-import { hasSymbol, setSymbol } from '../../src/util';
 
 describe('build', () => {
   it('should run processor functions from top to buttom (treewise)', () => {

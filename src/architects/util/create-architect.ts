@@ -1,5 +1,11 @@
-import { AttachedFnSymbol, BuildCycle, FnBuildCycleSymbol, FnOrderSymbol } from '../../core';
-import { AttachedFnType, BuildCycleCallbackFn } from '../../types';
+import {
+  AttachedFnSymbol,
+  BuildCycle,
+  BuildCycleCallbackFn,
+  FnBuildCycleSymbol,
+  FnOrderSymbol,
+} from '../../core';
+import { AttachedFnType } from '../../types';
 import { setSymbol } from '../../util';
 import { ArchitectFn } from '../types';
 

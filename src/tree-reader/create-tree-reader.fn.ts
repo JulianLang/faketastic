@@ -1,5 +1,5 @@
-import { AttachedFnSymbol, BuildCycle, FnBuildCycleSymbol } from '../core';
-import { AttachedFnType, BuildCycleCallbackFn } from '../types';
+import { AttachedFnSymbol, BuildCycle, BuildCycleCallbackFn, FnBuildCycleSymbol } from '../core';
+import { AttachedFnType } from '../types';
 import { setSymbol } from '../util';
 import { TreeReaderFn } from './types';
 

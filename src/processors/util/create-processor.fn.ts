@@ -1,11 +1,12 @@
 import {
   AttachedFnSymbol,
   BuildCycle,
+  BuildCycleCallbackFn,
   FnBuildCycleSymbol,
   FnIsStickySymbol,
   FnOrderSymbol,
-} from '../../core/types';
-import { BuildCycleCallbackFn, Stickiness } from '../../types';
+} from '../../core';
+import { Stickiness } from '../../types';
 import { ProcessorFn } from '../types';
 
 export function createProcessorFn(
