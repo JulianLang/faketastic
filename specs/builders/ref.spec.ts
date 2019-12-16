@@ -3,6 +3,8 @@ import { build, template } from '../../src/core';
 import { includeBuilderFnSpecs, includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('ref', () => {
+  // TODO: langju: add test case for resolving reference sitting in childtree
+
   it('should not reference matching placeholder nodes', () => {
     // arrange
     const expectedValue = 42;
