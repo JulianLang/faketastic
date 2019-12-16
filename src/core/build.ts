@@ -5,7 +5,6 @@ import {
   nodeTypeOf,
   ObjectTreeNode,
   traverse,
-  TraverseCallbackFn,
   treeOf,
 } from 'treelike';
 import { ArchitectFn } from '../architects';
@@ -24,7 +23,7 @@ import {
   FnOrderSymbol,
 } from './types';
 import { BuildCycle } from './types/build.cycle';
-import { cyclesOf, isBuildable, isBuilt, unwrapIfBuildable } from './util';
+import { cyclesOf, isBuildable, isBuilt, topDownSiblingTraverser, unwrapIfBuildable } from './util';
 
 /**
  * Builds a `Buildable` and returns the generated mock-data.
@@ -318,27 +317,6 @@ function sortByOrderNumber(a: MutatingFn, b: MutatingFn): number {
   }
 
   return result;
-}
-
-// TODO: langju: this is not traversing as intended yet.
-/**
- * Traverses a tree from top to down by traversing the siblings.
- * @param node The node to start traversion from. Usually the tree's root.
- * @param onNext The callback function to call for each and every traversed node.
- */
-function topDownSiblingTraverser(node: ObjectTreeNode, onNext: TraverseCallbackFn): void {
-  // also include root
-  if (hasSymbol(BuildRootSymbol, node)) {
-    onNext(node);
-  }
-
-  for (const child of node.children) {
-    onNext(child);
-  }
-
-  for (const child of node.children) {
-    topDownSiblingTraverser(child, onNext);
-  }
 }
 
 /**
