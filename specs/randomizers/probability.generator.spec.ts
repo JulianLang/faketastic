@@ -1,4 +1,4 @@
-import { probability } from '../../src/core/generators/probability.generator';
+import { probability } from '../../src/core/randomizers/probability.generator';
 
 describe('generators: probability(n)', () => {
   it('should return a boolean', () => {

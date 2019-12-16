@@ -1,4 +1,4 @@
 export * from './built-in';
-export * from './generators';
+export * from './randomizers';
 export * from './types';
 export * from './util';

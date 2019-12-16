@@ -1,4 +1,4 @@
-import { randomInt } from '../../src/core/generators/random-int.generator';
+import { randomInt } from '../../src/core/randomizers/random-int.generator';
 
 describe('generators: randomInt(min, max)', () => {
   it('should return a number', () => {
