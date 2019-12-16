@@ -1,6 +1,6 @@
 import { combine, oneOf, ref } from '../../src/builders';
 import { build, template } from '../../src/core';
-import { includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
+import { includeBuilderFnSpecs, includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('ref', () => {
   it('should not reference matching placeholder nodes', () => {
@@ -63,4 +63,5 @@ describe('ref', () => {
   });
 
   includeDirectiveFnSpecs(ref, 'propName');
+  includeBuilderFnSpecs(ref, 'propName');
 });
