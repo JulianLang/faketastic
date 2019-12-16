@@ -7,7 +7,7 @@ import {
   FnCalledSymbol,
   isBuilt,
   setSymbol,
-} from '../../src';
+} from '../../../src';
 
 describe('isBuilt', () => {
   it('should return true if all fns are marked as called', () => {

@@ -1,4 +1,4 @@
-import { cyclesOf } from '../../src';
+import { cyclesOf } from '../../../src';
 
 describe('cyclesOf', () => {
   it('should return previous cycles including the given one', () => {
