@@ -1,5 +1,5 @@
 import { ObjectTreeNode } from 'treelike';
-import { isDefined } from '../is-defined';
+import { isDefined } from '../type-fns/is-defined';
 import { hasSymbol } from './has-symbol';
 
 /**
