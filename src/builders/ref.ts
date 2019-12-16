@@ -22,7 +22,7 @@ export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): B
     node.children = [];
     const bareValue = unwrapIfBuildable(resolvedReference.value);
 
-    // TODO: langju: is "BuilderFn" the only possibility for incomplete values?
+    // TODO: langju: is "ValueFn" the only possibility for incomplete values?
     if (isValueFunction(bareValue) || isUnset(bareValue)) {
       // value has not been built yet. mark for recheck after build cycle.
       node.value = placeholder(`ref/defer`, {}, [refProcessor, ...attachedFns]);

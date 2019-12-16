@@ -52,7 +52,7 @@ export function time(
   latest?: TimeInput | null | AttachedFn,
   ...attachedFns: AttachedFn[]
 ): Buildable<ValueFn> {
-  const timeBuilder = createValueFn(timeImpl);
+  const timeValueFn = createValueFn(timeImpl);
 
   if (addIfAttachedFn(earliest, attachedFns)) {
     earliest = undefined;
@@ -61,7 +61,7 @@ export function time(
     latest = undefined;
   }
 
-  return createBuildable(timeBuilder, attachedFns);
+  return createBuildable(timeValueFn, attachedFns);
 
   // TODO: langju: simplify / maybe formalize parameter parsing:
   function timeImpl() {

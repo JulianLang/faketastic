@@ -3,7 +3,7 @@ import { build, template } from '../../src/core';
 import { Func } from '../../src/types';
 import { includeTemplateFnSpecs } from '../spec-helpers/shared-specs';
 
-describe('combine template function', () => {
+describe('combine', () => {
   it('should call the map function', () => {
     // arrange
     const template = { a: 1, b: false, c: 'str' };

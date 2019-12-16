@@ -73,19 +73,19 @@ describe('isBuilt helper function', () => {
     expect(isBuilt(buildable)).toBe(false);
   });
 
-  it('should consider presence of builderFns for build cycles >= postprocessor', () => {
+  it('should consider presence of valueFns for build cycles >= postprocessor', () => {
     // arrange
-    const builderFn = createValueFn(() => null);
-    const buildable = createBuildable(builderFn);
+    const valueFn = createValueFn(() => null);
+    const buildable = createBuildable(valueFn);
 
     // act, assert
     expect(isBuilt(buildable, 'postprocessor')).toBe(false);
   });
 
-  it('should not consider presence of builderFns for build cycles < postprocessor', () => {
+  it('should not consider presence of valueFns for build cycles < postprocessor', () => {
     // arrange
-    const builderFn = createValueFn(() => null);
-    const buildable = createBuildable(builderFn);
+    const valueFn = createValueFn(() => null);
+    const buildable = createBuildable(valueFn);
 
     // act, assert
     expect(isBuilt(buildable, 'preprocessor')).toBe(true);

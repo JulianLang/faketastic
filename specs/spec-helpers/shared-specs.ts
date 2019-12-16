@@ -8,6 +8,7 @@ import {
   isValueFunction,
   ValueFnSymbol,
 } from '../../src';
+import { Func } from '../../src/types';
 
 export function includeProcessorFnSpecs(processorFn: Function, ...params: any[]) {
   it('should return a processor fn', () => {
@@ -20,11 +21,11 @@ export function includeProcessorFnSpecs(processorFn: Function, ...params: any[])
   });
 }
 
-export function includeBuilderFnSpecs(builderFn: Function, ...params: any[]) {
+export function includeValueFnSpecs(valueFn: Func<any[], any>, ...params: any[]) {
   it('should add a builder function as value on the buildable', () => {
     // arrange
     // act
-    const buildable = builderFn(...params);
+    const buildable = valueFn(...params);
 
     // assert
     expect(typeof buildable.value).toEqual('function');
@@ -32,7 +33,7 @@ export function includeBuilderFnSpecs(builderFn: Function, ...params: any[]) {
     expect(isValueFunction(buildable.value)).toBe(true);
   });
 
-  includeDirectiveFnSpecs(builderFn, ...params);
+  includeDirectiveFnSpecs(valueFn, ...params);
 }
 
 export function includeDirectiveFnSpecs(directiveFn: Function, ...params: any[]): void {

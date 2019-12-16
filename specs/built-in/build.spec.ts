@@ -110,18 +110,18 @@ describe('build function', () => {
     expect(result).toEqual(value);
   });
 
-  it('should call builder functions and assign their result as value', () => {
+  it('should call value functions and assign their result as value', () => {
     // arrange
     let wasCalled = false;
     const value = 'value';
 
-    const builderFn = createValueFn(() => {
+    const valueFn = createValueFn(() => {
       wasCalled = true;
       return value;
     });
 
     const buildable = createBuildable({
-      a: createBuildable(builderFn),
+      a: createBuildable(valueFn),
     });
 
     // act
@@ -410,8 +410,8 @@ describe('rebuild function', () => {
 
   it('should build nodes before running postprocessor', () => {
     // arrange
-    const builderFn = createValueFn(() => 42);
-    const buildable = createBuildable(builderFn);
+    const valueFn = createValueFn(() => 42);
+    const buildable = createBuildable(valueFn);
     const node = createNode('$root', buildable);
 
     // act

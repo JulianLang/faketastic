@@ -1,7 +1,7 @@
 import { build, template } from '../../src';
 import { someOf } from '../../src/builders';
 
-describe('someOf builder function', () => {
+describe('someOf', () => {
   it('should return at least 1 and at max "values.length" items', () => {
     for (let i = 0; i < 1000; i++) {
       // arrange

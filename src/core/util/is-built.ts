@@ -17,11 +17,11 @@ export function isBuilt(value: any, cycle: BuildCycle = 'finalizer'): boolean {
   const cycles = cyclesOf(cycle);
 
   const fnsCalled = allFnsCalled(attachedFns, cycles);
-  const valueIsNoBuilderFn = compareCycles(cycle, '>=', 'postprocessor')
+  const isNoValueFn = compareCycles(cycle, '>=', 'postprocessor')
     ? !isValueFunction(value.value)
     : true;
 
-  return fnsCalled && valueIsNoBuilderFn;
+  return fnsCalled && isNoValueFn;
 }
 
 function allFnsCalled(attachedFns: AttachedFn[], inCycles: BuildCycle[]): boolean {

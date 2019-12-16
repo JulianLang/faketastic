@@ -1,6 +1,6 @@
 import { build, itself, oneOf, range, RecursionDepth, template, use } from '../../src';
 
-describe('self builder', () => {
+describe('itself', () => {
   it('should throw if used without parent template', () => {
     // arrange
     const buildable = itself(() => ({ continue: true }));

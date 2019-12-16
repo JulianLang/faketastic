@@ -1,6 +1,6 @@
 import { build, createProcessorFn, isDateInstance, template, time } from '../../src';
 
-describe('time builder fn', () => {
+describe('time', () => {
   it('should return a time of today if no parameter is given', () => {
     // arrange
     const Appointment = template({

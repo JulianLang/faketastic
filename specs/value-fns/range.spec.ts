@@ -1,7 +1,7 @@
 import { range } from '../../src';
-import { includeBuilderFnSpecs } from '../spec-helpers/shared-specs';
+import { includeValueFnSpecs } from '../spec-helpers/shared-specs';
 
-describe('range BuilderFn', () => {
+describe('range', () => {
   it('should always return values in range', () => {
     // arrange
     const min = 1;
@@ -30,5 +30,5 @@ describe('range BuilderFn', () => {
     expect(typeof value).toEqual('number');
   });
 
-  includeBuilderFnSpecs(range, 1, 2);
+  includeValueFnSpecs(range, 1, 2);
 });

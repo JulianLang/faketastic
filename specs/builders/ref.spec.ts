@@ -2,7 +2,7 @@ import { combine, oneOf, ref } from '../../src/builders';
 import { build, template } from '../../src/core';
 import { includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
 
-describe('ref builder function', () => {
+describe('ref', () => {
   it('should not reference matching placeholder nodes', () => {
     // arrange
     const expectedValue = 42;
