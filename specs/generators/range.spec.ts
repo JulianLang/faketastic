@@ -1,4 +1,4 @@
-import { range } from '../../src/builders';
+import { range } from '../../src';
 import { includeBuilderFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('range BuilderFn', () => {
