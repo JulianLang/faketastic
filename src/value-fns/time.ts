@@ -65,7 +65,7 @@ export function time(
 
   // TODO: langju: simplify / maybe formalize parameter parsing:
   function timeImpl() {
-    // time('now') | time('now', '16:00)
+    // time('now') | time('now', '16:00')
     if (earliest === 'now') {
       earliest = new Date();
 
