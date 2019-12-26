@@ -15,7 +15,7 @@ export function createProcessorFn(
   sticky: Stickiness,
   orderNumber = 0,
 ): ProcessorFn {
-  const processorFn: ProcessorFn = fn as ProcessorFn;
+  const processorFn = fn as ProcessorFn;
   processorFn[AttachedFnSymbol] = 'processor';
   processorFn[FnBuildCycleSymbol] = cycle;
   processorFn[FnOrderSymbol] = orderNumber;
