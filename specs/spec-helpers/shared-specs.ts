@@ -49,7 +49,7 @@ export function includeValueFnSpecs(valueFn: Func<any[], any>, ...params: any[])
 export function includeDirectiveFnSpecs(directiveFn: Function, ...params: any[]): void {
   it('should include given processor- and architect-functions in buildable', () => {
     // arrange
-    const procFn = createProcessorFn(() => {}, 'initializer');
+    const procFn = createProcessorFn(() => {}, 'initializer', 'unsticky');
     const architectFn = createArchitectFn(() => {}, 'initializer');
     const negativeTestFn = () => {};
     const processorFns: Function[] = [procFn, architectFn, negativeTestFn];

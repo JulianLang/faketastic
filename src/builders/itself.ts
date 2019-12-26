@@ -31,13 +31,15 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
   const recurseNext = createProcessorFn(
     recurseNextImpl,
     'initializer',
-    MutatingFnOrders.processors.recursion,
     // quantity will transfer this processor to multiplied nodes
     'unsticky',
+    MutatingFnOrders.processors.recursion,
   );
   const endRecursion = createProcessorFn(
     endRecursionImpl,
     'initializer',
+    // quantity will keep this processor on initial node
+    'sticky',
     MutatingFnOrders.processors.recursion,
   );
 

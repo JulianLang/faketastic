@@ -6,7 +6,7 @@ import { AttachedFn } from '../types';
 import { clone, isDefined } from '../util';
 
 export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
-  const initOneOf = createProcessorFn(initOneOfImpl, 'initializer');
+  const initOneOf = createProcessorFn(initOneOfImpl, 'initializer', 'unsticky');
 
   return createBuildable(UnsetValue, [initOneOf, ...attachedFns]);
 

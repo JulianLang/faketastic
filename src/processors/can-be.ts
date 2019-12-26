@@ -4,8 +4,12 @@ import { Stickiness } from '../types';
 import { ProcessorFn } from './types';
 import { createProcessorFn } from './util';
 
-export function canBe<T>(value: T, likelyhood = 0.5, sticky: Stickiness = 'sticky'): ProcessorFn {
-  return createProcessorFn(canBeImpl, 'preprocessor', 0, sticky);
+export function canBe<T>(
+  value: T,
+  likelyhood = 0.5,
+  stickiness: Stickiness = 'sticky',
+): ProcessorFn {
+  return createProcessorFn(canBeImpl, 'preprocessor', stickiness);
 
   function canBeImpl(node: ObjectTreeNode) {
     // never apply

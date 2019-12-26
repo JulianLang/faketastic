@@ -31,8 +31,8 @@ describe('quantity', () => {
         10,
         quantity(() => 1),
         // this should stick to node "a" and should not be applied to multiplied nodes of "quantity()"
-        createProcessorFn(procFn1, 'initializer', 0, 'sticky'),
-        createProcessorFn(procFn2, 'initializer', 0, 'unsticky'),
+        createProcessorFn(procFn1, 'initializer', 'sticky'),
+        createProcessorFn(procFn2, 'initializer', 'unsticky'),
       ),
     });
 
@@ -54,7 +54,7 @@ describe('quantity', () => {
         10,
         quantity(() => 1),
         // this should stick to node "a" and should not be applied to multiplied nodes of "quantity()"
-        createProcessorFn(stickyProcFn, 'initializer', 0, 'sticky'),
+        createProcessorFn(stickyProcFn, 'initializer', 'sticky'),
       ),
     });
 
@@ -76,7 +76,7 @@ describe('quantity', () => {
         10,
         quantity(() => 1),
         // this processor should not stick to node "a" but rather be transferred to multiplied nodes of "quantity()"
-        createProcessorFn(unstickyProcFn, 'initializer', 0, 'unsticky'),
+        createProcessorFn(unstickyProcFn, 'initializer', 'unsticky'),
       ),
     });
 
@@ -86,14 +86,18 @@ describe('quantity', () => {
 
   it('should connect the content nodes to the rest of tree', () => {
     // arrange, assert
-    const assertProcessor = createProcessorFn((node: ObjectTreeNode) => {
-      // assertion, only on parent node
-      if (node.name === 'a') {
-        for (const child of node.children) {
-          expect(child.parent).toBe(node);
+    const assertProcessor = createProcessorFn(
+      (node: ObjectTreeNode) => {
+        // assertion, only on parent node
+        if (node.name === 'a') {
+          for (const child of node.children) {
+            expect(child.parent).toBe(node);
+          }
         }
-      }
-    }, 'initializer');
+      },
+      'initializer',
+      'unsticky',
+    );
     const tmpl = template({
       a: use({}, quantity(2), assertProcessor),
     });

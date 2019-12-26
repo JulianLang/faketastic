@@ -13,6 +13,7 @@ export function combine<T>(
   const combineValuesProcessor = createProcessorFn(
     buildAndCombineValues,
     'finalizer',
+    'unsticky',
     MutatingFnOrders.processors.combineValues,
   );
 

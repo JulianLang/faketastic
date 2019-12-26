@@ -40,7 +40,7 @@ describe('placeholder', () => {
     // arrange, act
     const treeReader = createTreeReaderFn(() => {}, 'initializer');
     const architect = createArchitectFn(() => {}, 'initializer');
-    const processor = createProcessorFn(() => {}, 'initializer');
+    const processor = createProcessorFn(() => {}, 'initializer', 'unsticky');
 
     const attachedFns: AttachedFn[] = [treeReader, architect, processor];
     const placeholder = createPlaceholder('content', {}, attachedFns);

@@ -8,7 +8,12 @@ import { isDefined, isUndefined } from '../util';
 import { isValueFunction } from '../value-fns/util';
 
 export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): Buildable {
-  const refProcessor = createProcessorFn(refImpl, 'finalizer', MutatingFnOrders.processors.ref);
+  const refProcessor = createProcessorFn(
+    refImpl,
+    'finalizer',
+    'sticky',
+    MutatingFnOrders.processors.ref,
+  );
 
   return createBuildable(UnsetValue, [refProcessor, ...attachedFns]);
 

@@ -35,7 +35,7 @@ export function someOf<T>(
     opts = undefined;
   }
 
-  const initSomeOf = createProcessorFn(initSomeOfImpl, 'initializer');
+  const initSomeOf = createProcessorFn(initSomeOfImpl, 'initializer', 'unsticky');
 
   return createBuildable(UnsetValue, [initSomeOf, ...attachedFns]);
 

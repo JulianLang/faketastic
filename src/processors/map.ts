@@ -5,7 +5,7 @@ import { ProcessorFn } from './types';
 import { createProcessorFn } from './util';
 
 export function map<T = any, K = any>(mapFn: (param: T, node?: ObjectTreeNode) => K): ProcessorFn {
-  return createProcessorFn(mapImpl, 'finalizer', MutatingFnOrders.processors.map);
+  return createProcessorFn(mapImpl, 'finalizer', 'unsticky', MutatingFnOrders.processors.map);
 
   function mapImpl(node: ObjectTreeNode) {
     const bareValue = unwrapIfBuildable(node.value);

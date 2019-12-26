@@ -14,7 +14,7 @@ describe('isBuilt', () => {
     // arrange
     const treeReader = createTreeReaderFn(() => {}, 'initializer');
     const architect = createArchitectFn(() => {}, 'initializer');
-    const processor = createProcessorFn(() => {}, 'initializer');
+    const processor = createProcessorFn(() => {}, 'initializer', 'unsticky');
     const attachedFns = [treeReader, architect, processor];
     setSymbol(FnCalledSymbol, treeReader);
     setSymbol(FnCalledSymbol, architect);
@@ -30,7 +30,7 @@ describe('isBuilt', () => {
     // arrange
     const treeReader = createTreeReaderFn(() => {}, 'initializer');
     const architect = createArchitectFn(() => {}, 'initializer');
-    const processor = createProcessorFn(() => {}, 'initializer');
+    const processor = createProcessorFn(() => {}, 'initializer', 'unsticky');
     const attachedFns = [treeReader, architect, processor];
     // note: not setting Symbol for treeReader.
     setSymbol(FnCalledSymbol, architect);
@@ -46,7 +46,7 @@ describe('isBuilt', () => {
     // arrange
     const treeReader = createTreeReaderFn(() => {}, 'postprocessor');
     const architect = createArchitectFn(() => {}, 'initializer');
-    const processor = createProcessorFn(() => {}, 'initializer');
+    const processor = createProcessorFn(() => {}, 'initializer', 'unsticky');
     const attachedFns = [treeReader, architect, processor];
     setSymbol(FnCalledSymbol, architect);
     setSymbol(FnCalledSymbol, processor);
@@ -62,7 +62,7 @@ describe('isBuilt', () => {
     // arrange
     const treeReader = createTreeReaderFn(() => {}, 'finalizer');
     const architect = createArchitectFn(() => {}, 'postprocessor');
-    const processor = createProcessorFn(() => {}, 'initializer');
+    const processor = createProcessorFn(() => {}, 'initializer', 'unsticky');
     const attachedFns = [treeReader, architect, processor];
     setSymbol(FnCalledSymbol, architect);
     setSymbol(FnCalledSymbol, processor);

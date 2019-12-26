@@ -32,7 +32,8 @@ describe('build', () => {
   it('should run processor functions from top to buttom (treewise)', () => {
     // arrange
     const order: number[] = [];
-    const newProcFn = (n: number) => createProcessorFn(() => order.push(n), 'initializer');
+    const newProcFn = (n: number) =>
+      createProcessorFn(() => order.push(n), 'initializer', 'unsticky');
 
     const tmpl = template({
       a: use(
@@ -168,10 +169,14 @@ describe('build', () => {
 
   it('should build children of value nodes', () => {
     // arrange
-    const setChildrenOnValueNodeProcessor = createProcessorFn((n: ObjectTreeNode) => {
-      n.value = 42;
-      n.children = [createNode('child', null)];
-    }, 'initializer');
+    const setChildrenOnValueNodeProcessor = createProcessorFn(
+      (n: ObjectTreeNode) => {
+        n.value = 42;
+        n.children = [createNode('child', null)];
+      },
+      'initializer',
+      'unsticky',
+    );
 
     const buildable = createBuildable({
       /*
@@ -192,16 +197,16 @@ describe('build', () => {
     const order: number[] = [];
     const treeReaderInit = createTreeReaderFn(() => order.push(1), 'initializer');
     const architectInit = createArchitectFn(() => order.push(2), 'initializer');
-    const processorInit = createProcessorFn(() => order.push(3), 'initializer');
+    const processorInit = createProcessorFn(() => order.push(3), 'initializer', 'unsticky');
     const treeReaderPre = createTreeReaderFn(() => order.push(4), 'preprocessor');
     const architectPre = createArchitectFn(() => order.push(5), 'preprocessor');
-    const processorPre = createProcessorFn(() => order.push(6), 'preprocessor');
+    const processorPre = createProcessorFn(() => order.push(6), 'preprocessor', 'unsticky');
     const treeReaderPost = createTreeReaderFn(() => order.push(7), 'postprocessor');
     const architectPost = createArchitectFn(() => order.push(8), 'postprocessor');
-    const processorPost = createProcessorFn(() => order.push(9), 'postprocessor');
+    const processorPost = createProcessorFn(() => order.push(9), 'postprocessor', 'unsticky');
     const treeReaderFin = createTreeReaderFn(() => order.push(10), 'finalizer');
     const architectFin = createArchitectFn(() => order.push(11), 'finalizer');
-    const processorFin = createProcessorFn(() => order.push(12), 'finalizer');
+    const processorFin = createProcessorFn(() => order.push(12), 'finalizer', 'unsticky');
 
     const fns: AttachedFn[] = [
       treeReaderInit,
@@ -256,14 +261,17 @@ describe('build', () => {
     build(buildable);
   });
 
-  includeBuildMutatingFnsSpecs(createProcessorFn, 'processors');
+  includeBuildMutatingFnsSpecs(
+    (fn, cycle, order) => createProcessorFn(fn, cycle, 'unsticky', order),
+    'processors',
+  );
 
   includeBuildMutatingFnsSpecs(createArchitectFn, 'architects');
 });
 
 /** Specs testing `build`-fn to correctly run MutatingFns like `Architects` and `Processors`. */
 function includeBuildMutatingFnsSpecs(
-  mutationFnFactory: Func<[BuildCycleCallbackFn, BuildCycle, ...any[]], MutatingFn>,
+  mutationFnFactory: Func<[BuildCycleCallbackFn, BuildCycle, number?], MutatingFn>,
   targetProperty: keyof Buildable,
 ) {
   it(`should run ${String(targetProperty)} functions in correct order`, () => {
@@ -381,7 +389,7 @@ describe('rebuild', () => {
       // architect
       createArchitectFn(fakeArchitect, 'postprocessor'),
       // processor
-      createProcessorFn(fakeProcessor, 'finalizer'),
+      createProcessorFn(fakeProcessor, 'finalizer', 'unsticky'),
     ];
     const buildable = createBuildable({}, attachedFns);
     const node = createNode('$root', buildable);
@@ -413,7 +421,7 @@ describe('rebuild', () => {
       // architect
       createArchitectFn(fakeArchitect, 'postprocessor'),
       // processor
-      createProcessorFn(fakeProcessor, 'finalizer'),
+      createProcessorFn(fakeProcessor, 'finalizer', 'unsticky'),
     ];
     const buildable = createBuildable({}, attachedFns);
     const node = createNode('$root', buildable);

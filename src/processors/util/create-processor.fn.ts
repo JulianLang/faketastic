@@ -12,8 +12,8 @@ import { ProcessorFn } from '../types';
 export function createProcessorFn(
   fn: BuildCycleCallbackFn,
   cycle: BuildCycle,
+  sticky: Stickiness,
   orderNumber = 0,
-  sticky: Stickiness = 'sticky',
 ): ProcessorFn {
   const processorFn: ProcessorFn = fn as ProcessorFn;
   processorFn[AttachedFnSymbol] = 'processor';

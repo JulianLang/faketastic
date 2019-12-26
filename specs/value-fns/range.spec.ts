@@ -32,7 +32,7 @@ describe('range', () => {
 
   it('should allow the user to skip min and max parameters', () => {
     // arrange
-    const processor = createProcessorFn(() => {}, 'initializer');
+    const processor = createProcessorFn(() => {}, 'initializer', 'unsticky');
 
     // act, assert
     expect(() => range(processor)).not.toThrow();
@@ -40,7 +40,7 @@ describe('range', () => {
 
   it('should set min to 1 and max to 10', () => {
     // arrange
-    const processor = createProcessorFn(() => {}, 'initializer');
+    const processor = createProcessorFn(() => {}, 'initializer', 'unsticky');
     const value = range(processor).value();
 
     // act, assert
