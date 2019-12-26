@@ -1,3 +1,4 @@
+import { MutatingFnOrders } from '../../src';
 import { build, createBuildable } from '../../src/core';
 import { map } from '../../src/processors/map';
 import { includeAttachedFnSpecs } from '../spec-helpers/shared-specs';
@@ -32,6 +33,10 @@ describe('map', () => {
     expect(result).toEqual(expectedValue);
   });
 
-  // TODO: langju: when ref() arrived: test case for running after ref() ?
+  it('should run after ref', () => {
+    // arrange, act, assert
+    expect(MutatingFnOrders.processors.ref).toBeLessThan(MutatingFnOrders.processors.map);
+  });
+
   includeAttachedFnSpecs('processor', map, () => {});
 });

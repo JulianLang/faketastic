@@ -5,15 +5,15 @@ import {
   nodeTypeOf,
   ObjectTreeNode,
   traverse,
-  TraverseCallbackFn,
   treeOf,
 } from 'treelike';
 import { ArchitectFn } from '../architects';
+import { UnsetValue } from '../constants';
 import { isPlaceholder } from '../placeholder';
 import { ProcessorFn } from '../processors';
 import { TreeReaderFn } from '../tree-reader';
 import { AttachedFn, AttachedFnType, MutatingFn } from '../types';
-import { extractFns, hasSymbol, isUndefined, isUnset, removeSymbol, setSymbol } from '../util';
+import { extractFns, hasSymbol, isUndefined, removeSymbol, setSymbol } from '../util';
 import { isValueFunction } from '../value-fns/util/is-value.fn';
 import {
   AttachedFnSymbol,
@@ -24,7 +24,7 @@ import {
   FnOrderSymbol,
 } from './types';
 import { BuildCycle } from './types/build.cycle';
-import { cyclesOf, isBuildable, isBuilt, unwrapIfBuildable } from './util';
+import { cyclesOf, isBuildable, isBuilt, topDownSiblingTraverser, unwrapIfBuildable } from './util';
 
 /**
  * Builds a `Buildable` and returns the generated mock-data.
@@ -138,8 +138,8 @@ function buildChildrenOf(node: ObjectTreeNode) {
  * @param node The root node to begin cleaning process from.
  */
 function finalize(node: ObjectTreeNode): void {
-  if (isUnset(node.value)) {
-    console.warn(`faketastic/clean-up: Unset value found on property "${node.name}".`);
+  if (node.value === UnsetValue) {
+    console.warn(`faketastic: finalize: Unset value found on property "${node.name}".`);
     node.value = undefined;
   } else if (isBuildable(node.value)) {
     const buildable = node.value;
@@ -318,27 +318,6 @@ function sortByOrderNumber(a: MutatingFn, b: MutatingFn): number {
   }
 
   return result;
-}
-
-// TODO: langju: this is not traversing as intended yet.
-/**
- * Traverses a tree from top to down by traversing the siblings.
- * @param node The node to start traversion from. Usually the tree's root.
- * @param onNext The callback function to call for each and every traversed node.
- */
-function topDownSiblingTraverser(node: ObjectTreeNode, onNext: TraverseCallbackFn): void {
-  // also include root
-  if (hasSymbol(BuildRootSymbol, node)) {
-    onNext(node);
-  }
-
-  for (const child of node.children) {
-    onNext(child);
-  }
-
-  for (const child of node.children) {
-    topDownSiblingTraverser(child, onNext);
-  }
 }
 
 /**

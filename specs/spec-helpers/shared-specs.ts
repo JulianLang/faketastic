@@ -11,8 +11,8 @@ import {
   getSymbol,
   hasSymbol,
   isBuildable,
-  isUnset,
   isValueFunction,
+  UnsetValue,
   ValueFnSymbol,
 } from '../../src';
 import { AttachedFn, AttachedFnType, Func, MutatingFn } from '../../src/types';
@@ -116,7 +116,7 @@ export function includeBuilderFnSpecs(builderFn: BuilderFn, ...params: any[]) {
 
     // assert
     expect(isBuildable(buildable)).toBe(true);
-    expect(isUnset(buildable.value)).toBe(true);
+    expect(buildable.value === UnsetValue).toBe(true);
   });
 
   it('should add at least one mutating fn', () => {
