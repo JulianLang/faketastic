@@ -1,6 +1,7 @@
 import { ObjectTreeNode } from 'treelike';
-import { setSymbol } from '../../util';
-import { BuildCycleCallbackFn, FnCalledSymbol } from '../types';
+import { setSymbol } from '../../util/symbol-fns/set-symbol';
+import { BuildCycleCallbackFn } from '../types/build-cycle.callback.fn';
+import { FnCalledSymbol } from '../types/symbols';
 
 /**
  * Marks an AttachedFn as called for the given node. This prevents running the same AttachedFn

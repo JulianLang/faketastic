@@ -1,7 +1,7 @@
 import { ObjectTreeNode, TraverseCallbackFn } from 'treelike';
-import { isUndefined } from 'util';
-import { hasSymbol } from '../../util';
-import { BuildRootSymbol } from '../types';
+import { hasSymbol } from '../../util/symbol-fns/has-symbol';
+import { isUndefined } from '../../util/type-fns/is-undefined';
+import { BuildRootSymbol } from '../types/symbols';
 
 /**
  * **For internal use only. This function is not intended to be called from user code and

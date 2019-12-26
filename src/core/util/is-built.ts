@@ -1,8 +1,13 @@
-import { AttachedFn } from '../../types';
-import { getSymbol, hasSymbol, isUndefined } from '../../util';
-import { isValueFunction } from '../../value-fns';
-import { BuildCycle, FnBuildCycleSymbol, FnCalledSymbol } from '../types';
-import { compareCycles, cyclesOf, isBuildable } from '../util';
+import { AttachedFn } from '../../types/attached.fn';
+import { getSymbol } from '../../util/symbol-fns/get-symbol';
+import { hasSymbol } from '../../util/symbol-fns/has-symbol';
+import { isUndefined } from '../../util/type-fns/is-undefined';
+import { isValueFunction } from '../../value-fns/util/is-value.fn';
+import { BuildCycle } from '../types/build.cycle';
+import { FnBuildCycleSymbol, FnCalledSymbol } from '../types/symbols';
+import { compareCycles } from '../util/compare-cycles';
+import { cyclesOf } from '../util/cycles-of';
+import { isBuildable } from '../util/is-buildable';
 
 export function isBuilt(value: any, cycle: BuildCycle = 'finalizer'): boolean {
   if (isUndefined(value) || !isBuildable(value)) {

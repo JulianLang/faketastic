@@ -1,4 +1,5 @@
-import { Buildable, createBuildable } from '../core';
+import { Buildable } from '../core/types/buildable';
+import { createBuildable } from '../core/util/create-buildable';
 import { AttachedFn } from '../types';
 import { setSymbol } from '../util';
 import { Placeholder, PlaceholderSymbol } from './types/placeholder';

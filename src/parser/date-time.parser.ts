@@ -1,8 +1,9 @@
 import moment from 'moment';
-import { isUndefined } from '../util';
-import { isValidDate, TimeInput } from '../value-fns';
+import { isUndefined } from '../util/type-fns/is-undefined';
+import { TimeInput } from '../value-fns/types/time/time.input';
+import { isValidDate } from '../value-fns/util/time/is-valid.date';
 import { tryParse } from './try-parse.fn';
-import { ParserFn } from './types';
+import { ParserFn } from './types/parser.fn';
 
 type DateTimeParseOpts = { format?: string };
 

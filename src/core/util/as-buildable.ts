@@ -1,4 +1,4 @@
-import { Buildable } from '../types';
+import { Buildable } from '../types/buildable';
 import { createBuildable } from './create-buildable';
 import { isBuildable } from './is-buildable';
 
