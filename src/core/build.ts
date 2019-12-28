@@ -7,16 +7,12 @@ import {
   traverse,
   treeOf,
 } from 'treelike';
-import { ArchitectFn } from '../architects';
 import { UnsetValue } from '../constants';
 import { isPlaceholder } from '../placeholder';
-import { ProcessorFn } from '../processors';
-import { TreeReaderFn } from '../tree-reader';
-import { AttachedFn, AttachedFnType, MutatingFn } from '../types';
-import { extractFns, hasSymbol, isUndefined, removeSymbol, setSymbol } from '../util';
+import { AttachedFn, MutatingFn } from '../types';
+import { hasSymbol, isUndefined, removeSymbol, setSymbol } from '../util';
 import { isValueFunction } from '../value-fns/util/is-value.fn';
 import {
-  AttachedFnSymbol,
   Buildable,
   BuildRootSymbol,
   FnBuildCycleSymbol,
@@ -24,7 +20,14 @@ import {
   FnOrderSymbol,
 } from './types';
 import { BuildCycle } from './types/build.cycle';
-import { cyclesOf, isBuildable, isBuilt, topDownSiblingTraverser, unwrapIfBuildable } from './util';
+import {
+  addAttachedFns,
+  cyclesOf,
+  isBuildable,
+  isBuilt,
+  topDownSiblingTraverser,
+  unwrapIfBuildable,
+} from './util';
 
 /**
  * Builds a `Buildable` and returns the generated mock-data.
@@ -227,32 +230,6 @@ function buildNode(node: ObjectTreeNode): void {
 function setValue(value: any, node: ObjectTreeNode) {
   node.value = value;
   updateType(node);
-}
-
-/**
- * Adds the specified AttachedFns to a given buildable.
- * @param attachedFns The AttachedFns to add to the buildable.
- * @param buildable The buildable receiving the AttachedFns.
- */
-function addAttachedFns<T = any>(attachedFns: AttachedFn[], buildable: Buildable<T>) {
-  const processors = extractFns<symbol, AttachedFnType>(
-    AttachedFnSymbol,
-    attachedFns,
-    'processor',
-  ) as ProcessorFn[];
-  const architects = extractFns<symbol, AttachedFnType>(
-    AttachedFnSymbol,
-    attachedFns,
-    'architect',
-  ) as ArchitectFn[];
-  const treeReaders = extractFns<symbol, AttachedFnType>(
-    AttachedFnSymbol,
-    attachedFns,
-    'tree-reader',
-  ) as TreeReaderFn[];
-  buildable.processors.push(...processors);
-  buildable.architects.push(...architects);
-  buildable.treeReaders.push(...treeReaders);
 }
 
 /**

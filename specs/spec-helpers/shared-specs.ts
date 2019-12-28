@@ -1,17 +1,21 @@
 import {
   AttachedFnSymbol,
+  build,
   Buildable,
   BuildCycle,
   BuildCycleCallbackFn,
   BuilderFn,
   createArchitectFn,
   createProcessorFn,
+  createTreeReaderFn,
   FnBuildCycleSymbol,
+  FnCalledSymbol,
   FnOrderSymbol,
   getSymbol,
   hasSymbol,
   isBuildable,
   isValueFunction,
+  setSymbol,
   UnsetValue,
   ValueFnSymbol,
 } from '../../src';
@@ -168,5 +172,38 @@ export function testAttachedFnFactory(
 
     // assert
     expect(getSymbol(FnBuildCycleSymbol, attachedFn)).toBe(expectedCycle);
+  });
+}
+
+export function transferAttachedFnsSpecs(builderFn: BuilderFn) {
+  const spy = (name: string, fn: any) => jasmine.createSpy(name, fn).and.callThrough();
+
+  it('should transfer AttachedFns to the dynamic content buildable', () => {
+    // arrange
+    const treeReader = createTreeReaderFn(
+      spy('treeReader', () => setSymbol(FnCalledSymbol, treeReader)),
+      'initializer',
+    );
+    const architect = createArchitectFn(
+      spy('architect', () => setSymbol(FnCalledSymbol, architect)),
+      'initializer',
+    );
+    const processor = createProcessorFn(
+      spy('processor', () => setSymbol(FnCalledSymbol, processor)),
+      'initializer',
+      'unsticky',
+    );
+
+    // act
+    const tmpl = builderFn(['A', 'B'], treeReader, architect, processor);
+    build(tmpl);
+
+    // assert
+    // TODO: langju: is calling the AttachedFns twice really good?
+    // - first: on returned buildable of oneOf/someOf
+    // - second: on dynamic chosen buildable [rebuildNode() in initializer of oneOf/someOf]
+    expect(processor).toHaveBeenCalledTimes(2);
+    expect(architect).toHaveBeenCalledTimes(2);
+    expect(treeReader).toHaveBeenCalledTimes(2);
   });
 }

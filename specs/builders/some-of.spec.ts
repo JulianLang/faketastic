@@ -1,6 +1,6 @@
 import { build, template } from '../../src';
 import { someOf } from '../../src/builders';
-import { includeBuilderFnSpecs } from '../spec-helpers/shared-specs';
+import { includeBuilderFnSpecs, transferAttachedFnsSpecs } from '../spec-helpers/shared-specs';
 
 describe('someOf', () => {
   it('should return at least 1 and at max "values.length" items', () => {
@@ -163,5 +163,6 @@ describe('someOf', () => {
     expect(result).toEqual([42]);
   });
 
+  transferAttachedFnsSpecs(someOf);
   includeBuilderFnSpecs(someOf, [1, 2, 3]);
 });

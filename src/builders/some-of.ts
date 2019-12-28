@@ -41,7 +41,7 @@ export function someOf<T>(
 
   function initSomeOfImpl(node: ObjectTreeNode) {
     const content = chooseItems();
-    const buildableContent = asBuildable(content);
+    const buildableContent = asBuildable(content, attachedFns);
     node.value = buildableContent;
     node.children = [];
 
