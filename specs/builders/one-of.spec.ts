@@ -1,6 +1,10 @@
 import { oneOf } from '../../src/builders';
 import { build, template } from '../../src/core';
-import { includeBuilderFnSpecs, includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
+import {
+  includeBuilderFnSpecs,
+  includeDirectiveFnSpecs,
+  transferAttachedFnsSpecs,
+} from '../spec-helpers/shared-specs';
 
 describe('oneOf', () => {
   it('should throw for null at building-time', () => {
@@ -54,6 +58,7 @@ describe('oneOf', () => {
     expect(result).toBe(42);
   });
 
+  transferAttachedFnsSpecs(oneOf);
   includeDirectiveFnSpecs(oneOf, []);
   includeBuilderFnSpecs(oneOf, []);
 });

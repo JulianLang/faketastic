@@ -12,7 +12,7 @@ export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
 
   function initOneOfImpl(node: ObjectTreeNode) {
     const content = chooseRandomItem();
-    const buildableContent = asBuildable(content);
+    const buildableContent = asBuildable(content, attachedFns);
     node.value = buildableContent;
     node.children = [];
 
