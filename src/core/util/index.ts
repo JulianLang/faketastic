@@ -1,3 +1,4 @@
+export * from './add-attached-fns';
 export * from './as-buildable';
 export * from './compare-cycles';
 export * from './create-buildable';
