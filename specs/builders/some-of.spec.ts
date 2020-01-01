@@ -1,4 +1,4 @@
-import { build, template } from '../../src';
+import { build, model } from '../../src';
 import { someOf } from '../../src/builders';
 import { includeBuilderFnSpecs, transferAttachedFnsSpecs } from '../spec-helpers/shared-specs';
 
@@ -143,7 +143,7 @@ describe('someOf', () => {
 
   it('should be nestable', () => {
     // arrange
-    const tmpl = template({
+    const tmpl = model({
       a: someOf([someOf(['A'], { maxItems: 1 })], { maxItems: 1 }),
     });
 

@@ -3,14 +3,14 @@ import { ProcessorFn } from '../processors';
 import { TreeReaderFn } from '../tree-reader';
 import { AttachedFn, AttachedFnType } from '../types';
 import { extractFns } from '../util';
-import { template } from './template';
+import { model } from './model';
 import { AttachedFnSymbol, Buildable } from './types';
 
 export function use<T extends object = object>(
   value: T,
   ...attachedFns: AttachedFn[]
 ): Buildable<T> {
-  const tmpl: Buildable<T> = template(value);
+  const tmpl: Buildable<T> = model(value);
 
   tmpl.treeReaders = extractFns<symbol, AttachedFnType>(
     AttachedFnSymbol,

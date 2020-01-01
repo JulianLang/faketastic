@@ -1,5 +1,5 @@
 import { combine, ref } from '../../src/builders';
-import { build, template } from '../../src/core';
+import { build, model } from '../../src/core';
 import { Func } from '../../src/types';
 import { includeBuilderFnSpecs, includeTemplateFnSpecs } from '../spec-helpers/shared-specs';
 
@@ -21,7 +21,7 @@ describe('combine', () => {
   it('should connect the buildable to the rest of the tree', () => {
     // arrange
     const expectedValue = 42;
-    const tmpl = template({
+    const tmpl = model({
       a: expectedValue,
       b: combine(
         {

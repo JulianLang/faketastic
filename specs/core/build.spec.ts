@@ -1,31 +1,5 @@
 import { createNode, findNode, ObjectTreeNode, treeOf } from 'treelike';
-import {
-  AttachedFn,
-  build,
-  Buildable,
-  buildChild,
-  BuildCycle,
-  BuildCycleCallbackFn,
-  BuildRootSymbol,
-  canBe,
-  createArchitectFn,
-  createBuildable,
-  createProcessorFn,
-  createTreeReaderFn,
-  createValueFn,
-  FnCalledSymbol,
-  Func,
-  hasSymbol,
-  MutatingFn,
-  oneOf,
-  quantity,
-  range,
-  rebuild,
-  setSymbol,
-  template,
-  UnsetValue,
-  use,
-} from '../../src';
+import { AttachedFn, build, Buildable, buildChild, BuildCycle, BuildCycleCallbackFn, BuildRootSymbol, canBe, createArchitectFn, createBuildable, createProcessorFn, createTreeReaderFn, createValueFn, FnCalledSymbol, Func, hasSymbol, model, MutatingFn, oneOf, quantity, range, rebuild, setSymbol, UnsetValue, use } from '../../src';
 import { createPlaceholder } from '../../src/placeholder';
 
 describe('build', () => {
@@ -35,7 +9,7 @@ describe('build', () => {
     const newProcFn = (n: number) =>
       createProcessorFn(() => order.push(n), 'initializer', 'unsticky');
 
-    const tmpl = template({
+    const tmpl = model({
       a: use(
         {
           b: use({}, newProcFn(2)),
@@ -54,7 +28,7 @@ describe('build', () => {
 
   it('should not override null or undefined', () => {
     // arrange
-    const tmpl = template({
+    const tmpl = model({
       a: range(1, 2, canBe(null, 1)),
       b: range(1, 2, canBe(undefined, 1)),
     });
@@ -95,10 +69,10 @@ describe('build', () => {
 
   it('should be nestable', () => {
     // arrange
-    const Person = template({
+    const Person = model({
       name: oneOf(['Hans', 'Norbert', 'Lilly']),
     });
-    const Family = template({
+    const Family = model({
       members: build(Person),
     });
 
@@ -113,10 +87,10 @@ describe('build', () => {
 
   it('should be nestable with quantity', () => {
     // arrange
-    const Person = template({
+    const Person = model({
       name: oneOf(['Hans', 'Norbert', 'Lilly']),
     });
-    const Family = template({
+    const Family = model({
       members: build(Person, quantity(2)),
     });
 
@@ -134,7 +108,7 @@ describe('build', () => {
   it('should accept buildable arrays', () => {
     // arrange
     const value = [1, 2, 3];
-    const tmpl = template(value);
+    const tmpl = model(value);
 
     // act
     const result = build(tmpl);

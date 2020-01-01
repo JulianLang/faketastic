@@ -1,14 +1,5 @@
 import { createNode, ObjectTreeNode } from 'treelike';
-import {
-  asBuildable,
-  build,
-  createBuildable,
-  createProcessorFn,
-  quantity,
-  range,
-  template,
-  use,
-} from '../../src';
+import { asBuildable, build, createBuildable, createProcessorFn, model, quantity, range, use } from '../../src';
 import { includeAttachedFnSpecs } from '../spec-helpers/shared-specs';
 import { createChildTreeNode } from '../spec-helpers/spec.helper';
 
@@ -25,7 +16,7 @@ describe('quantity', () => {
       done();
     };
 
-    const tmpl = template({
+    const tmpl = model({
       a: range(
         1,
         10,
@@ -48,7 +39,7 @@ describe('quantity', () => {
       expect(node.parent!.name).toEqual('$root');
     };
 
-    const tmpl = template({
+    const tmpl = model({
       a: range(
         1,
         10,
@@ -70,7 +61,7 @@ describe('quantity', () => {
       expect(node.parent!.name).toEqual('a');
     };
 
-    const tmpl = template({
+    const tmpl = model({
       a: range(
         1,
         10,
@@ -98,7 +89,7 @@ describe('quantity', () => {
       'initializer',
       'unsticky',
     );
-    const tmpl = template({
+    const tmpl = model({
       a: use({}, quantity(2), assertProcessor),
     });
 

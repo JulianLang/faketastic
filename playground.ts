@@ -1,6 +1,6 @@
-import { build, combine, oneOf, range, ref, template } from './src';
+import { build, combine, model, oneOf, range, ref } from './src';
 
-const tmpl = template({
+const tmpl = model({
   // x: oneOf([oneOf([oneOf([2])])]),
   testA: oneOf([ref('range1'), ref('range2')]),
   testB: ref('range3'),

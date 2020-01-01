@@ -1,9 +1,9 @@
-import { build, createProcessorFn, isDateInstance, template, time } from '../../src';
+import { build, createProcessorFn, isDateInstance, model, time } from '../../src';
 
 describe('time', () => {
   it('should return a time of today if no parameter is given', () => {
     // arrange
-    const Appointment = template({
+    const Appointment = model({
       t: time(),
     });
 
@@ -17,7 +17,7 @@ describe('time', () => {
 
   it('should return current time for now keyword', () => {
     // arrange
-    const Appointment = template({
+    const Appointment = model({
       t: time('now'),
     });
 
@@ -50,7 +50,7 @@ describe('time', () => {
 
   it('should use HH:mm as default format', () => {
     // arrange
-    const Appointment = template({
+    const Appointment = model({
       t: time('14:12'),
     });
 
@@ -65,7 +65,7 @@ describe('time', () => {
 
   it('should accept custom formats', () => {
     // arrange
-    const Appointment = template({
+    const Appointment = model({
       t: time(['02:12 pm', 'hh:mm aa']),
     });
 
@@ -80,7 +80,7 @@ describe('time', () => {
 
   it('should accept custom formats for both parameters', () => {
     // arrange
-    const Appointment = template({
+    const Appointment = model({
       t: time(['02:12 pm', 'hh:mm aa'], ['02:14 pm', 'hh:mm aa']),
     });
 
@@ -96,7 +96,7 @@ describe('time', () => {
 
   it('should accept null as min-date parameter', () => {
     // arrange
-    const Appointment = template({
+    const Appointment = model({
       t: time(null, ['12:00', 'HH:mm']),
     });
 
@@ -111,7 +111,7 @@ describe('time', () => {
 
   it('should accept null as max-date parameter', () => {
     // arrange
-    const Appointment = template({
+    const Appointment = model({
       t: time(['12:00', 'HH:mm'], null),
     });
 

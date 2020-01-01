@@ -1,5 +1,5 @@
 import { combine, oneOf, ref } from '../../src/builders';
-import { build, template } from '../../src/core';
+import { build, model } from '../../src/core';
 import { includeBuilderFnSpecs, includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('ref', () => {
@@ -8,7 +8,7 @@ describe('ref', () => {
   it('should not reference matching placeholder nodes', () => {
     // arrange
     const expectedValue = 42;
-    const tmpl = template({
+    const tmpl = model({
       age: oneOf([expectedValue]),
       b: combine(
         {
@@ -30,7 +30,7 @@ describe('ref', () => {
   it('should resolve references being located on a grandparent', () => {
     // arrange
     const expectedValue = 42;
-    const tmpl = template({
+    const tmpl = model({
       a: oneOf([expectedValue]),
       b: {
         c: {
@@ -52,7 +52,7 @@ describe('ref', () => {
   it('should resolve an existing reference', () => {
     // arrange
     const expectedValue = 'hello!';
-    const buildable = template({
+    const buildable = model({
       a: expectedValue,
       b: ref('a'),
     });

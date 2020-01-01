@@ -1,5 +1,5 @@
 import { oneOf } from '../../src/builders';
-import { build, template } from '../../src/core';
+import { build, model } from '../../src/core';
 import {
   includeBuilderFnSpecs,
   includeDirectiveFnSpecs,
@@ -38,7 +38,7 @@ describe('oneOf', () => {
 
   it('should be nestable', () => {
     // arrange
-    const tmpl = template({
+    const tmpl = model({
       a: oneOf([oneOf([42]), oneOf(['A'])]),
     });
 

@@ -1,4 +1,4 @@
-import { build, itself, oneOf, range, RecursionDepth, template, use } from '../../src';
+import { build, itself, model, oneOf, range, RecursionDepth, use } from '../../src';
 import { includeBuilderFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('itself', () => {
@@ -15,7 +15,7 @@ describe('itself', () => {
     const name = 'Hans';
     const age = 42;
     const endValue = {};
-    const tmpl = template({
+    const tmpl = model({
       name: oneOf([name]),
       age: range(age, age),
       parent: itself(RecursionDepth(endValue, 1, 1)),
@@ -41,11 +41,11 @@ describe('itself', () => {
     const fileEnd = null;
     const dirEnd: any[] = [];
 
-    const File = template({
+    const File = model({
       name: oneOf([fileName]),
       symlink: itself(RecursionDepth(fileEnd, 1, 1)),
     });
-    const Directory = template({
+    const Directory = model({
       name: oneOf([dirName]),
       file: use(File),
       directories: itself(RecursionDepth(dirEnd, 1, 1)),
