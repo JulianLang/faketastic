@@ -143,12 +143,12 @@ describe('someOf', () => {
 
   it('should be nestable', () => {
     // arrange
-    const tmpl = model({
+    const mdl = model({
       a: someOf([someOf(['A'], { maxItems: 1 })], { maxItems: 1 }),
     });
 
     // act
-    const result = build(tmpl);
+    const result = build(mdl);
 
     // assert
     expect(result.a).toEqual([['A']]);

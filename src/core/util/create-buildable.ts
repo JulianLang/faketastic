@@ -7,7 +7,7 @@ import { extractFns } from '../../util/symbol-fns/extract.fns';
 import { Buildable, BuildableSymbol } from '../types/buildable';
 import { AttachedFnSymbol } from '../types/symbols';
 
-export function createBuildable<T>(tmpl: T, attachedFns: AttachedFn[] = []): Buildable<T> {
+export function createBuildable<T>(mdl: T, attachedFns: AttachedFn[] = []): Buildable<T> {
   const buildable: Buildable<any> = {
     [BuildableSymbol]: true,
     treeReaders: extractFns<symbol, AttachedFnType>(
@@ -25,7 +25,7 @@ export function createBuildable<T>(tmpl: T, attachedFns: AttachedFn[] = []): Bui
       attachedFns,
       'processor',
     ) as ProcessorFn[],
-    value: tmpl,
+    value: mdl,
   };
 
   return buildable;

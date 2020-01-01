@@ -10,23 +10,23 @@ export function use<T extends object = object>(
   value: T,
   ...attachedFns: AttachedFn[]
 ): Buildable<T> {
-  const tmpl: Buildable<T> = model(value);
+  const mdl: Buildable<T> = model(value);
 
-  tmpl.treeReaders = extractFns<symbol, AttachedFnType>(
+  mdl.treeReaders = extractFns<symbol, AttachedFnType>(
     AttachedFnSymbol,
     attachedFns,
     'tree-reader',
   ) as TreeReaderFn[];
-  tmpl.architects = extractFns<symbol, AttachedFnType>(
+  mdl.architects = extractFns<symbol, AttachedFnType>(
     AttachedFnSymbol,
     attachedFns,
     'architect',
   ) as ArchitectFn[];
-  tmpl.processors = extractFns<symbol, AttachedFnType>(
+  mdl.processors = extractFns<symbol, AttachedFnType>(
     AttachedFnSymbol,
     attachedFns,
     'processor',
   ) as ProcessorFn[];
 
-  return tmpl;
+  return mdl;
 }

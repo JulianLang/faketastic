@@ -21,7 +21,7 @@ describe('combine', () => {
   it('should connect the buildable to the rest of the tree', () => {
     // arrange
     const expectedValue = 42;
-    const tmpl = model({
+    const mdl = model({
       a: expectedValue,
       b: combine(
         {
@@ -32,7 +32,7 @@ describe('combine', () => {
     });
 
     // act
-    const built = build(tmpl);
+    const built = build(mdl);
 
     // assert
     expect(built).toBeDefined();

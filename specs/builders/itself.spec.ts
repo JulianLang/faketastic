@@ -15,14 +15,14 @@ describe('itself', () => {
     const name = 'Hans';
     const age = 42;
     const endValue = {};
-    const tmpl = model({
+    const mdl = model({
       name: oneOf([name]),
       age: range(age, age),
       parent: itself(RecursionDepth(endValue, 1, 1)),
     });
 
     // act
-    const result = build(tmpl);
+    const result = build(mdl);
 
     // assert
     expect(result).toBeDefined();

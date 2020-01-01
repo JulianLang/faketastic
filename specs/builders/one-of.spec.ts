@@ -1,10 +1,6 @@
 import { oneOf } from '../../src/builders';
 import { build, model } from '../../src/core';
-import {
-  includeBuilderFnSpecs,
-  includeDirectiveFnSpecs,
-  transferAttachedFnsSpecs,
-} from '../spec-helpers/shared-specs';
+import { includeBuilderFnSpecs, includeDirectiveFnSpecs, transferAttachedFnsSpecs } from '../spec-helpers/shared-specs';
 
 describe('oneOf', () => {
   it('should throw for null at building-time', () => {
@@ -38,12 +34,12 @@ describe('oneOf', () => {
 
   it('should be nestable', () => {
     // arrange
-    const tmpl = model({
+    const mdl = model({
       a: oneOf([oneOf([42]), oneOf(['A'])]),
     });
 
     // act
-    const result = build(tmpl);
+    const result = build(mdl);
 
     // assert
     expect(result.a === 'A' || result.a === 42).toBe(true);

@@ -78,13 +78,13 @@ export function includeTransparentTemplateFnSpecs(
     const obj1 = {
       name: 'string',
     };
-    const tmpl = {
+    const mdl = {
       a: obj1,
       b: () => {},
     };
 
     // act
-    const buildable = templateFn(tmpl, ...additionalParams);
+    const buildable = templateFn(mdl, ...additionalParams);
 
     // assert
     const clonedA = buildable.value.a;
@@ -92,10 +92,10 @@ export function includeTransparentTemplateFnSpecs(
 
     expect(clonedA).toBeDefined();
     expect(clonedB).toBeDefined();
-    expect(buildable.value === tmpl).toBe(false);
-    expect(clonedA === tmpl.a).toBe(false);
+    expect(buildable.value === mdl).toBe(false);
+    expect(clonedA === mdl.a).toBe(false);
     // functions do not get cloned
-    expect(clonedB === tmpl.b).toBe(true);
+    expect(clonedB === mdl.b).toBe(true);
   });
 
   includeTemplateFnSpecs(templateFn, ...additionalParams);
@@ -195,8 +195,8 @@ export function transferAttachedFnsSpecs(builderFn: BuilderFn) {
     );
 
     // act
-    const tmpl = builderFn(['A', 'B'], treeReader, architect, processor);
-    build(tmpl);
+    const mdl = builderFn(['A', 'B'], treeReader, architect, processor);
+    build(mdl);
 
     // assert
     // TODO: langju: is calling the AttachedFns twice really good?

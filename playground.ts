@@ -1,6 +1,6 @@
 import { build, combine, model, oneOf, range, ref } from './src';
 
-const tmpl = model({
+const mdl = model({
   // x: oneOf([oneOf([oneOf([2])])]),
   testA: oneOf([ref('range1'), ref('range2')]),
   testB: ref('range3'),
@@ -18,7 +18,7 @@ const tmpl = model({
   ),
 });
 
-const output = build(tmpl);
+const output = build(mdl);
 
 // console.log(JSON.stringify(output, null, 2));
 console.log(output);

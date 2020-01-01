@@ -1,5 +1,14 @@
 import { createNode, ObjectTreeNode } from 'treelike';
-import { asBuildable, build, createBuildable, createProcessorFn, model, quantity, range, use } from '../../src';
+import {
+  asBuildable,
+  build,
+  createBuildable,
+  createProcessorFn,
+  model,
+  quantity,
+  range,
+  use,
+} from '../../src';
 import { includeAttachedFnSpecs } from '../spec-helpers/shared-specs';
 import { createChildTreeNode } from '../spec-helpers/spec.helper';
 
@@ -16,7 +25,7 @@ describe('quantity', () => {
       done();
     };
 
-    const tmpl = model({
+    const mdl = model({
       a: range(
         1,
         10,
@@ -28,7 +37,7 @@ describe('quantity', () => {
     });
 
     // act
-    build(tmpl);
+    build(mdl);
   });
 
   it('should respect stickiness = sticky', () => {
@@ -39,7 +48,7 @@ describe('quantity', () => {
       expect(node.parent!.name).toEqual('$root');
     };
 
-    const tmpl = model({
+    const mdl = model({
       a: range(
         1,
         10,
@@ -50,7 +59,7 @@ describe('quantity', () => {
     });
 
     // act
-    build(tmpl);
+    build(mdl);
   });
 
   it('should respect stickiness = unsticky', () => {
@@ -61,7 +70,7 @@ describe('quantity', () => {
       expect(node.parent!.name).toEqual('a');
     };
 
-    const tmpl = model({
+    const mdl = model({
       a: range(
         1,
         10,
@@ -72,7 +81,7 @@ describe('quantity', () => {
     });
 
     // act
-    build(tmpl);
+    build(mdl);
   });
 
   it('should connect the content nodes to the rest of tree', () => {
@@ -89,12 +98,12 @@ describe('quantity', () => {
       'initializer',
       'unsticky',
     );
-    const tmpl = model({
+    const mdl = model({
       a: use({}, quantity(2), assertProcessor),
     });
 
     // act
-    build(tmpl);
+    build(mdl);
   });
 
   it('should return an array of the input type, if quantity is a function returning 1', () => {

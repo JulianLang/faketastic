@@ -1,13 +1,6 @@
 import { ObjectTreeNode } from 'treelike';
 import { MutatingFnOrders, UnsetValue } from '../constants';
-import {
-  asBuildable,
-  Buildable,
-  createBuildable,
-  isBuildable,
-  markFnCalled,
-  rebuild,
-} from '../core';
+import { asBuildable, Buildable, createBuildable, isBuildable, markFnCalled, rebuild } from '../core';
 import { createProcessorFn } from '../processors';
 import { createTreeReaderFn } from '../tree-reader';
 import { AttachedFn } from '../types';
@@ -19,7 +12,7 @@ export const RecursionRootSymbol = Symbol('faketastic.recursion.root');
 
 /**
  * Creates a recursive property, recursing the template it lays on.
- * @param tmpl The template to be made recursive.
+ * @param mdl The template to be made recursive.
  * @param attachedFns ArchitectFns or ProcessorFns to be applied to the recursive property.
  */
 export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[]): Buildable {
@@ -59,14 +52,14 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
       throw new Error(CouldNotFindRootTemplateError);
     }
 
-    const rootTmpl = node.parent;
+    const rootMdl = node.parent;
 
-    if (isBuildable(rootTmpl.value)) {
-      originalTemplate = clone(rootTmpl);
+    if (isBuildable(rootMdl.value)) {
+      originalTemplate = clone(rootMdl);
       property = node.name.toString();
 
       if (!findAnchestor(RecursionRootSymbol, node.parent, property)) {
-        setSymbol(RecursionRootSymbol, rootTmpl, property);
+        setSymbol(RecursionRootSymbol, rootMdl, property);
       }
     } else {
       throw new Error(CouldNotFindRootTemplateError);
@@ -84,14 +77,14 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
       return;
     }
 
-    const tmpl = originalTemplate.value;
-    const buildableTmpl = asBuildable(tmpl);
+    const mdl = originalTemplate.value;
+    const buildableMdl = asBuildable(mdl);
 
-    const clonedTmpl: Buildable = clone(buildableTmpl);
-    clonedTmpl.value[property] = itself(endWhen, ...attachedFns);
+    const clonedMdl: Buildable = clone(buildableMdl);
+    clonedMdl.value[property] = itself(endWhen, ...attachedFns);
 
     node.children = [];
-    node.value = clonedTmpl;
+    node.value = clonedMdl;
 
     markFnCalled(recurseNextImpl, node);
     rebuild(node, 'initializer');

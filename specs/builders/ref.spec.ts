@@ -8,7 +8,7 @@ describe('ref', () => {
   it('should not reference matching placeholder nodes', () => {
     // arrange
     const expectedValue = 42;
-    const tmpl = model({
+    const mdl = model({
       age: oneOf([expectedValue]),
       b: combine(
         {
@@ -20,7 +20,7 @@ describe('ref', () => {
     });
 
     // act
-    const built = build(tmpl);
+    const built = build(mdl);
 
     // assert
     expect(built).toBeDefined();
@@ -30,7 +30,7 @@ describe('ref', () => {
   it('should resolve references being located on a grandparent', () => {
     // arrange
     const expectedValue = 42;
-    const tmpl = model({
+    const mdl = model({
       a: oneOf([expectedValue]),
       b: {
         c: {
@@ -40,7 +40,7 @@ describe('ref', () => {
     });
 
     // act
-    const built = build(tmpl);
+    const built = build(mdl);
 
     // assert
     expect(built).toBeDefined();

@@ -1,5 +1,31 @@
 import { createNode, findNode, ObjectTreeNode, treeOf } from 'treelike';
-import { AttachedFn, build, Buildable, buildChild, BuildCycle, BuildCycleCallbackFn, BuildRootSymbol, canBe, createArchitectFn, createBuildable, createProcessorFn, createTreeReaderFn, createValueFn, FnCalledSymbol, Func, hasSymbol, model, MutatingFn, oneOf, quantity, range, rebuild, setSymbol, UnsetValue, use } from '../../src';
+import {
+  AttachedFn,
+  build,
+  Buildable,
+  buildChild,
+  BuildCycle,
+  BuildCycleCallbackFn,
+  BuildRootSymbol,
+  canBe,
+  createArchitectFn,
+  createBuildable,
+  createProcessorFn,
+  createTreeReaderFn,
+  createValueFn,
+  FnCalledSymbol,
+  Func,
+  hasSymbol,
+  model,
+  MutatingFn,
+  oneOf,
+  quantity,
+  range,
+  rebuild,
+  setSymbol,
+  UnsetValue,
+  use,
+} from '../../src';
 import { createPlaceholder } from '../../src/placeholder';
 
 describe('build', () => {
@@ -9,7 +35,7 @@ describe('build', () => {
     const newProcFn = (n: number) =>
       createProcessorFn(() => order.push(n), 'initializer', 'unsticky');
 
-    const tmpl = model({
+    const mdl = model({
       a: use(
         {
           b: use({}, newProcFn(2)),
@@ -20,7 +46,7 @@ describe('build', () => {
     });
 
     // act
-    build(tmpl);
+    build(mdl);
 
     // assert
     expect(order).toEqual([1, 2, 3]);
@@ -28,13 +54,13 @@ describe('build', () => {
 
   it('should not override null or undefined', () => {
     // arrange
-    const tmpl = model({
+    const mdl = model({
       a: range(1, 2, canBe(null, 1)),
       b: range(1, 2, canBe(undefined, 1)),
     });
 
     // act
-    const result = build(tmpl);
+    const result = build(mdl);
 
     // assert
     expect(result.a).toBe(null);
@@ -108,10 +134,10 @@ describe('build', () => {
   it('should accept buildable arrays', () => {
     // arrange
     const value = [1, 2, 3];
-    const tmpl = model(value);
+    const mdl = model(value);
 
     // act
-    const result = build(tmpl);
+    const result = build(mdl);
 
     // assert
     expect(result).toEqual(value);
