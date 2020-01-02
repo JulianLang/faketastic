@@ -1,13 +1,17 @@
 # Attached Functions
-TODO: langju: write
+
+Attached functions are hosted on [builder functions](../builders/builders.md). They can be consideres as the "adjectives" of a model's property as they affect the builder function's result-values and their shape. They store progam-logic that can be applied on any property.
+
+In general we can distinguish three attached function types.
 
 ## Type 1: Tree-Readers
 
-TODO: langju: write
+> **Note:** We skip TreeReaderFns, since you will most likely not need them. In a nutshell, tree-readers are functions being used to prepare architect functions for or value-dependent restructurings.
+
+Tree-Readers are often helping constructs for builder functions. As they are readonly (not affecting/changing any values) they most likely won't occur as a standalone function.
+For example, `itself` uses a tree-reader function to figure out when to stop the recursion.
 
 ## Type 2: Architects
-
-> **Note:** We skip TreeReaderFns, since you will most likely not need them. In a nutshell, tree-readers are functions being used to prepare architect functions for complex or value-dependent restructurings.
 
 Architect functions are functions that restructure the result of builder functions. As already said, `quantity` is an excellent example. Take a look on this code snippet:
 
