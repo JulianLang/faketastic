@@ -12,7 +12,7 @@ import { ProcessorFn } from '../types';
 export function createProcessorFn(
   fn: BuildCycleCallbackFn,
   cycle: BuildCycle,
-  sticky: Stickiness,
+  sticky: Stickiness = 'unsticky',
   orderNumber = 0,
 ): ProcessorFn {
   const processorFn = fn as ProcessorFn;
