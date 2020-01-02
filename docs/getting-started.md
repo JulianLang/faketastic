@@ -55,15 +55,34 @@ We declare a range from `1 to 99`, but add the [canBe](./attached-fns/can-be.md)
 
 As we omit the `likelyhood` parameter, there is a 50/50 chance, that the original value gets replaced with the value given to `canBe`.
 
+#### Subtypes of AttachedFns
+
 This is just one example for a attached function. In fact there are three sub-types of attached functions:
 
 1. **TreeReaderFns**: Skipping for now (not that important for usual models).
 2. **ArchitectFns**: Restructures the result of the builder function it is attached to. The most common example is `quantity`, that multiplies the call of a builder function and wraps their results into an array.
 3. **ProcessorFns**: Changes or replaces the result of the builder function it is attached to. `canBe` and `map`, in fact, are processor functions.
 
-### Turn it into a model
+#### Build-Cycles
 
-By now we have only seen isolated calls of builder functions that produces results that were never used. Also we attached functions that affects these results, but we could not use these.
+> Detailed information about build cycles can be found [here](./topics/build-mechanism.md).
+
+Attached functions can choose when they want to be executed. There are different points in time, when attached functions are run, so there are the following types of attached functions:
+
+1. **Initializers**: They run before anything was built yet. They are useful for architects like `quantity` for example. They can restructure results before anything was built yet.
+2. **Preprocessors**: They run the moment just before the builder function result gets evaluated. This cycle is useful when replacing this exact value as there is no need to evaluated the builder function result, then. `canBe` is such case. When `canBe` decides to replace the result of e.g. `range(1, 99)`, then it can do this in advance, so that the range builder function gets never called, thus sparing unnecessary cpu time.
+3. **Postprocessors**: They run the moment just after the result of the builder function was evaluated. This cycle is useful when the attached function needs to react to the evaluated result. An fictive example would be something like `roundNumberToTens`. The function would look at the randomly generated number and then round it, so that it is always a multiplicator of 10. This way the number:
+   - `42` would become `40`.
+   - `27` would become `30`.
+   - `15` would become `20`.
+4. **Finalizers**: They run after everything was built. This cycle is useful for resolving references or reading values from other – already built – properties.
+
+> **Side Note**
+> There is no way (yet?) to see what type of attached function something is: `canBe` is a preprocessor and `quantity` is an initializer, but we have no clue about that, until we look into their implementations. This might change somehow in future versions of faketastic, via naming conventions for example, but for today it is more or less a blackbox without the source code.
+
+### Create your first Model!
+
+By now we have only seen isolated calls of builder functions that produces results we never used. Also we attached functions that affects these results, but we could not use or see those either.
 
 Now, we turn our knowledge into models, so that we have something we can play with. Have a look on this code:
 
@@ -153,27 +172,90 @@ In this example we have seen that you can **extend** models, so that the reusabi
 
 ### References
 
-Sometimes when modelling, you have data-dependent descriptions. For example when modelling a person, the name is dependent on the gender chosen. So
+Sometimes when modelling, you have data-dependent descriptions. For example when modelling a person, the name is dependent on the gender chosen. In those cases we need to somehow compute the name dependent of the gender. Faketastic supports references within models via the `ref` builder function.
+
+```ts
+const $Person = model({
+  // for simplicity, implementation is left out here.
+  name: ref('gender', map(toNameFromGender)),
+  gender: oneOf(['f', 'm']),
+});
+```
+
+In the `name` property we reference the `gender` property and map this value to a function which will somehow turn the gender into a gendered name. The implmentation was left out for simplicity (see [here](#quick-example) if relevant).
+
+The `ref` builder writes the referenced target-value in `finalize`-build cycle as value. `map`, which is also a `finalizer` runs after `ref`'s implementation and can read the resolved reference, in order to convert the gender into a valid name. These kinds of references help you to keep semantics within your models.
+
+#### Restrictions
+
+Please note, that `ref` will only resolve property names, that are on the same level or lower, which means that you cannot target parent properties (yet). See the following code as reference:
+
+```ts
+const $Company = model({
+  name: oneOf(…),
+  employees: [
+    {
+      // fails, as it does not read parent properties.
+      worksAt: ref('name'),
+    }
+  ]
+});
+```
+
+The other way round works, though:
+
+```ts
+const $Person = model({
+  // will resolve to "Johnson"
+  lastName: ref('lastName'),
+  children: [
+    {
+      name: 'Billy',
+      lastName: 'Johnson',
+    },
+  ],
+});
+```
+This is no technical restriction, but rather a conceptual one. In general a more specific and deeper nested model should not need to know anything about it's parent. Therefore we do not accept references to parent properties.
+
+**If this is problematic for a valid use case, please tell us, so that we can fix it!**
 
 ### Try it yourself!
 
-In order to get started, the best you can do is - try it yourself. You may want to have a look on the following pages for a complete list of built-in functionality.
+In order to get started, the best you can do is - try it yourself. You may want to have a look on the following pages for a [complete list of built-in functionality](./overview.md).
 
-Faketastic is made to be extensible. If the built-in functionality isn't enough for your use case, help yourself by writing custom functionality. :)
+Faketastic is made to be extensible. If the built-in functionality isn't enough for your use case, you can always help yourself by writing custom functionality!
 
-**Quick Example**
+#### **Quick Example**
 
-> In case you wonder why our custom processor function gets a `ObjectTreeNode` as input parameter, please take a look [here](./topics/build-mechanism.md).
+Here we need to synchronize the name with the gender to keep semantics. We write a custom processor function which reads the reference to the gender property and turn it
 
 ```ts
-const genderedName = createProcessorFn((node: ObjectTreeNode) => {
-  const nameSource = node.value === 'female' ? FemaleNames : MaleNames;
-  // replace the current value with a random gendered name:
-  node.value = randomItem(nameSource);
-}, 'finalizer');
+import { build, createProcessorFn, model, oneOf, quantity, ref } from 'faketastic';
 
+const femaleNames = ['Sara', 'Mandy'];
+const maleNames = ['Peter', 'Dennis'];
 const $Person = model({
-  name: ref('gender', genderedName()),
-  gender: oneOf(['female', 'male']),
+  name: ref('gender', toGenderName(femaleNames, maleNames)),
+  gender: oneOf(['f', 'm']),
 });
+
+const output = build($Person, quantity(4));
+// => [
+//  { name: 'Dennis', gender: 'm' },
+//  { name: 'Mandy', gender: 'f' },
+//  { name: 'Sara', gender: 'f' },
+//  { name: 'Sara', gender: 'f' },
+// ]
+
+type GenderString = 'm' | 'f';
+
+function toGenderName(femaleNames: string[], maleNames: string[]) {
+  return createProcessorFn(node => {
+    const gender: GenderString = node.value;
+    const nameSource = gender === 'm' ? maleNames : femaleNames;
+    node.value = randomItem(nameSource);
+  }, 'finalizer');
+}
 ```
+> In case you wonder why our custom processor function gets a `ObjectTreeNode` as input parameter, please take a look [here](./topics/build-mechanism.md).
