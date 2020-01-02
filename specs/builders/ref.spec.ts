@@ -1,9 +1,24 @@
 import { combine, oneOf, ref } from '../../src/builders';
-import { build, model } from '../../src/core';
+import { build, model, use } from '../../src/core';
 import { includeBuilderFnSpecs, includeDirectiveFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('ref', () => {
-  // TODO: langju: add test case for resolving reference sitting in childtree
+  it('should resolve nested reference targets', () => {
+    // arrange
+    const expectedValue = 42;
+    const mdl = model({
+      b: ref('age'),
+      c: use({
+        age: oneOf([expectedValue]),
+      }),
+    });
+
+    // act
+    const built = build(mdl);
+
+    // assert
+    expect(built.b).toBe(expectedValue);
+  });
 
   it('should not reference matching placeholder nodes', () => {
     // arrange

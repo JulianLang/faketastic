@@ -86,12 +86,6 @@ export const MutatingFnOrders = {
     /**
      * **Dependencies**
      *
-     * *run-after:* `unpriorized processors`
-     */
-    ref: 4000,
-    /**
-     * **Dependencies**
-     *
      * *run-after:* `ref()`
      */
     combineValues: 4010,

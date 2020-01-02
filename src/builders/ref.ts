@@ -1,5 +1,5 @@
-import { findNode, ObjectTreeNode, siblingAndSelfTraverser } from 'treelike';
-import { MutatingFnOrders, UnsetValue } from '../constants';
+import { findNode, ObjectTreeNode, siblingAndSelfWithChildrenTraverser } from 'treelike';
+import { UnsetValue } from '../constants';
 import { Buildable, createBuildable, isBuildable, markFnCalled, unwrapIfBuildable } from '../core';
 import { createPlaceholder, isPlaceholder } from '../placeholder';
 import { createProcessorFn } from '../processors';
@@ -8,12 +8,7 @@ import { isDefined, isUndefined } from '../util';
 import { isValueFunction } from '../value-fns/util';
 
 export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): Buildable {
-  const refProcessor = createProcessorFn(
-    refImpl,
-    'finalizer',
-    'sticky',
-    MutatingFnOrders.processors.ref,
-  );
+  const refProcessor = createProcessorFn(refImpl, 'finalizer', 'sticky');
 
   return createBuildable(UnsetValue, [refProcessor, ...attachedFns]);
 
@@ -32,9 +27,8 @@ export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): B
       node.value = createPlaceholder(`ref/defer`, {}, [refProcessor, ...attachedFns]);
     } else if (!isPlaceholder(bareValue)) {
       node.value = bareValue;
+      markFnCalled(refImpl, node);
     }
-
-    markFnCalled(refImpl, node);
   }
 
   function tryResolveRef(node: ObjectTreeNode<any>): ObjectTreeNode<any> | undefined {
@@ -42,7 +36,11 @@ export function ref<T = any>(property: keyof T, ...attachedFns: AttachedFn[]): B
     let currentNode: ObjectTreeNode | undefined = node;
 
     while (isUndefined(resolvedReference) && isDefined(currentNode)) {
-      resolvedReference = findNode(currentNode, n => isMatch(n), siblingAndSelfTraverser);
+      resolvedReference = findNode(
+        currentNode,
+        n => isMatch(n),
+        siblingAndSelfWithChildrenTraverser,
+      );
 
       currentNode = currentNode.parent;
     }

@@ -1,4 +1,3 @@
-import { MutatingFnOrders } from '../../src';
 import { build, createBuildable } from '../../src/core';
 import { map } from '../../src/processors/map';
 import { includeAttachedFnSpecs } from '../spec-helpers/shared-specs';
@@ -31,11 +30,6 @@ describe('map', () => {
 
     // assert
     expect(result).toEqual(expectedValue);
-  });
-
-  it('should run after ref', () => {
-    // arrange, act, assert
-    expect(MutatingFnOrders.processors.ref).toBeLessThan(MutatingFnOrders.processors.map);
   });
 
   includeAttachedFnSpecs('processor', map, () => {});
