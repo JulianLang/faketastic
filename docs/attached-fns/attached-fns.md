@@ -1,0 +1,29 @@
+# Attached Functions
+TODO: langju: write
+
+## Type 1: Tree-Readers
+
+TODO: langju: write
+
+## Type 2: Architects
+
+> **Note:** We skip TreeReaderFns, since you will most likely not need them. In a nutshell, tree-readers are functions being used to prepare architect functions for complex or value-dependent restructurings.
+
+Architect functions are functions that restructure the result of builder functions. As already said, `quantity` is an excellent example. Take a look on this code snippet:
+
+```ts
+ range(1, 10, quantity(4)); // => [6, 1, 3, 9]
+```
+
+In this snippet, `quantity` turns one builder function into four builder functions with the same configuration and wraps the result into an array. So basically `quantity` "multiplies" an builder functions by repeating the same functionality and wrapping their results into an array.
+
+> Note: This is not technically spoken. There is a reason why they are called "ArchitectFns". If you need more understanding here, navigate to [build mechanism](./topics/build-mechanism.md).
+
+By now, faketastic has only the `quantity`-architect. There might be other cases than multiplying an expression, but those cases can be implemented by the user itself, as faketastic allows you to [write custom attached functions](./attached-fns/attached-fns.md#custom-attached-fns).
+
+## Type 3: Processors
+
+Processor functions are attached functions that changes or replaces the current result of a builder function. Currently there are the following processors available:
+
+- canBe
+- map
