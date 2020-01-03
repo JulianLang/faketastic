@@ -16,7 +16,7 @@ Before starting with modelling concrete examples, it is useful to understand the
 
 Let's dive into some examples in order to understand how to define data with faketastic. The basic building blocks of faketastic are called builder functions (abbr. "BuilderFns").
 
-Builder functions allow you to describe the type and frame of expected data. At a very high level they look like this:
+Builder functions allow you to describe the type and frame of expected data. Seen from a very high level they look like this:
 
 ![Anatomy of Builder Fns](./assets/anatomy-of-builder-fns.jpg)
 
@@ -27,7 +27,7 @@ When we zoom in a bit, we might see something like that:
 
 ![Anatomy of Builder Fns](./assets/anatomy-of-a-property.jpg)
 
-Here, we have a concrete example of a builder function in use. [oneOf](./builders/one-of.md) is a builder function that expects one parameter: The array that contains the values to randomly choose an item from. In this example we just passed the values `[1, 2, 3]`. After this parameter is passed-in, we **can** add additional [attached functions](./attached-fns/attached-fns.md). In this example we added [canBe](./attached-fns/can-be.md) and [map](./attached-fns/map.md).
+Here, we have a concrete example of a builder function in use. [oneOf](./builders/one-of.md) is a builder function that expects one parameter: An array that contains the values to randomly choose an item from. In this example we just passed the values `[1, 2, 3]`. After this parameter is passed-in, we **can** add additional [attached functions](./attached-fns/attached-fns.md). In this example we added [canBe](./attached-fns/can-be.md) and [map](./attached-fns/map.md).
 
 > Since we does not have to add attached functions, it is completely legal to call `oneOf` like this:
 >
@@ -49,18 +49,18 @@ We have seen some [attached functions](./attached-fns/attached-fns.md) by now. T
 
 ![Anatomy of Builder Fns](./assets/anatomy-of-builder-fns-2.jpg)
 
-We declare a range from `1 to 99`, but add the [canBe](./attached-fns/can-be.md) attachment to say, that the value can also be `-1`. But wait, when will it be `-1`? The short answer is: with a change of 50%. `canBe` accepts not only the value it could be, but has further, but optional parameters. The full signature of it is:
+We declare a range from `1 to 99`, but attach the [canBe](./attached-fns/can-be.md) function to say, that the value can also be `-1`. But wait, when will it be `-1`? The short answer is: by 50/50 chance. But `canBe` has another, optional parameter that allows you to change the likelihood from 0.5 (50/50) to what ever you like:
 
 `function canBe(value: any, likelyhood = 0.5) {}`
 
-As we omit the `likelyhood` parameter, there is a 50/50 chance, that the original value gets replaced with the value given to `canBe`.
+As we omitted the `likelyhood` parameter, there is a 50/50 chance, that the original value gets replaced with the value given to `canBe`.
 
 #### Subtypes of AttachedFns
 
-This is just one example for a attached function. In fact there are three sub-types of attached functions:
+`canBe` is just one example for an attached function. In fact there are three sub-types of attached functions:
 
-1. **TreeReaderFns**: Skipping for now (not that important for usual models).
-2. **ArchitectFns**: Restructures the result of the builder function it is attached to. The most common example is `quantity`, that multiplies the call of a builder function and wraps their results into an array.
+1. **TreeReaderFns**: Skipping for now (not important for direct usage).
+2. **ArchitectFns**: Restructures the [build-tree](./topics/build-mechanism.md)-node it is attached to. The most common example is [quantity](./overview.md#architects).
 3. **ProcessorFns**: Changes or replaces the result of the builder function it is attached to. `canBe` and `map`, in fact, are processor functions.
 
 #### Build-Cycles
@@ -69,12 +69,9 @@ This is just one example for a attached function. In fact there are three sub-ty
 
 Attached functions can choose when they want to be executed. There are different points in time, when attached functions are run, so there are the following types of attached functions:
 
-1. **Initializers**: They run before anything was built yet. They are useful for architects like `quantity` for example. They can restructure results before anything was built yet.
-2. **Preprocessors**: They run the moment just before the builder function result gets evaluated. This cycle is useful when replacing this exact value as there is no need to evaluated the builder function result, then. `canBe` is such case. When `canBe` decides to replace the result of e.g. `range(1, 99)`, then it can do this in advance, so that the range builder function gets never called, thus sparing unnecessary cpu time.
-3. **Postprocessors**: They run the moment just after the result of the builder function was evaluated. This cycle is useful when the attached function needs to react to the evaluated result. An fictive example would be something like `roundNumberToTens`. The function would look at the randomly generated number and then round it, so that it is always a multiplicator of 10. This way the number:
-   - `42` would become `40`.
-   - `27` would become `30`.
-   - `15` would become `20`.
+1. **Initializers**: They run before anything was built yet. They are useful for architects like `quantity` for example. They can restructure the [build-tree](./topics/build-mechanism.md) before any value was evaluated yet.
+2. **Preprocessors**: They run the moment just before the builder function result gets evaluated. This cycle is useful when replacing this exact value as there is no need to evaluated the builder function result, then.
+3. **Postprocessors**: They run the moment just after the result of the builder function was evaluated. This cycle is useful when the attached function needs to react to the evaluated result.
 4. **Finalizers**: They run after everything was built. This cycle is useful for resolving references or reading values from other – already built – properties.
 
 > **Side Note**
@@ -224,7 +221,7 @@ This is no technical restriction, but rather a conceptual one. In general a more
 
 In order to get started, the best you can do is - try it yourself. You may want to have a look on the following pages for a [complete list of built-in functionality](./overview.md).
 
-Faketastic is made to be extensible. If the built-in functionality isn't enough for your use case, you can always help yourself by writing custom functionality!
+Faketastic is made to be extensible. If the built-in functionality isn't enough for your use case, you can always help yourself by [writing custom functionality](./topics/custom-code.md)!
 
 #### **Quick Example**
 

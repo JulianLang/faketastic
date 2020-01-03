@@ -1,9 +1,7 @@
 
 ## Under the Hood: Building Mechanism
 
-Let's take an excursus for better understanding. So far, we know that we can describe models via builder functions on object properties. In order to understand the above-mentioned concepts, it is useful to know a little more on how faketastic's building mechanism works.
-
-Consider the following model:
+Let's take an excursus for better understanding. Consider the following model:
 
 ```ts
 const $Person = model({
@@ -30,6 +28,6 @@ Builder functions take user input and turn it into something that is called `Bui
 name: oneOf(['Item1', 'Item2']);
 ```
 
-As seen, the property `name` is assigned to the result of `oneOf`. This result is an object of type `Buildable`. `Buildable`s contain important information, such as which attached functions are present and the current value.
+As seen, the property `name` is assigned to the result of `oneOf`. This result is an object of type `Buildable`. `Buildable`s contain important information, like which attached functions are present and the current value.
 
 `oneOf` returns a buildable that includes a processor, that – as soon it gets called – randomly choose an item, turns it into a tree and append this tree to its own node, so that it gets part of the whole build-tree and thus, will be evaluated as well.

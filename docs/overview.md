@@ -133,7 +133,7 @@ Attached functions can be considered as the "adjectives" of your models. They de
 > // => [ { name: 'Hubert' }, { name: 'Mariah' }]
 > ```
 >
-> Example: Multiplies the number of built \$Students to a random amount between 1 and 3 instances (Note the passed argument is a function returning the value to use as quantity).
+> Example: Multiplies the number of built `$Student`-instances to a random amount between 1 and 3 instances (Note, the passed argument is a function returning the value to use as quantity).
 
 ### Processors
 

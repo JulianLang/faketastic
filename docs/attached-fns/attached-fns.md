@@ -16,7 +16,7 @@ For example, `itself` uses a tree-reader function to figure out when to stop the
 Architect functions are functions that restructure the result of builder functions. As already said, `quantity` is an excellent example. Take a look on this code snippet:
 
 ```ts
- range(1, 10, quantity(4)); // => [6, 1, 3, 9]
+range(1, 10, quantity(4)); // => [6, 1, 3, 9]
 ```
 
 In this snippet, `quantity` turns one builder function into four builder functions with the same configuration and wraps the result into an array. So basically `quantity` "multiplies" an builder functions by repeating the same functionality and wrapping their results into an array.
@@ -31,3 +31,7 @@ Processor functions are attached functions that changes or replaces the current 
 
 - canBe
 - map
+
+## Custom AttachedFns
+
+You can write your custom attached functions as well. [Have a look here!](../topics/custom-code.md#Create-Custom-AttachedFns)
