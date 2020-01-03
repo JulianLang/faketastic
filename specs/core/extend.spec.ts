@@ -1,8 +1,5 @@
 import { extend } from '../../src/core';
-import {
-  includeDirectiveFnSpecs,
-  includeTransparentTemplateFnSpecs,
-} from '../spec-helpers/shared-specs';
+import { includeTransparentTemplateFnSpecs } from '../spec-helpers/shared-specs';
 
 describe('extend', () => {
   it('should merge templates', () => {
@@ -63,5 +60,4 @@ describe('extend', () => {
   });
 
   includeTransparentTemplateFnSpecs(extend, {});
-  includeDirectiveFnSpecs(extend, {}, {});
 });
