@@ -109,6 +109,109 @@ These factory functions are built into faketastic:
 >
 > Example: `ageRef` will resolve the value of `age`-property at "finalizer" build cycle.
 
+> #### **[probability](./probability.md)**
+>
+> `probability(n = 0.5): boolean`
+>
+> Takes a number between `0` and `1` representing the percental likelihood that the return value will be `true`, i. e. `probability(0.73)` will return `true` with a chance of 73%, whereas `probability(0)` means, that it will never return `true`; `probability(1)`means; that it will always return `true`.
+>
+> ```ts
+> import { probability } from 'faketastic';
+>
+> const bool = probability();
+> // => false
+> ```
+>
+> Example: `bool` will be `true` with a chance of 50%.
+
+> #### **[randomDate](./random-date.md)**
+>
+> `randomDate(min: Date, max: Date): Date`
+>
+> Takes two parameters defining a date-range, in which the returned, randomly created date will be.
+>
+> ```ts
+> import { randomDate } from 'faketastic';
+> // 01.01.2020 04:35:12
+> const min = new Date(2020, 0, 1, 4, 35, 12);
+> // 26.02.2020 00:00:00
+> const max = new Date(2020, 1, 26);
+>
+> const date = randomDate(min, max);
+> // => 03.02.2020 14:31:22
+> ```
+>
+> Example: `date` will be a random date being between `01.01.2020 04:35:12` and `26.02.2020`.
+
+> #### [random](./random.md)
+>
+> `random(min: number, max: number): number`
+>
+> Takes two parameters defining a range, in which the generated float number will be.
+>
+> ```ts
+> import { random } from 'faketastic';
+>
+> const min = 12;
+> const max = 42;
+>
+> const value = random(min, max);
+> // => 32.29183
+> ```
+>
+> Example: `index` will be a valid index, i.e. in this example a number between `0` and `4` as the `values`-array has 5 items.
+
+> #### [randomInt](./random-int.md)
+>
+> `randomInt(min: number, max: number): number`
+>
+> Takes two parameters defining a range, in which the randomly generated number will be. Same as [random](#random) but returning whole numbers, instead of floats.
+>
+> ```ts
+> import { randomInt } from 'faketastic';
+>
+> const values = ['a', 42, null, true, () => {}];
+>
+> const index = randomIndex(values);
+> // => 2
+> ```
+>
+> Example: `index` will be a valid index, i.e. in this example a number between `0` and `4` as the `values`-array has 5 items.
+
+> #### [randomIndex](./random-index.md)
+>
+> `randomIndex(array: any[]): number`
+>
+> Takes an array and returns a random index within that array. Similiar to [randomItem](#random-item) which returns a random item from a given array.
+>
+> ```ts
+> import { randomIndex } from 'faketastic';
+>
+> const values = ['a', 42, null, true, () => {}];
+>
+> const index = randomIndex(values);
+> // => 2
+> ```
+>
+> Example: `index` will be a valid index, i.e. in this example a number between `0` and `4` as the `values`-array has 5 items.
+
+> #### [randomItem](./random-item.md)
+>
+> `randomItem(array: any[]): any`
+>
+> Takes an array and returns a random item from that array. Similiar to [randomIndex](#random-index) which returns a random index from a given array.
+>
+> ```ts
+> import { randomItem } from 'faketastic';
+>
+> const values = ['a', 42, null, true, () => {}];
+>
+> const item = randomItem(values);
+> // => 42
+> ```
+>
+> Example: `item` will be one of the entries within the `values`-array.
+
 ---
 
 ### Related Topics
