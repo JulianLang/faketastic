@@ -1,4 +1,4 @@
-import { randomItem } from '../../../src/core/randomizers/random-item.randomizer';
+import { randomItem } from '../../src/factories/random-item.factory';
 
 describe('randomItem', () => {
   it('should return null for an empty array', () => {

@@ -1,4 +1,5 @@
-import { Buildable, createBuildable, randomDate } from '../core';
+import { Buildable, createBuildable } from '../core';
+import { randomDate } from '../factories';
 import { dateTimeParser } from '../parser';
 import { AttachedFn } from '../types';
 import { addIfAttachedFn, isArray, isDefined, isUndefined } from '../util';

@@ -1,5 +1,6 @@
 import { ObjectTreeNode } from 'treelike';
-import { markFnCalled, probability } from '../core';
+import { markFnCalled } from '../core';
+import { probability } from '../factories';
 import { Stickiness } from '../types';
 import { ProcessorFn } from './types';
 import { createProcessorFn } from './util';

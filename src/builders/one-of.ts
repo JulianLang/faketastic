@@ -1,6 +1,7 @@
 import { ObjectTreeNode } from 'treelike';
 import { UnsetValue } from '../constants';
-import { asBuildable, Buildable, createBuildable, markFnCalled, randomInt, rebuild } from '../core';
+import { asBuildable, Buildable, createBuildable, markFnCalled, rebuild } from '../core';
+import { randomInt } from '../factories';
 import { createProcessorFn } from '../processors';
 import { AttachedFn } from '../types';
 import { clone, isDefined } from '../util';

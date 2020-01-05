@@ -1,4 +1,5 @@
-import { Buildable, createBuildable, randomInt } from '../core';
+import { Buildable, createBuildable } from '../core';
+import { randomInt } from '../factories';
 import { AttachedFn } from '../types';
 import { addIfAttachedFn } from '../util';
 import { ValueFn } from './types';

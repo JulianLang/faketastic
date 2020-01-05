@@ -1,5 +1,5 @@
 import { ObjectTreeNode } from 'treelike';
-import { randomInt } from '../../core';
+import { randomInt } from '../../factories';
 import { findAnchestor, isUndefined } from '../../util';
 import { CouldNotFindRootTemplateError } from '../errors';
 import { RecursionRootSymbol } from '../itself';

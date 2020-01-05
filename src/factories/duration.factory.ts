@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { randomDate } from '../core';
+import { randomDate } from '../factories';
 import { isArray } from '../util';
 
 type TimeUnit = 'hours' | 'minutes' | 'seconds';

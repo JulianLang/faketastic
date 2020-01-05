@@ -1,4 +1,4 @@
-import { randomIndex } from './random-index.randomizer';
+import { randomIndex } from './random-index.factory';
 
 /**
  * Gets a random item from a given array. If the array has no items, `null` will be returned.
