@@ -31,13 +31,17 @@ Architect functions restructure the [build-tree](../topics/build-mechanism.md) i
 >
 > Example: Multiplies the number of built `$Student`-instances to a random amount between 1 and 3 instances.
 
+## Custom ArchitectFns
+
+You can write your custom architect function, see: [Creating custom Architects](../topics/custom-code.md#Architects).
+
 ---
 
 ### Related Topics
 
-- [AttachedFns](./model-fns/model-fns.md)
-- [ProcessorFns](./attached-fns/processor-fns.md)
-- [TreeReaderFns](./attached-fns/tree-reader-fns.md)
-- [Overview](./overview.md)
-- [Getting Started](./getting-started.md)
+- [ModelFns](../model-fns/model-fns.md)
+- [ProcessorFns](./processor-fns.md)
+- [TreeReaderFns](./tree-reader-fns.md)
+- [Overview](../overview.md)
+- [Getting Started](../getting-started.md)
 

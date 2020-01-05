@@ -69,3 +69,11 @@ Model functions are the core functionality of faketastic, since they take user i
 > ```
 >
 > Example: Extending the `$Person` model to be the `$Student` model.
+
+---
+
+### Related Topics
+
+- [Overview](../overview.md)
+- [Getting Started](../getting-started.md)
+- [AttachedFns](../attached-fns/attached-fns.md)

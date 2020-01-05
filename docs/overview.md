@@ -24,12 +24,9 @@ There are three subtypes of attached functions:
 - [ArchitectFns](./attached-fns/architect-fns.md)
 - [ProcessorFns](./attached-fns/processor-fns.md)
 
-
 ### Architects
 
-Architect functions restructure the [build-tree](./topics/build-mechanism.md), thus indirectly affecting the result-value. They are not concerned with the actual value they are attached to, but with the shape of the result-value.
-
-For example, the `quantity` architect multiplies the [build-tree](./topics/build-mechanism.md) node it is attached and turns it into an `array`-type node. This changes a single-value result to be a multiple-value result. These kinds of work are done by architect functions.
+Architect functions are only affecting the [build-tree](./topics/build-mechanism.md) in which their associated property is located. They do not touch the result-value of the property itself, but rather moves/copies/removes it structurally within the [build-tree](./topics/build-mechanism.md). For example, the `quantity` architect multiplies the [build-tree](./topics/build-mechanism.md) node it is attached to and turns it into an `array`-type node. This way, it changes a single-value result to be a multiple-value result being wrapped within an array. These kinds of work are done by architect functions.
 
 - [Overview: ArchitectFns](./attached-fns/architect-fns.md)
   - [quantity architect](./attached-fns/quantity.md)
@@ -65,6 +62,6 @@ Value functions can be used to create randomized data of a specific type (such a
 ### Related Topics
 
 - [Getting Started](./getting-started.md)
+- [ModelFns](./model-fns/model-fns.md)
 - [BuilderFns](./builder-fns/builder-fns.md)
 - [AttachedFns](./model-fns/model-fns.md)
-- [ModelFns](./model-fns/model-fns.md)
