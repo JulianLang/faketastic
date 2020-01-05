@@ -100,3 +100,13 @@ The following builder functions are built into faketastic:
 > ```
 >
 > Example: `ageRef` will resolve the value of `age`-property at "finalizer" build cycle.
+
+---
+
+### Related Topics
+
+- [AttachedFns](../attached-fns/attached-fns.md)
+- [ValueFns](../attached-fns/attached-fns.md)
+- [FactoryFns](../attached-fns/attached-fns.md)
+- [Overview](../overview.md)
+- [Getting Started](../getting-started.md)

@@ -1,6 +1,14 @@
 # Overview: Built-In functionality
 
-Short overview about faketastic's built-in functionality.
+Short overview about faketastic's built-in functionality. Table of contents:
+
+- [BuilderFns](#builder-functions)
+- [AttachedFns](#attached-functions)
+  - [Architects](#architects)
+  - [Processors](#processors)
+- [ModelFns](#model-functions)
+- [ValueFns](#value-functions)
+- [FactoryFns](#factory-functions)
 
 ## Builder Functions
 
@@ -14,7 +22,7 @@ Builder functions are the "nouns" of your models. They generate the data that at
   - [ref builder](./builder-fns/ref.md)
   - [someOf builder](./builder-fns/some-of.md)
 
-## Attached-Fns
+## Attached Functions
 
 Attached functions can be considered as the "adjectives" of your models. They define the shape and behavior of your data.
 
@@ -51,11 +59,18 @@ Modelling functions allow you to define, extend and reuse existing models. They 
 
 ## Value Functions
 
-Value functions can be used to create randomized data of a specific type (such as `Date` or `string`), that respects given input-restrictions (e.g. `min`/`max` parameters).
+Value functions continiously create randomized data of a specific type (such as `Date` or `string`), that respects given input-restrictions (e.g. `min`/`max` parameters). They are used directly on properties, similiar to [builder functions](#builder-functions) as they return `Buildables`, that yields a new random value each time it gets called.
 
 - [Overview: ValueFns](./value-fns/value-fns.md)
   - [range value function](./value-fns/range.md)
   - [time value function](./value-fns/time.md)
+
+## Factory Functions
+
+Factory functions are similiar to [value functions](#value-functions) as they take user-input and turns it into randomized data of a specific type, that respects given input-restrictions. But in contrast to value functions, factory functions are used within processor functions as they directly return the created, randomized value.
+
+- [Overview: FactoryFns](./factories/factories.md)
+  - [duration factory](./factories/duration.md)
 
 ---
 

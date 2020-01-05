@@ -1,6 +1,6 @@
-# Factories
+# FactoryFns
 
-Factories take user-input and create a random value, that gets directly returned as return-value.
+Factory functions take user-input and create a random value, that gets directly returned as return-value.
 
 `factory<T>(...inputParams: any[]) => T`
 
