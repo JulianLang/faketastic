@@ -1,6 +1,6 @@
 # Attached Functions
 
-Attached functions are hosted on [builder functions](../builders/builders.md). They can be consideres as the "adjectives" of a model's property as they affect the builder function's result-values and their shape. They store progam-logic that can be applied on any property.
+Attached functions are hosted on [builder functions](../builder-fns/builder-fns.md). They can be considered as the "adjectives" of a model's property, as they affect the values.
 
 In general we can distinguish three attached function types.
 
@@ -8,8 +8,7 @@ In general we can distinguish three attached function types.
 
 > **Note:** We skip TreeReaderFns, since you will most likely not need them. In a nutshell, tree-readers are functions being used to prepare architect functions for or value-dependent restructurings.
 
-Tree-Readers are often helping constructs for builder functions. As they are readonly (not affecting/changing any values) they most likely won't occur as a standalone function.
-For example, `itself` uses a tree-reader function to figure out when to stop the recursion.
+Tree-Readers are often helping constructs for builder functions. As they are readonly (not affecting/changing any values) they most likely won't occur as a standalone function. For example, `itself` uses a tree-reader function to figure out when to stop the recursion.
 
 ## Type 2: Architects
 
@@ -23,14 +22,16 @@ In this snippet, `quantity` turns one builder function into four builder functio
 
 > Note: This is not technically spoken. There is a reason why they are called "ArchitectFns". If you need more understanding here, navigate to [build mechanism](./topics/build-mechanism.md).
 
-By now, faketastic has only the `quantity`-architect. There might be other cases than multiplying an expression, but those cases can be implemented by the user itself, as faketastic allows you to [write custom attached functions](./attached-fns/attached-fns.md#custom-attached-fns).
+> Note: By now, faketastic has only the `quantity`-architect. There might be other cases than multiplying an expression, but those cases can be implemented by the user itself, as faketastic allows you to [write custom attached functions](./attached-fns/attached-fns.md#custom-attached-fns).
+
+- [View: quantity architect](./quantity.md)
 
 ## Type 3: Processors
 
 Processor functions are attached functions that changes or replaces the current result of a builder function. Currently there are the following processors available:
 
-- canBe
-- map
+- [View: canBe processor](./can-be.md)
+- [View: map processor](./map.md)
 
 ## Custom AttachedFns
 

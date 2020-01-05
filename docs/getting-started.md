@@ -27,7 +27,7 @@ When we zoom in a bit, we might see something like that:
 
 ![Anatomy of Builder Fns](./assets/anatomy-of-a-property.jpg)
 
-Here, we have a concrete example of a builder function in use. [oneOf](./builders/one-of.md) is a builder function that expects one parameter: An array that contains the values to randomly choose an item from. In this example we just passed the values `[1, 2, 3]`. After this parameter is passed-in, we **can** add additional [attached functions](./attached-fns/attached-fns.md). In this example we added [canBe](./attached-fns/can-be.md) and [map](./attached-fns/map.md).
+Here, we have a concrete example of a builder function in use. [oneOf](./builder-fns/one-of.md) is a builder function that expects one parameter: An array that contains the values to randomly choose an item from. In this example we just passed the values `[1, 2, 3]`. After this parameter is passed-in, we **can** add additional [attached functions](./attached-fns/attached-fns.md). In this example we added [canBe](./attached-fns/can-be.md) and [map](./attached-fns/map.md).
 
 > Since we does not have to add attached functions, it is completely legal to call `oneOf` like this:
 >
@@ -39,7 +39,7 @@ Let's see another example to get used to the shape of builder functions.
 
 ![Anatomy of Builder Fns](./assets/anatomy-of-builder-fns-2.jpg)
 
-[range](./builders/range.md) is another builder function which requires two parameters. It returns a random number from a given range. Thus it needs the minimum and maximum value as input. After they have been given, again, we can add an arbitrary list of [attached functions](./attached-fns/attached-fns.md).
+[range](./builder-fns/range.md) is another builder function which requires two parameters. It returns a random number from a given range. Thus it needs the minimum and maximum value as input. After they have been given, again, we can add an arbitrary list of [attached functions](./attached-fns/attached-fns.md).
 
 This way we describe data and their restrictions in faketastic.
 

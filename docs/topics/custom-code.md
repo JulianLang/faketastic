@@ -158,7 +158,7 @@ Each attached function type has a factory method:
 > }
 > ```
 >
-> **Note:** By this example we can perfectly see that tree-readers are only useful when not standing alone, but used by [builder functions](../builders/builders.md) to gather information that they can use for building things then. The above-shown tree-reader is quite pointless, because nobody but the function itself can use the `levelCount` information. That's why you most likely never see a tree-reader function directly on a builder function's arguments list (`range(1, 2, someTreeReader())`), but only internally used by builder functions (like e.g. `range`) as explained earlier.
+> **Note:** By this example we can perfectly see that tree-readers are only useful when not standing alone, but used by [builder functions](../builder-fns/builder-fns.md) to gather information that they can use for building things then. The above-shown tree-reader is quite pointless, because nobody but the function itself can use the `levelCount` information. That's why you most likely never see a tree-reader function directly on a builder function's arguments list (`range(1, 2, someTreeReader())`), but only internally used by builder functions (like e.g. `range`) as explained earlier.
 
 > #### Architects
 >
