@@ -213,6 +213,7 @@ const $Person = model({
   ],
 });
 ```
+
 This is no technical restriction, but rather a conceptual one. In general a more specific and deeper nested model should not need to know anything about it's parent. Therefore we do not accept references to parent properties.
 
 **If this is problematic for a valid use case, please tell us, so that we can fix it!**
@@ -255,4 +256,14 @@ function toGenderName(femaleNames: string[], maleNames: string[]) {
   }, 'finalizer');
 }
 ```
+
 > In case you wonder why our custom processor function gets a `ObjectTreeNode` as input parameter, please take a look [here](./topics/build-mechanism.md).
+
+---
+
+### Related Topics
+
+- [Overview](./overview.md)
+- [ModelFns](./model-fns/model-fns.md)
+- [BuilderFns](./builder-fns/builder-fns.md)
+- [AttachedFns](./model-fns/model-fns.md)
