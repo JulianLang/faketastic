@@ -54,7 +54,7 @@ export const MutatingFnOrders = {
    * is a `finalizer`-processor function. Thus its order number
    * is always related to all other `finalizer`-processors applied
    * to the same property. It will have no effect on the ordering
-   * of `initializer`-processors, for example.
+   * of `tree-building`-processors, for example.
    */
   processors: {
     // -------------------------------------------------------

@@ -7,7 +7,7 @@ import { AttachedFn } from '../types';
 import { clone, isDefined } from '../util';
 
 export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
-  const initOneOf = createProcessorFn(initOneOfImpl, 'initializer', 'unsticky');
+  const initOneOf = createProcessorFn(initOneOfImpl, 'tree-building', 'unsticky');
 
   return createBuildable(UnsetValue, [initOneOf, ...attachedFns]);
 
@@ -18,7 +18,7 @@ export function oneOf(values: any[], ...attachedFns: AttachedFn[]): Buildable {
     node.children = [];
 
     markFnCalled(initOneOf, node);
-    rebuild(node, 'initializer');
+    rebuild(node, 'tree-building');
   }
 
   function chooseRandomItem() {

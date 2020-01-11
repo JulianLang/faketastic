@@ -33,7 +33,7 @@ describe('build', () => {
     // arrange
     const order: number[] = [];
     const newProcFn = (n: number) =>
-      createProcessorFn(() => order.push(n), 'initializer', 'unsticky');
+      createProcessorFn(() => order.push(n), 'tree-building', 'unsticky');
 
     const mdl = model({
       a: use(
@@ -174,7 +174,7 @@ describe('build', () => {
         n.value = 42;
         n.children = [createNode('child', null)];
       },
-      'initializer',
+      'tree-building',
       'unsticky',
     );
 
@@ -195,9 +195,9 @@ describe('build', () => {
   it('should execute build-cycle-callbacks in order: tree-reader, architects, processors', () => {
     // arrange
     const order: number[] = [];
-    const treeReaderInit = createTreeReaderFn(() => order.push(1), 'initializer');
-    const architectInit = createArchitectFn(() => order.push(2), 'initializer');
-    const processorInit = createProcessorFn(() => order.push(3), 'initializer', 'unsticky');
+    const treeReaderInit = createTreeReaderFn(() => order.push(1), 'tree-building');
+    const architectInit = createArchitectFn(() => order.push(2), 'tree-building');
+    const processorInit = createProcessorFn(() => order.push(3), 'tree-building', 'unsticky');
     const treeReaderPre = createTreeReaderFn(() => order.push(4), 'preprocessor');
     const architectPre = createArchitectFn(() => order.push(5), 'preprocessor');
     const processorPre = createProcessorFn(() => order.push(6), 'preprocessor', 'unsticky');
@@ -254,7 +254,7 @@ describe('build', () => {
     const assertTreeReader = createTreeReaderFn(node => {
       // assert
       expect(hasSymbol(BuildRootSymbol, node)).toBe(true);
-    }, 'initializer');
+    }, 'tree-building');
     const buildable = createBuildable({}, [assertTreeReader]);
 
     // act
@@ -279,7 +279,7 @@ function includeBuildMutatingFnsSpecs(
     const order: number[] = [];
     const expectedOrder: number[] = [0, 1, 2, 3];
     const processors: MutatingFn[] = [
-      mutationFnFactory(() => order.push(0), 'initializer'),
+      mutationFnFactory(() => order.push(0), 'tree-building'),
       mutationFnFactory(() => order.push(1), 'preprocessor'),
       mutationFnFactory(() => order.push(2), 'postprocessor'),
       mutationFnFactory(() => order.push(3), 'finalizer'),
@@ -308,7 +308,7 @@ function includeBuildMutatingFnsSpecs(
 
     // ... arrange (continuation)
     const fns: MutatingFn[] = [
-      mutationFnFactory(assertCorrectNodeFn, 'initializer'),
+      mutationFnFactory(assertCorrectNodeFn, 'tree-building'),
       mutationFnFactory(assertCorrectNodeFn, 'preprocessor'),
       mutationFnFactory(assertCorrectNodeFn, 'postprocessor'),
       mutationFnFactory(assertCorrectNodeFn, 'finalizer'),
@@ -333,8 +333,8 @@ function includeBuildMutatingFnsSpecs(
 
     const fns: MutatingFn[] = [
       // initializers
-      mutationFnFactory(() => initalizerOrder.push(2), 'initializer', execAfter),
-      mutationFnFactory(() => initalizerOrder.push(1), 'initializer', execFirst),
+      mutationFnFactory(() => initalizerOrder.push(2), 'tree-building', execAfter),
+      mutationFnFactory(() => initalizerOrder.push(1), 'tree-building', execFirst),
       // preprocessors
       mutationFnFactory(() => preprocessorOrder.push(2), 'preprocessor', execAfter),
       mutationFnFactory(() => preprocessorOrder.push(1), 'preprocessor', execFirst),
@@ -352,8 +352,8 @@ function includeBuildMutatingFnsSpecs(
     const negativeTestExpectedOrder = [2, 1];
     const negativeTestProcessors: MutatingFn[] = [
       // have same prio, so the order in array should define execution order:
-      mutationFnFactory(() => negativeTestOrder.push(2), 'initializer', execAfter),
-      mutationFnFactory(() => negativeTestOrder.push(1), 'initializer', execAfter),
+      mutationFnFactory(() => negativeTestOrder.push(2), 'tree-building', execAfter),
+      mutationFnFactory(() => negativeTestOrder.push(1), 'tree-building', execAfter),
     ];
     const negativeTestBuildable = createBuildable({}, negativeTestProcessors);
 

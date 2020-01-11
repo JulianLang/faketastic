@@ -1,33 +1,12 @@
-import {
-  copyAttributes,
-  isDefined,
-  leafTraverser,
-  nodeTypeOf,
-  ObjectTreeNode,
-  traverse,
-  treeOf,
-} from 'treelike';
+import { copyAttributes, isDefined, leafTraverser, nodeTypeOf, ObjectTreeNode, traverse, treeOf } from 'treelike';
 import { UnsetValue } from '../constants';
 import { isPlaceholder } from '../placeholder';
 import { AttachedFn, MutatingFn } from '../types';
 import { hasSymbol, isUndefined, removeSymbol, setSymbol } from '../util';
 import { isValueFunction } from '../value-fns/util/is-value.fn';
-import {
-  Buildable,
-  BuildRootSymbol,
-  FnBuildCycleSymbol,
-  FnCalledSymbol,
-  FnOrderSymbol,
-} from './types';
+import { Buildable, BuildRootSymbol, FnBuildCycleSymbol, FnCalledSymbol, FnOrderSymbol } from './types';
 import { BuildCycle } from './types/build.cycle';
-import {
-  addAttachedFns,
-  cyclesOf,
-  isBuildable,
-  isBuilt,
-  topDownSiblingTraverser,
-  unwrapIfBuildable,
-} from './util';
+import { addAttachedFns, cyclesOf, isBuildable, isBuilt, topDownSiblingTraverser, unwrapIfBuildable } from './util';
 
 /**
  * Builds a `Buildable` and returns the generated mock-data.
@@ -79,7 +58,7 @@ export function buildChild<R = any, T = any>(
     buildableNode.name = '$child-root';
   }
 
-  runCycle('initializer', buildableNode);
+  runCycle('tree-building', buildableNode);
   runCycle('preprocessor', buildableNode);
   run(buildableNode, node => buildNode(node));
   runCycle('postprocessor', buildableNode);

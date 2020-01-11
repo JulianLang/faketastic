@@ -4,7 +4,7 @@ describe('compareCycles', () => {
   it('should return true for >, if a buildcycle runs later than the other', () => {
     // arrange
     const a: BuildCycle = 'preprocessor';
-    const b: BuildCycle = 'initializer';
+    const b: BuildCycle = 'tree-building';
 
     // act
     const result = compareCycles(a, '>', b);
@@ -16,7 +16,7 @@ describe('compareCycles', () => {
   it('should return true for >=, if a buildcycle runs later than the other', () => {
     // arrange
     const a: BuildCycle = 'preprocessor';
-    const b: BuildCycle = 'initializer';
+    const b: BuildCycle = 'tree-building';
 
     // act
     const result = compareCycles(a, '>=', b);
@@ -39,7 +39,7 @@ describe('compareCycles', () => {
 
   it('should return true for <, if a buildcycle runs earlier than the other', () => {
     // arrange
-    const a: BuildCycle = 'initializer';
+    const a: BuildCycle = 'tree-building';
     const b: BuildCycle = 'preprocessor';
 
     // act
@@ -51,7 +51,7 @@ describe('compareCycles', () => {
 
   it('should return true for <, if a buildcycle runs earlier than the other', () => {
     // arrange
-    const a: BuildCycle = 'initializer';
+    const a: BuildCycle = 'tree-building';
     const b: BuildCycle = 'preprocessor';
 
     // act
@@ -88,7 +88,7 @@ describe('compareCycles', () => {
   it('should return false for ==, if a buildcycle runs not same time as the other', () => {
     // arrange
     const a: BuildCycle = 'preprocessor';
-    const b: BuildCycle = 'initializer';
+    const b: BuildCycle = 'tree-building';
 
     // act
     const result = compareCycles(a, '==', b);
@@ -100,7 +100,7 @@ describe('compareCycles', () => {
   it('should return false for <, if a buildcycle runs later than the other', () => {
     // arrange
     const a: BuildCycle = 'postprocessor';
-    const b: BuildCycle = 'initializer';
+    const b: BuildCycle = 'tree-building';
 
     // act
     const result = compareCycles(a, '<', b);
@@ -124,7 +124,7 @@ describe('compareCycles', () => {
   it('should return false for <=, if a buildcycle runs later than the other', () => {
     // arrange
     const a: BuildCycle = 'postprocessor';
-    const b: BuildCycle = 'initializer';
+    const b: BuildCycle = 'tree-building';
 
     // act
     const result = compareCycles(a, '<=', b);

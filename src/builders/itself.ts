@@ -20,17 +20,17 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
   let originalTemplate: ObjectTreeNode<Buildable>;
   let state: RecursionState;
 
-  const takeTemplateSnapshot = createTreeReaderFn(snapshotOriginalTemplate, 'initializer');
+  const takeTemplateSnapshot = createTreeReaderFn(snapshotOriginalTemplate, 'tree-building');
   const recurseNext = createProcessorFn(
     recurseNextImpl,
-    'initializer',
+    'tree-building',
     // quantity will transfer this processor to multiplied nodes
     'unsticky',
     MutatingFnOrders.processors.recursion,
   );
   const endRecursion = createProcessorFn(
     endRecursionImpl,
-    'initializer',
+    'tree-building',
     // quantity will keep this processor on initial node
     'sticky',
     MutatingFnOrders.processors.recursion,
@@ -87,7 +87,7 @@ export function itself(endWhen: RecursionController, ...attachedFns: AttachedFn[
     node.value = clonedMdl;
 
     markFnCalled(recurseNextImpl, node);
-    rebuild(node, 'initializer');
+    rebuild(node, 'tree-building');
   }
 
   /**

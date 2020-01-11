@@ -9,8 +9,8 @@ export function quantity(
   quantity: Quantity = 1,
   insertMode: QuantityInsertMode = 'createNewArray',
 ): ArchitectFn {
-  // Architects are executed before BuildCycle 'initializer'
-  return createArchitectFn(quantityImpl, 'initializer');
+  // Architects are executed before BuildCycle 'tree-building'
+  return createArchitectFn(quantityImpl, 'tree-building');
 
   function quantityImpl(node: ObjectTreeNode) {
     if (quantity === 1) {

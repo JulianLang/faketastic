@@ -53,8 +53,8 @@ export function includeValueFnSpecs(valueFn: Func<any[], any>, ...params: any[])
 export function includeDirectiveFnSpecs(directiveFn: Function, ...params: any[]): void {
   it('should include given processor- and architect-functions in buildable', () => {
     // arrange
-    const procFn = createProcessorFn(() => {}, 'initializer', 'unsticky');
-    const architectFn = createArchitectFn(() => {}, 'initializer');
+    const procFn = createProcessorFn(() => {}, 'tree-building', 'unsticky');
+    const architectFn = createArchitectFn(() => {}, 'tree-building');
     const negativeTestFn = () => {};
     const processorFns: Function[] = [procFn, architectFn, negativeTestFn];
 
@@ -142,7 +142,7 @@ export function testMutatingFnFactory(
     const expectedOrder: number = 42;
 
     // act
-    const attachedFn = factory(() => {}, 'initializer', expectedOrder);
+    const attachedFn = factory(() => {}, 'tree-building', expectedOrder);
 
     // assert
     expect(getSymbol(FnOrderSymbol, attachedFn)).toBe(expectedOrder);
@@ -182,15 +182,15 @@ export function transferAttachedFnsSpecs(builderFn: BuilderFn) {
     // arrange
     const treeReader = createTreeReaderFn(
       spy('treeReader', () => setSymbol(FnCalledSymbol, treeReader)),
-      'initializer',
+      'tree-building',
     );
     const architect = createArchitectFn(
       spy('architect', () => setSymbol(FnCalledSymbol, architect)),
-      'initializer',
+      'tree-building',
     );
     const processor = createProcessorFn(
       spy('processor', () => setSymbol(FnCalledSymbol, processor)),
-      'initializer',
+      'tree-building',
       'unsticky',
     );
 

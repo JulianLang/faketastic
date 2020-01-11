@@ -38,9 +38,9 @@ describe('placeholder', () => {
 
   it('should attach the given AttachedFns to the created buildable', () => {
     // arrange, act
-    const treeReader = createTreeReaderFn(() => {}, 'initializer');
-    const architect = createArchitectFn(() => {}, 'initializer');
-    const processor = createProcessorFn(() => {}, 'initializer', 'unsticky');
+    const treeReader = createTreeReaderFn(() => {}, 'tree-building');
+    const architect = createArchitectFn(() => {}, 'tree-building');
+    const processor = createProcessorFn(() => {}, 'tree-building', 'unsticky');
 
     const attachedFns: AttachedFn[] = [treeReader, architect, processor];
     const placeholder = createPlaceholder('content', {}, attachedFns);

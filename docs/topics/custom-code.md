@@ -26,7 +26,7 @@ export function eitherOr(valueA: any, valueB: any, ...attachedFns: AttachedFn[])
   }
 
   // (2)
-  const eitherOrInit = createProcessorFn(eitherOrImpl, 'initializer');
+  const eitherOrInit = createProcessorFn(eitherOrImpl, 'tree-building');
 
   // (3)
   return createBuildable(UnsetValue, [eitherOrInit, ...attachedFns]);
@@ -35,7 +35,7 @@ export function eitherOr(valueA: any, valueB: any, ...attachedFns: AttachedFn[])
 
 The first thing we do is creating an inner function named `eitherOrImpl`, which will run the actual implementation. As it is an inner function, it shares the parental scope, so we have direct access to the parent's parameters.
 
-We will have a closer look on the implementation in a minute, but before that let's stay in the parental function. As next step, we convert the inner function into a processor function of type `initializer`, as this [build cycle](./build-mechanism.md) is a good choice for processors altering the [build-tree](./build-mechanism.md).
+We will have a closer look on the implementation in a minute, but before that let's stay in the parental function. As next step, we convert the inner function into a processor running at build-cycle `tree-building`, as this [build cycle](./build-mechanism.md) is a good choice for processors altering the [build-tree](./build-mechanism.md).
 
 Then we create a `Buildable` and add both, our internally created attached function `eitherOrInit` and the user-given attached functions of parameter `attachedFns` of the parental scope to it. As last step, we return the buildable and are done.
 
@@ -55,7 +55,7 @@ function eitherOrImpl() {
 
   // (4)
   markFnCalled(initOneOf, node);
-  rebuild(node, 'initializer');
+  rebuild(node, 'tree-building');
 }
 ```
 

@@ -28,7 +28,7 @@ export function someOf<T>(
     opts = undefined;
   }
 
-  const initSomeOf = createProcessorFn(initSomeOfImpl, 'initializer', 'unsticky');
+  const initSomeOf = createProcessorFn(initSomeOfImpl, 'tree-building', 'unsticky');
 
   return createBuildable(UnsetValue, [initSomeOf, ...attachedFns]);
 
@@ -39,7 +39,7 @@ export function someOf<T>(
     node.children = [];
 
     markFnCalled(initSomeOfImpl, node);
-    rebuild(node, 'initializer');
+    rebuild(node, 'tree-building');
   }
 
   function chooseItems(): T[] {

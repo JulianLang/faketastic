@@ -5,7 +5,7 @@ describe('createProcessor', () => {
   it('should set the FnIsStickySymbol if stickyness is set to "sticky"', () => {
     // arrange
     // act
-    const procFn = createProcessorFn(() => {}, 'initializer', 'sticky', 42);
+    const procFn = createProcessorFn(() => {}, 'tree-building', 'sticky', 42);
 
     // assert
     expect(getSymbol(FnIsStickySymbol, procFn)).toBe(true);
@@ -14,7 +14,7 @@ describe('createProcessor', () => {
   it('should not set the FnIsStickySymbol if stickyness is set to "unsticky"', () => {
     // arrange
     // act
-    const procFn = createProcessorFn(() => {}, 'initializer', 'unsticky', 42);
+    const procFn = createProcessorFn(() => {}, 'tree-building', 'unsticky', 42);
 
     // assert
     expect(getSymbol(FnIsStickySymbol, procFn)).toBe(undefined);

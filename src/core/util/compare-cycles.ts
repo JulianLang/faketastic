@@ -21,7 +21,7 @@ export function compareCycles(a: BuildCycle, operator: ComparisonOperator, b: Bu
 
 function cycleToNumber(cycle: BuildCycle): number {
   switch (cycle) {
-    case 'initializer':
+    case 'tree-building':
       return 0;
     case 'preprocessor':
       return 1;

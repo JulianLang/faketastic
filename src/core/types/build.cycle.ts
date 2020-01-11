@@ -1,1 +1,1 @@
-export type BuildCycle = 'initializer' | 'preprocessor' | 'postprocessor' | 'finalizer';
+export type BuildCycle = 'tree-building' | 'preprocessor' | 'postprocessor' | 'finalizer';

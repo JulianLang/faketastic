@@ -36,8 +36,8 @@ describe('time', () => {
 
   it('should add the parameter to buidables processors, if they are processor functions', () => {
     // arrange
-    const procFn1 = createProcessorFn(() => {}, 'initializer', 'unsticky');
-    const procFn2 = createProcessorFn(() => {}, 'initializer', 'unsticky');
+    const procFn1 = createProcessorFn(() => {}, 'tree-building', 'unsticky');
+    const procFn2 = createProcessorFn(() => {}, 'tree-building', 'unsticky');
 
     // act
     const buildable = time(procFn1, procFn2);

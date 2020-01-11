@@ -1,20 +1,11 @@
-import {
-  createArchitectFn,
-  createBuildable,
-  createProcessorFn,
-  createTreeReaderFn,
-  createValueFn,
-  FnCalledSymbol,
-  isBuilt,
-  setSymbol,
-} from '../../../src';
+import { createArchitectFn, createBuildable, createProcessorFn, createTreeReaderFn, createValueFn, FnCalledSymbol, isBuilt, setSymbol } from '../../../src';
 
 describe('isBuilt', () => {
   it('should return true if all fns are marked as called', () => {
     // arrange
-    const treeReader = createTreeReaderFn(() => {}, 'initializer');
-    const architect = createArchitectFn(() => {}, 'initializer');
-    const processor = createProcessorFn(() => {}, 'initializer', 'unsticky');
+    const treeReader = createTreeReaderFn(() => {}, 'tree-building');
+    const architect = createArchitectFn(() => {}, 'tree-building');
+    const processor = createProcessorFn(() => {}, 'tree-building', 'unsticky');
     const attachedFns = [treeReader, architect, processor];
     setSymbol(FnCalledSymbol, treeReader);
     setSymbol(FnCalledSymbol, architect);
@@ -28,9 +19,9 @@ describe('isBuilt', () => {
 
   it('should return true if any fn is not marked as called', () => {
     // arrange
-    const treeReader = createTreeReaderFn(() => {}, 'initializer');
-    const architect = createArchitectFn(() => {}, 'initializer');
-    const processor = createProcessorFn(() => {}, 'initializer', 'unsticky');
+    const treeReader = createTreeReaderFn(() => {}, 'tree-building');
+    const architect = createArchitectFn(() => {}, 'tree-building');
+    const processor = createProcessorFn(() => {}, 'tree-building', 'unsticky');
     const attachedFns = [treeReader, architect, processor];
     // note: not setting Symbol for treeReader.
     setSymbol(FnCalledSymbol, architect);
@@ -45,8 +36,8 @@ describe('isBuilt', () => {
   it('should not consider fns not being in targeted cycle range', () => {
     // arrange
     const treeReader = createTreeReaderFn(() => {}, 'postprocessor');
-    const architect = createArchitectFn(() => {}, 'initializer');
-    const processor = createProcessorFn(() => {}, 'initializer', 'unsticky');
+    const architect = createArchitectFn(() => {}, 'tree-building');
+    const processor = createProcessorFn(() => {}, 'tree-building', 'unsticky');
     const attachedFns = [treeReader, architect, processor];
     setSymbol(FnCalledSymbol, architect);
     setSymbol(FnCalledSymbol, processor);
@@ -55,14 +46,14 @@ describe('isBuilt', () => {
     // act, assert
     // note: did not set Symbol for treeReader.
     // but: treeReader is postprocessor, and should not be considered.
-    expect(isBuilt(buildable, 'initializer')).toBe(true);
+    expect(isBuilt(buildable, 'tree-building')).toBe(true);
   });
 
   it('should consider all cycles in range', () => {
     // arrange
     const treeReader = createTreeReaderFn(() => {}, 'finalizer');
     const architect = createArchitectFn(() => {}, 'postprocessor');
-    const processor = createProcessorFn(() => {}, 'initializer', 'unsticky');
+    const processor = createProcessorFn(() => {}, 'tree-building', 'unsticky');
     const attachedFns = [treeReader, architect, processor];
     setSymbol(FnCalledSymbol, architect);
     setSymbol(FnCalledSymbol, processor);

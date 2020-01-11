@@ -31,8 +31,8 @@ describe('quantity', () => {
         10,
         quantity(() => 1),
         // this should stick to node "a" and should not be applied to multiplied nodes of "quantity()"
-        createProcessorFn(procFn1, 'initializer', 'sticky'),
-        createProcessorFn(procFn2, 'initializer', 'unsticky'),
+        createProcessorFn(procFn1, 'tree-building', 'sticky'),
+        createProcessorFn(procFn2, 'tree-building', 'unsticky'),
       ),
     });
 
@@ -54,7 +54,7 @@ describe('quantity', () => {
         10,
         quantity(() => 1),
         // this should stick to node "a" and should not be applied to multiplied nodes of "quantity()"
-        createProcessorFn(stickyProcFn, 'initializer', 'sticky'),
+        createProcessorFn(stickyProcFn, 'tree-building', 'sticky'),
       ),
     });
 
@@ -76,7 +76,7 @@ describe('quantity', () => {
         10,
         quantity(() => 1),
         // this processor should not stick to node "a" but rather be transferred to multiplied nodes of "quantity()"
-        createProcessorFn(unstickyProcFn, 'initializer', 'unsticky'),
+        createProcessorFn(unstickyProcFn, 'tree-building', 'unsticky'),
       ),
     });
 
@@ -95,7 +95,7 @@ describe('quantity', () => {
           }
         }
       },
-      'initializer',
+      'tree-building',
       'unsticky',
     );
     const mdl = model({
