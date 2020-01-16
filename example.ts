@@ -14,11 +14,3 @@
 
     $ npm start
 */
-import { build, template } from './src';
-
-const MyTemplate = template({
-  faketastic: 'playground works!',
-});
-
-const output = build(MyTemplate);
-console.log(output);
