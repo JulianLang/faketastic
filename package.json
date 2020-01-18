@@ -2,7 +2,7 @@
   "name": "faketastic",
   "version": "0.0.21",
   "description": "A library to help you with modelling data entities and generate them as mock data.",
-  "main": "./dist/index.js",
+  "main": "./dist/public-api.js",
   "private": false,
   "scripts": {
     "build": "npx rimraf ./dist && npx tsc -p .",
