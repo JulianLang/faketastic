@@ -1,14 +1,5 @@
 # Glossar
 
-### Model Builder
-
-Builds a model into a specific target format. The format could be:
-
-- mock data
-- specification as text
-
-`modelBuilder<T>(input: any): T`
-
 ### Property Build
 
 Is the activity of a model-builder building one specific property. This activity can include:
@@ -32,6 +23,16 @@ They can either return a static or a buildable value. Their result gets built by
 faketastic's model-builder.
 
 `property(...args, ...attachedFns) => Buildable | any`
+
+### Interpreter
+
+Part of a property function implementation. Interprets a property and generates matching output of a specific target format.
+The format could be:
+
+- mock data
+- specification as text
+
+`modelBuilder<T>(input: any): T`
 
 ### Attached Functions
 
