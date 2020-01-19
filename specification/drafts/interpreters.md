@@ -1,6 +1,17 @@
 # Why and where to use?
 
 - They could generate spec in prosa text. But within an application. How and where to consume?
+- Out of scope for now.
+
+### Interpreter
+
+Part of a property function implementation. Interprets a property and generates matching output of a specific target format.
+The format could be:
+
+- mock data
+- specification as text
+
+`interpreter<T>(input: any): T`
 
 ```ts
 export function oneOf(values: any[], ...attachedFns) {

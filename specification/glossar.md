@@ -24,16 +24,6 @@ faketastic's model-builder.
 
 `property(...args, ...attachedFns) => Buildable | any`
 
-### Interpreter
-
-Part of a property function implementation. Interprets a property and generates matching output of a specific target format.
-The format could be:
-
-- mock data
-- specification as text
-
-`modelBuilder<T>(input: any): T`
-
 ### Attached Functions
 
 Attached functions are either `ReaderFn`, `ArchitectFn` or `ProcessorFn`.
