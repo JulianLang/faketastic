@@ -58,3 +58,7 @@ const mdl = model({
   prop: oneOf(Values, quantity(2, canBe(null)), canBe([])),
 });
 ```
+
+## utility functions
+
+- dasherize
