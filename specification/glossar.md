@@ -42,7 +42,7 @@ They can gather data and place their results on nodes, though.
 
 `reader(node: ObjectTreeNode) => void`
 
-### Architect Functions
+### Architect Functions (obsolete => pre-processor ?)
 
 Architect functions can manipulate itself or child properties, but must not touch the parent.
 They target the way how properties are structured, but must not touch any node's values.
