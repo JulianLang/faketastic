@@ -1,4 +1,4 @@
-import { isDateInstance } from '../../src/util';
+import { isDateInstance } from '../../../src/util';
 
 describe('isDateInstance', () => {
   it('should return true for date instances and false otherwise', () => {

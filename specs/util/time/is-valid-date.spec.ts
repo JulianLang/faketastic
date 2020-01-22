@@ -1,4 +1,4 @@
-import { isValidDate } from '../../src/util';
+import { isValidDate } from '../../../src/util';
 
 describe('isValidDate', () => {
   it('should return true for valid dates and false otherwise', () => {
