@@ -47,7 +47,6 @@ const Employee = extend(Person, {
   age: range(16, 62),
   email: combine(
     {
-      // please note: ref is not implemented yet, but planned as seen here :)
       name: ref(Employee, 'name', map(toMailName)),
       domain: oneOf(Domains),
     },
