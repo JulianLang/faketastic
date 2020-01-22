@@ -53,8 +53,8 @@ function ref(target, attachedFns: AttachedFn[]) {
   let result: any;
 
   const readerFn = createReader(node => (result = findNode(node, n => n.name === target)));
-  const refImpl = createBuilder(() => {
-    return !isDefined(result) ? createPlaceholder([refImpl, attachedFns]) : result;
+  const refImpl = createBuilder(buildable => {
+    return isDefined(result) ? result : buildable;
   });
 
   return createBuildable(refImpl);

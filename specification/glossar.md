@@ -1,5 +1,16 @@
 # Glossar
 
+### Symbols
+
+- Type: 'BuilderFn' | 'ReaderFn' | 'ArchitectFn' | 'ProcessorFn' | 'Buildable';
+- FnCalled: boolean
+
+### Special objects
+
+- builder functions
+- buildables
+- attached functions 'reader' | 'architect' | 'processor'
+
 ### Buildable
 
 Is an object summarizing all important information for building a model.
