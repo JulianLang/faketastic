@@ -5,6 +5,6 @@ import { clone } from './clone';
  * @param array The array to clone.
  * @returns The cloned array.
  */
-export function cloneItems<T>(array: T[]): T[] {
+export function cloneItems(array: any[]): any[] {
   return array.map(value => clone(value));
 }

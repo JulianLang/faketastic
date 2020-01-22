@@ -5,6 +5,6 @@ import { cloneDeep } from 'lodash';
  * @param value The value to clone.
  * @returns The cloned value.
  */
-export function clone(value: any): any {
+export function clone<T = any>(value: T): T {
   return cloneDeep(value);
 }
