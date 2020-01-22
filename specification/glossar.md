@@ -67,6 +67,9 @@ They target the way how properties are structured, but must not touch any node's
 
 `architect(node: ObjectTreeNode) => void`
 
+- [obsolete?](./responsibilities.md#ArchitectFn-obsolete?)
+- `architect(value: any) => any`
+
 ### Processor Functions
 
 Processor functions can manipulate the property they are located on.
