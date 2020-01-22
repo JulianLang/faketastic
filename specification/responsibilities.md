@@ -9,7 +9,7 @@
 ## Property Builder
 
 - Completely builds a single property, recursively and returns the data result.
-- Calls property-function and attached functions in correct order.
+- Calls property-function and attached functions in correct order and each fn only once.
 - Does not know anything about ObjectTreeNodes
 - `propertyBuilder(value: Buildable | any): Placeholder | any`
 
@@ -43,5 +43,20 @@ function quantity(n) {
     // can be an array including buildables, which are found and built by model-builder.
     return array;
   }
+}
+```
+
+**What about `ref`?**
+
+```ts
+function ref(target, attachedFns: AttachedFn[]) {
+  let result: any;
+
+  const readerFn = createReader(node => (result = findNode(node, n => n.name === target)));
+  const refImpl = createBuilder(() => {
+    return !isDefined(result) ? createPlaceholder([refImpl, attachedFns]) : result;
+  });
+
+  return createBuildable(refImpl);
 }
 ```

@@ -1,5 +1,12 @@
 # Glossar
 
+### Buildable
+
+Is an object summarizing all important information for building a model.
+Buildables have a `value`-property that can either be a static value or a `Buildable` again.
+
+Buildables are the input for model-builder.
+
 ### Property Build
 
 Is the activity of a model-builder building one specific property. This activity can include:
