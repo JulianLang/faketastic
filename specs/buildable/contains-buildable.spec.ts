@@ -21,6 +21,6 @@ describe('containsBuildable', () => {
     expect(containsBuildable([buildable])).toBe(true);
     expect(containsBuildable([[buildable]])).toBe(true);
     expect(containsBuildable({ a: buildable })).toBe(true);
-    expect(containsBuildable({ a: { nested: buildable } })).toBe(true);
+    expect(containsBuildable({ a: { nested: buildable, x: 42 } })).toBe(true);
   });
 });
