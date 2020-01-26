@@ -1,4 +1,5 @@
 import { iterate } from 'treelike';
+import { isDefined } from '../util';
 import { isBuildable } from './is-buildable';
 
 /**
@@ -30,6 +31,11 @@ export function containsBuildable(value: any): boolean {
  * @param value The value to check if it is static.
  */
 function isStaticValue(value: any): boolean {
+  if (!isDefined(value)) {
+    // null, undefined
+    return true;
+  }
+
   switch (typeof value) {
     case 'boolean':
     case 'number':
@@ -37,8 +43,10 @@ function isStaticValue(value: any): boolean {
     case 'function':
     case 'bigint':
     case 'symbol':
+      // primitives, functions, symbols
       return true;
   }
 
+  // objects, arrays
   return false;
 }

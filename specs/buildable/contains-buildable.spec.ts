@@ -1,6 +1,6 @@
 import { containsBuildable, createBuildable } from '../../src/buildable';
 
-describe('containsBuildable', () => {
+fdescribe('containsBuildable', () => {
   const buildable = createBuildable(null);
 
   it('should return false for static values', () => {
@@ -13,6 +13,8 @@ describe('containsBuildable', () => {
     expect(containsBuildable(false)).toBe(false);
     expect(containsBuildable('static')).toBe(false);
     expect(containsBuildable(() => true)).toBe(false);
+    expect(containsBuildable(null)).toBe(false);
+    expect(containsBuildable(undefined)).toBe(false);
   });
 
   it('should return true for buildables', () => {
@@ -21,6 +23,6 @@ describe('containsBuildable', () => {
     expect(containsBuildable([buildable])).toBe(true);
     expect(containsBuildable([[buildable]])).toBe(true);
     expect(containsBuildable({ a: buildable })).toBe(true);
-    expect(containsBuildable({ a: { nested: buildable, x: 42 } })).toBe(true);
+    expect(containsBuildable({ a: { before: 'str', nested: buildable, behind: 42 } })).toBe(true);
   });
 });
