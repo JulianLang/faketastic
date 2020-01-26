@@ -5,7 +5,7 @@ import { isBuildable } from '../../buildable';
  * leaving out the `Buildable`-"shell" for all `Buildable`-properties.
  * @param input The read value that gets converted to ObjectTreeNode
  */
-export function childSelector(input: any): any {
+export function getRawValue(input: any): any {
   let value = input;
 
   // dive into Buildable.value

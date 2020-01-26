@@ -1,7 +1,7 @@
 import { createBuildable } from '../../../src/buildable';
-import { childSelector } from '../../../src/builder/traverser';
+import { getRawValue } from '../../../src/builder/traverser';
 
-describe('childSelector', () => {
+describe('getRawValue', () => {
   it('should pass-back non-buildable values', () => {
     // arrange
     const nonBuildables = [
@@ -19,7 +19,7 @@ describe('childSelector', () => {
 
     // act, assert
     nonBuildables.forEach(value => {
-      expect(childSelector(value)).toBe(value);
+      expect(getRawValue(value)).toBe(value);
     });
   });
 
@@ -28,7 +28,7 @@ describe('childSelector', () => {
     const buildable = createBuildable(42);
 
     // act, assert
-    expect(childSelector(buildable)).toBe(42);
+    expect(getRawValue(buildable)).toBe(42);
   });
 
   it('should pass-back the value of the leaf-Buildable, if the input are nested Buildables', () => {
@@ -38,6 +38,6 @@ describe('childSelector', () => {
     const buildable = createBuildable(nestedLevel2);
 
     // act, assert
-    expect(childSelector(buildable)).toBe(42);
+    expect(getRawValue(buildable)).toBe(42);
   });
 });
