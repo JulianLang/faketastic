@@ -1,4 +1,9 @@
-import { createArchitectFn, createProcessorFn, createReaderFn } from '../../src/attached-fns';
+import {
+  createArchitectFn,
+  createProcessorFn,
+  createReaderFn,
+  ExecutionTime,
+} from '../../src/attached-fns';
 import { createBuildable } from '../../src/buildable';
 import { build } from '../../src/builder';
 import { createValueFn } from '../../src/value-fns';
@@ -102,6 +107,38 @@ describe('build', () => {
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(42);
   });
+
+  it('should set the return value of architect functions', () => {
+    // arrange
+    const spy = jasmine.createSpy('architectFn');
+    const spyArchitect = createArchitectFn(spy);
+    const setValueArchitect = createArchitectFn(() => 42);
+    const buildable = createBuildable(null, [setValueArchitect, spyArchitect]);
+
+    // act
+    build(buildable);
+
+    // assert
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(42);
+  });
+
+  (['prebuild', 'postbuild'] as ExecutionTime[]).forEach(processorType =>
+    it('should set the return value of processor functions', () => {
+      // arrange
+      const spy = jasmine.createSpy('processorFn');
+      const spyProcessor = createProcessorFn(spy, processorType);
+      const setValueProcessor = createArchitectFn(() => 42);
+      const buildable = createBuildable(null, [setValueProcessor, spyProcessor]);
+
+      // act
+      build(buildable);
+
+      // assert
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(42);
+    }),
+  );
 
   it('should call preprocessor functions', () => {
     // arrange

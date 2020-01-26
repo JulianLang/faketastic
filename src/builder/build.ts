@@ -46,10 +46,15 @@ function prebuild(node: ObjectTreeNode<Buildable>): void {
   buildable.attachedFns.filter(fn => isReaderFn(fn)).forEach(readerFn => readerFn(node));
   buildable.attachedFns
     .filter(fn => isArchitectFn(fn))
-    .forEach(architectFn => architectFn(buildable.value));
+    .forEach(architectFn => {
+      buildable.value = architectFn(buildable.value);
+    });
+
   buildable.attachedFns
     .filter(fn => isProcessorFn(fn, 'prebuild'))
-    .forEach(prebuildProcessor => prebuildProcessor(buildable.value));
+    .forEach(prebuildProcessor => {
+      buildable.value = prebuildProcessor(buildable.value);
+    });
 }
 
 function extractPostprocessors(buildable: Buildable): ProcessorFn[] {
