@@ -30,7 +30,9 @@ the process will be repeated.
 
 ### Value Functions
 
-(Often wrapper-) Functions without arguments returning a randomized value.
+Value functions continuously return randomized values of a certain type. Often accepts parameters
+that restricts the return value in a certain way (e.g. number bounds/ranges). They work similiar
+to generator functions in javascript, but without the ability to be enumerated.
 They are marked with a special symbol.
 
 `valueFn<T>() => T`
