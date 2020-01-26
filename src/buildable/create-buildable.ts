@@ -1,5 +1,5 @@
+import { AttachedFn } from '../attached-fns';
 import { Type, Types } from '../constants';
-import { AttachedFn } from '../types';
 import { Buildable } from './buildable';
 
 /**

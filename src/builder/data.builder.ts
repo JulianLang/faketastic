@@ -1,6 +1,6 @@
 import { nodeTypeOf, ObjectTreeNode, traverse, treeOf } from 'treelike';
+import { AttachedFn } from '../attached-fns';
 import { containsBuildable } from '../buildable';
-import { AttachedFn } from '../types';
 import { isDefined } from '../util';
 import { isValueFn } from '../value-fns';
 import { BuilderFn } from './builder.fn';

@@ -1,5 +1,5 @@
+import { AttachedFn } from '../attached-fns';
 import { Type } from '../constants';
-import { AttachedFn } from '../types';
 
 /**
  * `Buildable`s are objects summarizing all important information for building data out of models.
