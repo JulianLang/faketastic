@@ -40,7 +40,8 @@ They are marked with a special symbol.
 ### Property Functions
 
 They can either return a static or a buildable value. Their result gets built by
-faketastic's model builder.
+faketastic's model builder. They often return a
+`Buildable` which holds a `ValueFn` as value.
 
 `property(...args, ...attachedFns) => Buildable | any`
 
