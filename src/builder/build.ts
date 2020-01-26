@@ -17,7 +17,7 @@ export const build: BuilderFn<any> = (input: any, attachedFns: AttachedFn[] = []
 function buildNode(node: ObjectTreeNode) {
   /*
     node.value can be:
-     - static value
+     - static value (42, 'str', true, object/array with static values, ...)
      - object/array containing buildables
      - buildable
   */
