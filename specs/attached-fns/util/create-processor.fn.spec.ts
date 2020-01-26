@@ -1,6 +1,6 @@
-import { createProcessorFn, ExecutionTime } from '../../src/attached-fns';
-import { TimeOfExecution, Types } from '../../src/constants';
-import { FnFactorySpecs } from '../spec-helpers/shared-specs';
+import { createProcessorFn, ExecutionTime } from '../../../src/attached-fns';
+import { TimeOfExecution, Types } from '../../../src/constants';
+import { FnFactorySpecs } from '../../spec-helpers/shared-specs';
 
 describe('createProcessorFn', () => {
   FnFactorySpecs.returnPassedInFnWithTypeSymbol(createProcessorFn, Types.ProcessorFn);

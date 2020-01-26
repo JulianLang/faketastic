@@ -1,5 +1,5 @@
-import { ExecutionTime, isProcessorFn } from '../../src/attached-fns';
-import { TimeOfExecution, Type, Types } from '../../src/constants';
+import { ExecutionTime, isProcessorFn } from '../../../src/attached-fns';
+import { TimeOfExecution, Type, Types } from '../../../src/constants';
 
 describe('isProcessorFn', () => {
   it('should return true if the type matches', () => {

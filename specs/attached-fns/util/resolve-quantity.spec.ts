@@ -1,4 +1,4 @@
-import { resolveQuantity } from '../../src/attached-fns';
+import { resolveQuantity } from '../../../src/attached-fns';
 
 describe('resolveQuantity', () => {
   it('should pass-through numbers', () => {
