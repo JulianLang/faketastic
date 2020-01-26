@@ -16,14 +16,6 @@ export const buildData: BuilderFn<any> = (input: any, attachedFns: AttachedFn[] 
 };
 
 function buildNode(node: ObjectTreeNode) {
-  buildValue(node);
-
-  if (containsBuildable(node.value)) {
-    node.value = buildData(node.value);
-  }
-}
-
-function buildValue(node: ObjectTreeNode) {
   /*
     node.value can be:
      - static value
@@ -32,6 +24,11 @@ function buildValue(node: ObjectTreeNode) {
   */
   if (isValueFn(node.value)) {
     node.value = node.value();
+  }
+
+  if (containsBuildable(node.value)) {
+    const valueToBuild = getRawValue(node.value);
+    node.value = buildData(valueToBuild);
   }
 }
 
