@@ -1,8 +1,8 @@
-import { TimeOfExecution, Type, Types } from '../constants';
-import { Func } from '../types';
-import { setSymbol } from '../util';
-import { ProcessorFn } from './attached.fn';
-import { ExecutionTime } from './execution.time';
+import { TimeOfExecution, Type, Types } from '../../constants';
+import { Func } from '../../types';
+import { setSymbol } from '../../util';
+import { ProcessorFn } from '../attached.fn';
+import { ExecutionTime } from '../execution.time';
 
 /**
  * Marks a given function as faketastic-`ProcessorFn`.

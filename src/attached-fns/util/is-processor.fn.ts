@@ -1,7 +1,7 @@
-import { TimeOfExecution, Types } from '../constants';
-import { AnyFn } from '../types';
-import { getSymbol, isDefined, isType } from '../util';
-import { ExecutionTime } from './execution.time';
+import { TimeOfExecution, Types } from '../../constants';
+import { AnyFn } from '../../types';
+import { getSymbol, isDefined, isType } from '../../util';
+import { ExecutionTime } from '../execution.time';
 
 /**
  * Determines whether a given value is a `ProcessorFn`. Can optionally check for the time of execution as well.

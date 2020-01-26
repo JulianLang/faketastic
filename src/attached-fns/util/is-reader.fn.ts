@@ -1,6 +1,6 @@
-import { Types } from '../constants';
-import { AnyFn } from '../types';
-import { isType } from '../util';
+import { Types } from '../../constants';
+import { AnyFn } from '../../types';
+import { isType } from '../../util';
 
 /**
  * Determines whether a given value is a `ReaderFn`.

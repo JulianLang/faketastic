@@ -1,4 +1,4 @@
-import { AnyFn } from '../types';
+import { AnyFn } from '../../types';
 import { isArchitectFn } from './is-architect.fn';
 import { isProcessorFn } from './is-processor.fn';
 import { isReaderFn } from './is-reader.fn';
