@@ -1,7 +1,6 @@
 import { nodeTypeOf, ObjectTreeNode, traverse, treeOf } from 'treelike';
 import { AttachedFn } from '../attached-fns';
 import { containsBuildable } from '../buildable';
-import { isDefined } from '../util';
 import { isValueFn } from '../value-fns';
 import { BuilderFn } from './builder.fn';
 import { getRawValue } from './traverser';
@@ -43,18 +42,6 @@ function finalize(node: ObjectTreeNode): void {
 }
 
 function buildChildren(node: ObjectTreeNode) {
-  // if node's value has been already defined, no initialization neccessary
-  if (!isDefined(node.value)) {
-    switch (node.type) {
-      case 'array':
-        node.value = [];
-        break;
-      case 'object':
-        node.value = {};
-        break;
-    }
-  }
-
   for (const child of node.children) {
     // all children must have names
     node.value[child.name!] = child.value;
