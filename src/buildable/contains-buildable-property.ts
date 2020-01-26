@@ -1,5 +1,6 @@
 import { iterate } from 'treelike';
 import { isDefined } from '../util';
+import { isValueFn } from '../value-fns';
 import { isBuildable } from './is-buildable';
 
 /**
@@ -8,17 +9,17 @@ import { isBuildable } from './is-buildable';
  * @param value The value to check if it contains at least one `Buildable`.
  * @returns `true` if the given value contains at least one `Buildable`, `false` otherwise.
  */
-export function containsBuildable(value: any): boolean {
+export function containsBuildableProperty(value: any): boolean {
   if (isStaticValue(value)) {
     return false;
-  } else if (isBuildable(value)) {
+  } else if (isBuildable(value) || isValueFn(value)) {
     return true;
   }
 
   let result = false;
 
-  iterate(value, child => {
-    if (containsBuildable(child)) {
+  iterate(value, (child, name) => {
+    if (containsBuildableProperty(child)) {
       result = true;
     }
   });
@@ -40,10 +41,9 @@ function isStaticValue(value: any): boolean {
     case 'boolean':
     case 'number':
     case 'string':
-    case 'function':
     case 'bigint':
     case 'symbol':
-      // primitives, functions, symbols
+      // primitives, symbols
       return true;
   }
 
