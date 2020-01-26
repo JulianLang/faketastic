@@ -6,13 +6,13 @@ describe('containsBuildable', () => {
   it('should return false for static values', () => {
     // arrange, act, assert
     expect(containsBuildable({})).toBe(false);
-    expect(containsBuildable({ a: 12, b: true, c: 'str', d: () => {}, e: {} })).toBe(false);
+    expect(containsBuildable({ a: 0, b: false, c: '', d: () => {}, e: {} })).toBe(false);
     expect(containsBuildable([])).toBe(false);
-    expect(containsBuildable([1, 'str', true, () => {}, {}])).toBe(false);
-    expect(containsBuildable(42)).toBe(false);
+    expect(containsBuildable([0, '', false, () => {}, {}])).toBe(false);
+    expect(containsBuildable(0)).toBe(false);
     expect(containsBuildable(false)).toBe(false);
-    expect(containsBuildable('static')).toBe(false);
-    expect(containsBuildable(() => true)).toBe(false);
+    expect(containsBuildable('')).toBe(false);
+    expect(containsBuildable(() => false)).toBe(false);
     expect(containsBuildable(null)).toBe(false);
     expect(containsBuildable(undefined)).toBe(false);
   });
@@ -23,6 +23,6 @@ describe('containsBuildable', () => {
     expect(containsBuildable([buildable])).toBe(true);
     expect(containsBuildable([[buildable]])).toBe(true);
     expect(containsBuildable({ a: buildable })).toBe(true);
-    expect(containsBuildable({ a: { before: 'str', nested: buildable, behind: 42 } })).toBe(true);
+    expect(containsBuildable({ a: { before: '', nested: buildable, behind: 0 } })).toBe(true);
   });
 });
