@@ -6,7 +6,7 @@ import { isValueFn } from '../value-fns';
 import { BuilderFn } from './builder.fn';
 import { getRawValue } from './traverser';
 
-export const buildData: BuilderFn<any> = (input: any, attachedFns: AttachedFn[] = []) => {
+export const build: BuilderFn<any> = (input: any, attachedFns: AttachedFn[] = []) => {
   const tree = treeOf(input, getRawValue);
 
   traverse(tree, node => buildNode(node));
@@ -28,7 +28,7 @@ function buildNode(node: ObjectTreeNode) {
 
   if (containsBuildable(node.value)) {
     const valueToBuild = getRawValue(node.value);
-    node.value = buildData(valueToBuild);
+    node.value = build(valueToBuild);
   }
 }
 
