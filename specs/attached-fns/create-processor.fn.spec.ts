@@ -2,7 +2,7 @@ import { createProcessorFn, ExecutionTime } from '../../src/attached-fns';
 import { TimeOfExecution, Types } from '../../src/constants';
 import { FnFactorySpecs } from '../spec-helpers/shared-specs';
 
-fdescribe('createProcessorFn', () => {
+describe('createProcessorFn', () => {
   FnFactorySpecs.returnPassedInFnWithTypeSymbol(createProcessorFn, Types.ProcessorFn);
 
   it('should return a function with TimeOfExecution symbol set', () => {
