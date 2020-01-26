@@ -19,10 +19,10 @@ describe('sortArgsByType', () => {
     };
 
     // act
-    const { args, attachedFns } = sortArgsByType(argList);
+    const { args, attached } = sortArgsByType(argList);
 
     // assert
-    expect(attachedFns).toEqual([processor, architect, reader]);
+    expect(attached).toEqual([processor, architect, reader]);
     expect(args).toEqual({
       string: argList.string,
       number: argList.number,
