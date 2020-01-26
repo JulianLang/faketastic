@@ -1,6 +1,6 @@
 import { containsBuildable, createBuildable } from '../../src/buildable';
 
-fdescribe('containsBuildable', () => {
+describe('containsBuildable', () => {
   const buildable = createBuildable(null);
 
   it('should return false for static values', () => {
