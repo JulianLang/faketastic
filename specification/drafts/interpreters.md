@@ -15,12 +15,12 @@ The format could be:
 
 ```ts
 export function oneOf(values: any[], ...attachedFns) {
-  function asData(items: any[]) {
-    return randomItem(items);
+  function asData() {
+    return randomItem(values);
   }
 
-  function asSpec(items: any[]) {
-    return 'Can be one of ' + toString(items);
+  function asSpec() {
+    return 'Can be one of ' + toString(values);
   }
 
   return createBuildable(
@@ -28,11 +28,10 @@ export function oneOf(values: any[], ...attachedFns) {
       default: asData,
       spec: asSpec,
     },
-    values,
     faketastic.oneOf, // id string "faketastic.oneOf"
     attachedFns,
   );
-  // => { [faketastic.interpret]: { default: asData, spec: asSpec, $args: values } }
+  // => { [faketastic.interpret]: { default: asData, spec: asSpec } }
 }
 
 function toHtml(input: any) {

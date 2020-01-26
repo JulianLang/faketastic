@@ -4,14 +4,9 @@
 
 - Takes data input, traverses a model and calls the property builder, then assigns the result into the build-object.
 - Knows and delegates to a traverser and property builder
-- `modelBuilder<T = any>(value: any): T`
-
-## Property Builder
-
-- Completely builds a single property, recursively and returns the data result.
+- Completely builds property, recursively and returns the data result.
 - Calls property-function and attached functions in correct order and each fn only once.
-- Does not know anything about ObjectTreeNodes
-- `propertyBuilder(value: Buildable | any): Placeholder | any`
+- `modelBuilder(value: Buildable | any): Buildable | any`
 
 ## Traverser
 

@@ -2,12 +2,12 @@
 
 ### Symbols
 
-- Type: 'BuilderFn' | 'ReaderFn' | 'ArchitectFn' | 'ProcessorFn' | 'Buildable';
+- Type: 'ValueFn' | 'ReaderFn' | 'ArchitectFn' | 'ProcessorFn' | 'Buildable';
 - FnCalled: boolean
 
 ### Special objects
 
-- builder functions
+- Value Functions
 - buildables
 - attached functions 'reader' | 'architect' | 'processor'
 
@@ -16,11 +16,11 @@
 Is an object summarizing all important information for building a model.
 Buildables have a `value`-property that can either be a static value or a `Buildable` again.
 
-Buildables are the input for model-builder.
+Buildables are the input for builders.
 
 ### Property Build
 
-Is the activity of a model-builder building one specific property. This activity can include:
+Is the activity of a builder building one specific property. This activity can include:
 
 - building a `Buildable`
 - setting a static value
@@ -28,17 +28,17 @@ Is the activity of a model-builder building one specific property. This activity
 This process may be recursive. If the build's result is a `Buildable` again,
 the process will be repeated.
 
-### Builder Functions
+### Value Functions
 
 (Often wrapper-) Functions without arguments returning a randomized value.
 They are marked with a special symbol.
 
-`builder<T>() => T`
+`valueFn<T>() => T`
 
 ### Property Functions
 
 They can either return a static or a buildable value. Their result gets built by
-faketastic's model-builder.
+faketastic's model builder.
 
 `property(...args, ...attachedFns) => Buildable | any`
 

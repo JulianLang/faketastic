@@ -10,7 +10,7 @@
    5. Run preprocessors
    6. If buildable.value is BuilderFn:
       1. execute and assign result as node.value
-      2. If result is buildable start over at step 5.1
+      2. If result is buildable start over at step 1
    7. Run postprocessors
    8. set result;
    9. Return built value
@@ -20,4 +20,27 @@
 builder(quantity(2), canBe(null));
 // each created item can be null
 builder(quantity(2, canBe(null)));
+```
+
+```ts
+builder(Buildable<BuildFn>);
+builder(staticValue);
+builder(object);
+builder(array);
+```
+
+```mermaid
+graph TD;
+
+build:Buildable(build Buildable)
+convert:ToTree(convert to tree)
+traverse:tree(traverse tree)
+if:valueIsStatic{value==static?}
+if:value:is:object{value==Object}
+
+build:Buildable-->convert:ToTree
+convert:ToTree-->traverse:tree
+traverse:tree-->if:value:is:object
+if:value:is:object -- yes --> if:value:is:static
+if:value:is:object -- no --> if:value:is:static
 ```
