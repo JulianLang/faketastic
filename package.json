@@ -31,6 +31,7 @@
   "devDependencies": {
     "@types/jasmine": "^3.3.16",
     "@types/lodash": "^4.14.142",
+    "@types/lodash.clonedeep": "^4.5.6",
     "@types/moment": "^2.13.0",
     "@types/node": "^12.6.8",
     "istanbul": "^0.4.5",
@@ -44,7 +45,7 @@
     "typescript": "^3.5.3"
   },
   "dependencies": {
-    "lodash": "^4.17.15",
+    "lodash.clonedeep": "^4.5.0",
     "moment": "^2.24.0",
     "treelike": "0.0.19"
   }
