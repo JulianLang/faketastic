@@ -7,5 +7,5 @@ import { Type, Types } from '../constants';
  */
 export interface ValueFn<T = any> {
   [Type]: typeof Types.ValueFn;
-  (...params: any[]): T;
+  (): T;
 }
