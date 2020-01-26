@@ -67,10 +67,9 @@ They can gather data and place their results on nodes, though.
 Architect functions can manipulate itself or child properties, but must not touch the parent.
 They target the way how properties are structured, but must not touch any node's values.
 
-`architect(node: ObjectTreeNode) => void`
+`architect(value: any) => any`
 
 - [obsolete?](./responsibilities.md#ArchitectFn-obsolete?)
-- `architect(value: any) => any`
 
 ### Processor Functions
 
