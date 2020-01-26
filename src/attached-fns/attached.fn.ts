@@ -1,5 +1,6 @@
 import { ObjectTreeNode } from 'treelike';
-import { Type, Types } from '../constants';
+import { TimeOfExecution, Type, Types } from '../constants';
+import { ExecutionTime } from './execution.time';
 
 export interface ReaderFn {
   [Type]: typeof Types.ReaderFn;
@@ -13,6 +14,7 @@ export interface ArchitectFn {
 
 export interface ProcessorFn {
   [Type]: typeof Types.ProcessorFn;
+  [TimeOfExecution]: ExecutionTime;
   (value: any): any;
 }
 

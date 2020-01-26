@@ -2,7 +2,7 @@ import { Type } from '../../src/constants';
 import { AnyFn, Func } from '../../src/types';
 
 type TypeCheckFn = Func<[any, string], boolean>;
-type FnFactory = Func<[AnyFn], Record<typeof Type, string>>;
+type FnFactory = Func<[AnyFn, any?], Record<typeof Type, string>>;
 
 export const TypeCheckFnSpecs = {
   returnTrueForTypeMatches: (fn: TypeCheckFn, expectedType: string) =>
