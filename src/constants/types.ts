@@ -3,7 +3,7 @@ export const Types = {
   /** The type-identifier for buildables. */
   Buildable: 'faketastic.types.buildable',
   /** The type-identifier for builder functions. */
-  BuilderFn: 'faketastic.types.builder-fn',
+  ValueFn: 'faketastic.types.value-fn',
   /** The type-identifier for reader functions. */
   ReaderFn: 'faketastic.types.reader-fn',
   /** The type-identifier for architect functions. */

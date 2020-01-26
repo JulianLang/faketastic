@@ -7,7 +7,7 @@ import { AttachedFn } from '../types';
  */
 export interface Buildable<T = any> {
   [Type]: string;
-  /** The current value of the `Buildable`. Can be either a static value, a `BuilderFn` or a `Buildable`. */
+  /** The current value of the `Buildable`. Can be either a static value, a `ValueFn` or a `Buildable`. */
   value: T;
   /** The `AttachedFn`s associated with this `Buildable`. */
   attachedFns: AttachedFn[];

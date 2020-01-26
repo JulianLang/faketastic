@@ -8,7 +8,7 @@
    3. Run readers
    4. Run architects
    5. Run preprocessors
-   6. If buildable.value is BuilderFn:
+   6. If buildable.value is ValueFn:
       1. execute and assign result as node.value
       2. If result is buildable start over at step 1
    7. Run postprocessors
