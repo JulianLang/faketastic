@@ -1,6 +1,7 @@
 import { nodeTypeOf, ObjectTreeNode, traverse, treeOf } from 'treelike';
-import { AttachedFn } from '../attached-fns';
-import { containsBuildable } from '../buildable';
+import { AttachedFn, isArchitectFn, isProcessorFn, isReaderFn, ProcessorFn } from '../attached-fns';
+import { asBuildable, Buildable, isBuildable } from '../buildable';
+import { containsBuildable } from '../buildable/contains-buildable';
 import { isValueFn } from '../value-fns';
 import { BuilderFn } from './builder.fn';
 import { getRawValue } from './traverser';
@@ -15,20 +16,54 @@ export const build: BuilderFn<any> = (input: any, attachedFns: AttachedFn[] = []
 };
 
 function buildNode(node: ObjectTreeNode) {
-  /*
-    node.value can be:
-     - static value (42, 'str', true, object/array with static values, ...)
-     - object/array containing buildables
-     - buildable
-  */
-  if (isValueFn(node.value)) {
-    node.value = node.value();
+  if (isBuildable(node.value)) {
+    prebuild(node);
   }
+
+  // normalizing the value to buildable helps unifying the next build step
+  const buildable = asBuildable(node.value);
+
+  if (isValueFn(buildable.value)) {
+    buildable.value = buildable.value();
+    setValue(buildable, node);
+  }
+
+  // postprocessors get lost after building the node via build(), so cache it for calling it afterwards.
+  const cachedPostprocessors = extractPostprocessors(buildable);
 
   if (containsBuildable(node.value)) {
     const valueToBuild = getRawValue(node.value);
-    node.value = build(valueToBuild);
+    const built = build(valueToBuild);
+    setValue(built, node);
   }
+
+  node.value = postbuild(cachedPostprocessors, node.value);
+}
+
+function prebuild(node: ObjectTreeNode<Buildable>): void {
+  const buildable = node.value;
+
+  buildable.attachedFns.filter(fn => isReaderFn(fn)).forEach(readerFn => readerFn(node));
+  buildable.attachedFns
+    .filter(fn => isArchitectFn(fn))
+    .forEach(architectFn => architectFn(buildable.value));
+  buildable.attachedFns
+    .filter(fn => isProcessorFn(fn, 'prebuild'))
+    .forEach(prebuildProcessor => prebuildProcessor(buildable.value));
+}
+
+function extractPostprocessors(buildable: Buildable): ProcessorFn[] {
+  return buildable.attachedFns.filter(fn => isProcessorFn(fn, 'postbuild')) as ProcessorFn[];
+}
+
+function postbuild(postprocessors: ProcessorFn[], value: any): any {
+  let currentValue = value;
+
+  postprocessors.forEach(prebuildProcessor => {
+    currentValue = prebuildProcessor(currentValue);
+  });
+
+  return currentValue;
 }
 
 function finalize(node: ObjectTreeNode): void {
