@@ -1,4 +1,4 @@
-import { nodeTypeOf, ObjectTreeNode, traverse, treeOf } from 'treelike';
+import { nodeTypeOf, ObjectTreeNode, toValue, traverse, treeOf } from 'treelike';
 import { AttachedFn, isArchitectFn, isProcessorFn, isReaderFn, ProcessorFn } from '../attached-fns';
 import { asBuildable, Buildable, isBuildable } from '../buildable';
 import { containsBuildable } from '../buildable/contains-buildable';
@@ -6,14 +6,20 @@ import { isValueFn } from '../value-fns';
 import { BuilderFn } from './builder.fn';
 import { getRawValue } from './traverser';
 
-export const build: BuilderFn<any> = (input: any, attachedFns: AttachedFn[] = []) => {
+export const build: BuilderFn<any> = (input: any, ...attachedFns: AttachedFn[]) => {
   const tree = treeOf(input, getRawValue);
 
+  buildData(tree);
+
+  return toValue(tree);
+};
+
+function buildData(tree: ObjectTreeNode): any {
   traverse(tree, node => buildNode(node));
   traverse(tree, node => finalize(node));
 
-  return tree.value;
-};
+  return tree;
+}
 
 function buildNode(node: ObjectTreeNode) {
   if (isBuildable(node.value)) {
@@ -37,7 +43,8 @@ function buildNode(node: ObjectTreeNode) {
     setValue(built, node);
   }
 
-  node.value = postbuild(cachedPostprocessors, node.value);
+  const value = postbuild(cachedPostprocessors, node.value);
+  setValue(value, node);
 }
 
 function prebuild(node: ObjectTreeNode<Buildable>): void {
@@ -48,12 +55,14 @@ function prebuild(node: ObjectTreeNode<Buildable>): void {
     .filter(fn => isArchitectFn(fn))
     .forEach(architectFn => {
       buildable.value = architectFn(buildable.value);
+      setValue(buildable, node);
     });
 
   buildable.attachedFns
     .filter(fn => isProcessorFn(fn, 'prebuild'))
     .forEach(prebuildProcessor => {
       buildable.value = prebuildProcessor(buildable.value);
+      setValue(buildable, node);
     });
 }
 
