@@ -1,8 +1,22 @@
 import { createNode, treeOf } from 'treelike';
 import { createBuildable } from '../../src/buildable';
-import { toFaketasticNode } from '../../src/util';
+import { clone, toFaketasticNode } from '../../src/util';
 
 describe('toFaketasticNode', () => {
+  it('should be independent after cloning', () => {
+    // arrange
+    const node = createNode('a', null);
+    const faketasticNode = toFaketasticNode(node)!;
+    const cloneNode = clone(faketasticNode);
+
+    // act
+    faketasticNode.setValue(42);
+
+    // assert
+    expect(faketasticNode.value).toBe(42);
+    expect(cloneNode.value).toBe(null);
+  });
+
   it('should return undefined when "undefined" was passed as input', () => {
     // arrange, act
     const result = toFaketasticNode(undefined);
@@ -84,6 +98,39 @@ describe('toFaketasticNode', () => {
 
     // assert
     expect(faketasticNode.currentType()).toBe('array');
+  });
+
+  it('should have a working setValue function', () => {
+    // arrange
+    const name = 'name';
+    const node = createNode(name, null);
+    const faketasticNode = toFaketasticNode(node)!;
+    const newValue = { a: 42 };
+
+    // pre-condition
+    expect(faketasticNode.children.length).toBe(0);
+    expect(faketasticNode.parent).toBeUndefined();
+    expect(faketasticNode.isRecursionRoot).toBe(false);
+    expect(faketasticNode.name).toBe(name);
+    expect(faketasticNode.value).toBe(null);
+    expect(faketasticNode.type).toBe('value');
+
+    // act
+    faketasticNode.setValue(newValue);
+
+    // assert: unchanged
+    expect(faketasticNode.parent).toBeUndefined();
+    expect(faketasticNode.name).toBe(name);
+    expect(faketasticNode.isRecursionRoot).toBe(false);
+    // assert: changed
+    expect(faketasticNode.value).toEqual(newValue);
+    expect(faketasticNode.type).toBe('object');
+    // assert: children
+    expect(faketasticNode.children.length).toBe(1);
+    const child = faketasticNode.children[0];
+    expect(child.type).toBe('value');
+    expect(child.name).toBe('a');
+    expect(child.value).toBe(42);
   });
 
   it('should also convert child nodes', () => {

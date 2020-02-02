@@ -1,5 +1,6 @@
-import { nodeTypeOf, ObjectTreeNode, ObjectTreeNodeType } from 'treelike';
+import { nodeTypeOf, ObjectTreeNode, ObjectTreeNodeType, treeOf } from 'treelike';
 import { isBuildable } from '../buildable';
+import { getRawValue } from '../builder/traverser';
 import { Type, Types } from '../constants';
 import { FaketasticNode } from '../types';
 import { isDefined } from './is-defined';
@@ -19,20 +20,30 @@ export function toFaketasticNode(node?: ObjectTreeNode): FaketasticNode | undefi
   faketasticNode.isContainer = () => isContainer(faketasticNode);
   faketasticNode.currentValue = () => faketasticNode.value;
   faketasticNode.currentType = () => currentTypeOf(faketasticNode);
+  faketasticNode.setValue = (value: any) => setValue(value, faketasticNode);
 
   return faketasticNode;
 }
 
-export function toFaketasticNodes(nodes: ObjectTreeNode[]): FaketasticNode[] {
+function toFaketasticNodes(nodes: ObjectTreeNode[]): FaketasticNode[] {
   return nodes.map(toFaketasticNode) as FaketasticNode[];
 }
 
-export function currentTypeOf(node: ObjectTreeNode): ObjectTreeNodeType {
+function currentTypeOf(node: ObjectTreeNode): ObjectTreeNodeType {
   const significantValue = isBuildable(node.value) ? node.value.value : node.value;
 
   return nodeTypeOf(significantValue);
 }
 
-export function isContainer(node: ObjectTreeNode): boolean {
+function isContainer(node: ObjectTreeNode): boolean {
   return isBuildable(node.value) && isBuildable(node.value.value);
+}
+
+function setValue(value: any, node: FaketasticNode) {
+  const childTree = treeOf(value, getRawValue);
+  const faketasticTree = toFaketasticNode(childTree);
+
+  node.children = faketasticTree!.children;
+  node.value = value;
+  node.type = nodeTypeOf(node.value);
 }
