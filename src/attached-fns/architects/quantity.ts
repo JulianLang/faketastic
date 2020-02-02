@@ -1,4 +1,4 @@
-import { Buildable, createBuildable } from '../../buildable';
+import { Buildable, createBuildable, isBuildable } from '../../buildable';
 import { clone } from '../../util';
 import { AttachedFn } from '../attached.fn';
 import { Quantity } from '../quantity';
@@ -11,9 +11,9 @@ export function quantity(n: Quantity, ...attachedFns: AttachedFn[]): any {
     const amount = resolveQuantity(n);
 
     for (let i = 0; i < amount; i++) {
-      const withAttachedFns = addAttachedFns(value);
-      const cloned = clone(withAttachedFns);
-      result.push(cloned);
+      const cloned = clone(value);
+      const withAttachedFns = addAttachedFns(cloned);
+      result.push(withAttachedFns);
     }
 
     return result;
@@ -24,7 +24,14 @@ export function quantity(n: Quantity, ...attachedFns: AttachedFn[]): any {
    * @param value The value to add attached functions to.
    */
   function addAttachedFns(value: any): Buildable | any {
-    return attachedFns.length > 0 ? createBuildable(value, attachedFns) : value;
+    if (attachedFns.length === 0) {
+      return value;
+    }
+
+    const buildable = isBuildable(value) ? value : createBuildable(value);
+    buildable.attachedFns.push(...attachedFns);
+
+    return buildable;
   }
 
   return createArchitectFn(quantityImpl);
