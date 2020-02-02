@@ -7,3 +7,4 @@ export * from './is-undefined';
 export * from './sort-args-by-type';
 export * from './symbols';
 export * from './time';
+export * from './to-faketastic-node';
