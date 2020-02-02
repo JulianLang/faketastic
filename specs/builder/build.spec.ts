@@ -48,7 +48,8 @@ describe('build', () => {
   it('should extract values from nested buildables', () => {
     // arrange
     const expectedValue = 0;
-    const nestedLevel2 = createBuildable(expectedValue);
+    const nestedLevel3 = createBuildable(expectedValue);
+    const nestedLevel2 = createBuildable(nestedLevel3);
     const nestedLevel1 = createBuildable(nestedLevel2);
     const buildable = createBuildable(nestedLevel1);
 
@@ -57,6 +58,25 @@ describe('build', () => {
 
     // assert
     expect(result).toBe(expectedValue);
+  });
+
+  it('should call attached fns from nested buildables', () => {
+    // arrange
+    const someValue = 42;
+    const expectedValue = [someValue];
+    const spy = jasmine.createSpy('fn', value => [value]).and.callThrough();
+    const toArray = createArchitectFn(spy);
+
+    const nestedLevel2 = createBuildable(someValue);
+    const nestedLevel1 = createBuildable(nestedLevel2, [toArray]);
+    const buildable = createBuildable(nestedLevel1);
+
+    // act
+    const result = build(buildable);
+
+    // assert
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(expectedValue);
   });
 
   it('should eagerly/recursively build properties', () => {

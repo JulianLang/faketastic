@@ -45,5 +45,7 @@ function setValue(value: any, node: FaketasticNode) {
 
   node.children = faketasticTree.children;
   node.value = value;
-  node.type = nodeTypeOf(node.value);
+
+  const rawValue = getRawValue(value);
+  node.type = nodeTypeOf(rawValue);
 }
