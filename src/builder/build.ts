@@ -1,5 +1,5 @@
 import { ObjectTreeNode, toValue, traverse, treeOf } from 'treelike';
-import { AttachedFn, isArchitectFn, isProcessorFn, isReaderFn } from '../attached-fns';
+import { isArchitectFn, isProcessorFn, isReaderFn } from '../attached-fns';
 import { asBuildable, Buildable, stripBuildable } from '../buildable';
 import { FaketasticNode } from '../types';
 import { toFaketasticNode } from '../util';
@@ -7,7 +7,7 @@ import { isValueFn } from '../value-fns';
 import { BuilderFn } from './builder.fn';
 import { getRawValue } from './traverser';
 
-export const build: BuilderFn<any> = (input: any, ...attachedFns: AttachedFn[]) => {
+export const build: BuilderFn<any> = (input: any) => {
   const tree = treeOf(input, getRawValue);
 
   const builtTree = buildData(tree);
