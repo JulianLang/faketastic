@@ -10,4 +10,6 @@ export const Types = {
   ArchitectFn: 'faketastic.types.architect-fn',
   /** The type-identifier for processor functions. */
   ProcessorFn: 'faketastic.types.processor-fn',
+  /** The type-identifier for faketastic nodes. */
+  FaketasticNode: 'faketastic.types.faketastic-node',
 };
