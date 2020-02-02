@@ -34,10 +34,26 @@ describe('toFaketasticNode', () => {
     expect(faketasticNode.isContainer()).toBe(false);
 
     // act
-    faketasticNode.value = createBuildable(null);
+    const nestedBuildable = createBuildable(null);
+    faketasticNode.value = createBuildable(nestedBuildable);
 
     // assert
     expect(faketasticNode.isContainer()).toBe(true);
+  });
+
+  it('should have a working isBuildable function', () => {
+    // arrange
+    const node = createNode('name', 0);
+    const faketasticNode = toFaketasticNode(node)!;
+
+    // pre-condition
+    expect(faketasticNode.isBuildable()).toBe(false);
+
+    // act
+    faketasticNode.value = createBuildable(null);
+
+    // assert
+    expect(faketasticNode.isBuildable()).toBe(true);
   });
 
   it('should have a working currentValue function', () => {

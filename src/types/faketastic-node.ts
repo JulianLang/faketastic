@@ -6,6 +6,7 @@ export interface FaketasticNode<T = any> extends ObjectTreeNode<T> {
 
   /** Container nodes contain nested `Buildable`s within their value property. */
   isContainer: () => boolean;
+  isBuildable: () => boolean;
   currentValue: () => T;
   currentType: () => ObjectTreeNodeType;
 }

@@ -15,6 +15,7 @@ export function toFaketasticNode(node?: ObjectTreeNode): FaketasticNode | undefi
     children: toFaketasticNodes(node.children),
   } as FaketasticNode;
 
+  faketasticNode.isBuildable = () => isBuildable(faketasticNode.value);
   faketasticNode.isContainer = () => isContainer(faketasticNode);
   faketasticNode.currentValue = () => faketasticNode.value;
   faketasticNode.currentType = () => currentTypeOf(faketasticNode);
@@ -33,5 +34,5 @@ export function currentTypeOf(node: ObjectTreeNode): ObjectTreeNodeType {
 }
 
 export function isContainer(node: ObjectTreeNode): boolean {
-  return isBuildable(node.value);
+  return isBuildable(node.value) && isBuildable(node.value.value);
 }
