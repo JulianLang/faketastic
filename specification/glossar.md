@@ -5,9 +5,9 @@
 - Type: 'ValueFn' | 'ReaderFn' | 'ArchitectFn' | 'ProcessorFn' | 'Buildable';
 - FnCalled: boolean
 
-### Special objects
+### Special Entities
 
-- Value Functions
+- value functions
 - buildables
 - attached functions 'reader' | 'architect' | 'processor'
 
