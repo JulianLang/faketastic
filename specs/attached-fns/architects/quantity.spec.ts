@@ -39,11 +39,11 @@ describe('quantity', () => {
   });
 
   [
-    createArchitectFn(() => {}),
-    createProcessorFn(() => {}, 'prebuild'),
-    createProcessorFn(() => {}, 'postbuild'),
+    createArchitectFn(function ArchitectFn() {}),
+    createProcessorFn(function PreProcessorFn() {}, 'prebuild'),
+    createProcessorFn(function PostProcessor() {}, 'postbuild'),
   ].forEach(attachedFn => {
-    it(`should turn a non-buildable value into Buildable, when ${attachedFn.name} is given`, () => {
+    it(`should turn a non-buildable value into Buildable, when a ${attachedFn.name} is given`, () => {
       // arrange
       const architectFn = quantity(1, attachedFn);
       const nonBuildable = null;
