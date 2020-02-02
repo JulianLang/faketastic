@@ -13,7 +13,7 @@ describe('use', () => {
     expect(isBuildable($model)).toBe(true);
   });
 
-  it('should return a buildable containing a clone of the specified model', () => {
+  it('should clone of the specified model', () => {
     // arrange, act
     const $model = use(mdl);
 
