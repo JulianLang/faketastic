@@ -16,9 +16,10 @@ export const build: BuilderFn<any> = (input: any, ...attachedFns: AttachedFn[]) 
   return output;
 };
 
-function buildData(tree: ObjectTreeNode): any {
-  const faketasticTree = toFaketasticNode(tree);
-  traverse(faketasticTree!, node => buildNode(node));
+function buildData(tree: ObjectTreeNode): ObjectTreeNode {
+  const faketasticTree = toFaketasticNode(tree)!;
+
+  traverse(faketasticTree, node => buildNode(node));
 
   return faketasticTree;
 }
