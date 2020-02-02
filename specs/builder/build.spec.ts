@@ -44,7 +44,6 @@ describe('build', () => {
     expect(result.array).toEqual([0, '']);
   });
 
-  // TODO: langju: maybe merge nested buildables into one, allowing kind of "containerization"
   it('should extract values from nested buildables', () => {
     // arrange
     const expectedValue = 0;
@@ -111,7 +110,7 @@ describe('build', () => {
 
     expect(spy).toHaveBeenCalledTimes(1);
     expect(arg.parent).toBe(undefined);
-    expect(arg.type).toBe('object');
+    expect(arg.type).toBe('value');
     expect(arg.name).toBe('$root');
   });
 
