@@ -33,6 +33,10 @@ function buildNode(node: FaketasticNode): void {
   if (isValueFn(buildable.value)) {
     buildable.value = buildable.value();
     node.setValue(buildable);
+
+    if (node.isBuildable()) {
+      buildNode(node);
+    }
   }
 
   if (node.isContainer()) {
@@ -63,9 +67,9 @@ function prebuild(node: FaketasticNode<Buildable>): void {
     });
 }
 
-// @ts-ignore
 function postbuild(buildable: Buildable): any {
-  let currentValue = buildable.value;
+  const rawValue = getRawValue(buildable.value);
+  let currentValue = rawValue;
 
   buildable.attachedFns
     .filter(fn => isProcessorFn(fn, 'postbuild'))
