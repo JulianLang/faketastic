@@ -1,52 +1,19 @@
-import { iterate } from 'treelike';
+import { childTraverser, findNode, ObjectTreeNode } from 'treelike';
 import { isDefined } from '../util';
 import { isBuildable } from './is-buildable';
 
 /**
- * Determines whether a given value contains at least one `Buildable`. Checks also for nested
- * values when an object or array was given as input.
- * @param value The value to check if it contains at least one `Buildable`.
+ * Determines whether a given node contains at least one `Buildable` child node. Checks also for nested
+ * nodes when an object- or array-node was given as input.
+ * @param node The node to check if it contains at least one `Buildable` in its children.
  * @returns `true` if the given value contains at least one `Buildable`, `false` otherwise.
  */
-export function containsBuildable(value: any): boolean {
-  if (isStaticValue(value)) {
-    return false;
-  } else if (isBuildable(value)) {
-    return true;
-  }
+export function containsBuildable(node: ObjectTreeNode): boolean {
+  const buildableChildNode = findNode(
+    node,
+    n => n !== node && isBuildable(n.value),
+    childTraverser,
+  );
 
-  let result = false;
-
-  iterate(value, child => {
-    if (containsBuildable(child)) {
-      result = true;
-    }
-  });
-
-  return result;
-}
-
-/**
- * Determines whether a given value is a static value.
- * @param value The value to check if it is static.
- */
-function isStaticValue(value: any): boolean {
-  if (!isDefined(value)) {
-    // null, undefined
-    return true;
-  }
-
-  switch (typeof value) {
-    case 'boolean':
-    case 'number':
-    case 'string':
-    case 'function':
-    case 'bigint':
-    case 'symbol':
-      // primitives, functions, symbols
-      return true;
-  }
-
-  // objects, arrays
-  return false;
+  return isDefined(buildableChildNode);
 }
