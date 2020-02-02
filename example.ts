@@ -1,3 +1,8 @@
+import { quantity } from './src/attached-fns';
+import { createBuildable } from './src/buildable';
+import { build } from './src/builder';
+import { createValueFn, randomInt } from './src/value-fns';
+
 /*
   Playground. You can try out faketastic here when developing your own functionality.
   Please do not check in changes of this file.
@@ -14,11 +19,12 @@
 
     $ npm start
 */
-import { build, template } from './src';
+const buildable = createBuildable(
+  {
+    a: createValueFn(() => randomInt(1, 10)),
+  },
+  [quantity(() => randomInt(2, 6))],
+);
 
-const MyTemplate = template({
-  faketastic: 'playground works!',
-});
-
-const output = build(MyTemplate);
-console.log(output);
+console.log(build(buildable));
+console.log();

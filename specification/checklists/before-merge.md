@@ -1,0 +1,6 @@
+- run tests
+- run build
+- code documentation (functions, types)
+  - intention
+  - do's / dont's
+  - example(s)
