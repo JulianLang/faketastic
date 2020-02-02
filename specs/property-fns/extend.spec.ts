@@ -1,7 +1,7 @@
 import { isBuildable } from '../../src/buildable';
 import { extend } from '../../src/property-fns/extend';
 
-fdescribe('extend', () => {
+describe('extend', () => {
   const base = { a: 42 };
   const extension = { b: 0 };
 
