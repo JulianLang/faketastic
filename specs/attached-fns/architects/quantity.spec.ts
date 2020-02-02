@@ -2,7 +2,7 @@ import { createArchitectFn, createProcessorFn, quantity } from '../../../src/att
 import { Buildable, createBuildable, isBuildable } from '../../../src/buildable';
 import { isArray } from '../../../src/util';
 
-fdescribe('quantity', () => {
+describe('quantity', () => {
   it('should accept static number of items', () => {
     // arrange
     const n = 2;
