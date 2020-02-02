@@ -42,11 +42,11 @@
     "nyc": "^14.1.1",
     "rimraf": "^3.0.0",
     "ts-node": "^8.3.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.7.5"
   },
   "dependencies": {
     "lodash.clonedeep": "^4.5.0",
     "moment": "^2.24.0",
-    "treelike": "0.0.20"
+    "treelike": "0.0.22"
   }
 }
