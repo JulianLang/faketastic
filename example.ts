@@ -19,14 +19,8 @@ import { extend, range, use } from './src/property-fns';
 
     $ npm start
 */
-let buildable = createBuildable(
-  {
-    a: range(2, 20, quantity(2)),
-  },
-  // [quantity(() => randomInt(1, 3))],
-);
+const pet = createBuildable({ age: range(1, 15) });
+const dog = extend(pet, { paws: range(0, 4) });
 
-const X = extend(buildable, {});
-
-const output = build(use(X, quantity(3)));
+const output = build(use(dog, quantity(3)));
 console.log(JSON.stringify(output, null, 2));
