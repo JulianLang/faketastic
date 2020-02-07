@@ -9,16 +9,34 @@ import { build } from '../../src/builder';
 import { createValueFn } from '../../src/value-fns';
 
 describe('build', () => {
-  it('should build properties having a ValueFn', () => {
+  it('should call ValueFn with the buildable they are located on', () => {
     // arrange
-    const expectedValue = 'Pete';
-    const valueFn = createValueFn(() => expectedValue);
+    const spy = jasmine.createSpy('valueFn');
+    const valueFn = createValueFn(spy);
+    const buildable = createBuildable(valueFn);
 
     // act
-    const result = build({ property: valueFn });
+    build({ property: buildable });
 
     // assert
-    expect(result.property).toBe(expectedValue);
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(buildable);
+  });
+
+  it('should call ValueFn with a builable even if the original value is none', () => {
+    // arrange
+    const spy = jasmine.createSpy('valueFn');
+    const valueFn = createValueFn(spy);
+
+    // act
+    build({ property: valueFn });
+
+    // assert
+    /*
+        note: expected arg is Buildable<undefined>, as the valueFn spy will return undefined.
+    */
+    const expectedArg = createBuildable(undefined);
+    expect(spy).toHaveBeenCalledWith(expectedArg);
   });
 
   it('should assign properties having static values', () => {

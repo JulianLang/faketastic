@@ -32,7 +32,7 @@ function buildNode(node: FaketasticNode): void {
   const buildable = asBuildable(node.value);
 
   if (isValueFn(buildable.value)) {
-    buildable.value = buildable.value();
+    buildable.value = buildable.value(buildable);
     node.setValue(buildable);
 
     if (node.isBuildable()) {

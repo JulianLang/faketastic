@@ -1,3 +1,4 @@
+import { Buildable } from '../buildable';
 import { Type, Types } from '../constants';
 
 /**
@@ -7,5 +8,5 @@ import { Type, Types } from '../constants';
  */
 export interface ValueFn<T = any> {
   [Type]: typeof Types.ValueFn;
-  (): T;
+  (buildable: Buildable): T;
 }
