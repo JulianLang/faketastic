@@ -1,4 +1,4 @@
-import { Buildable, createBuildable } from '../buildable';
+import { Buildable, createBuildable, isBuildable } from '../buildable';
 
 /**
  * Creates a new model by extending the given base model. The extension's properties might add new
@@ -17,9 +17,13 @@ import { Buildable, createBuildable } from '../buildable';
  * @param base The base model to be extended.
  * @param extension The extension model, able to extend and override base-properties.
  */
-export function extend<T, K>(base: T, extension: K): Buildable<T & K> {
+export function extend<T, K>(
+  base: Buildable<T> | T,
+  extension: Buildable<K> | K,
+): Buildable<T & K> {
+  const baseMdl = isBuildable(base) ? base.value : base;
   const extended = createBuildable({
-    ...base,
+    ...baseMdl,
     ...extension,
   });
 

@@ -1,9 +1,9 @@
-import { isBuildable } from '../../src/buildable';
+import { createBuildable, isBuildable } from '../../src/buildable';
 import { extend } from '../../src/property-fns/extend';
 
 describe('extend', () => {
-  const base = { a: 42 };
-  const extension = { b: 0 };
+  const base = { a: 0 };
+  const extension = { b: 42 };
 
   it('should return a buildable', () => {
     // arrange, act
@@ -40,5 +40,17 @@ describe('extend', () => {
 
     // assert
     expect(result.value).toEqual({ a: overridingValue });
+  });
+
+  it('should extend the value of a buildable given as base model', () => {
+    // arrange
+    const value = { a: 0 };
+    const buildable = createBuildable(value);
+
+    // act
+    const result = extend(buildable, { b: 42 });
+
+    // assert
+    expect(result.value).toEqual({ a: 0, b: 42 });
   });
 });
