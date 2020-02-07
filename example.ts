@@ -1,7 +1,7 @@
 import { quantity } from './src/attached-fns';
 import { createBuildable } from './src/buildable';
 import { build } from './src/builder';
-import { createValueFn, randomInt } from './src/value-fns';
+import { extend, range, use } from './src/property-fns';
 
 /*
   Playground. You can try out faketastic here when developing your own functionality.
@@ -19,12 +19,14 @@ import { createValueFn, randomInt } from './src/value-fns';
 
     $ npm start
 */
-const buildable = createBuildable(
+let buildable = createBuildable(
   {
-    a: createValueFn(() => randomInt(1, 10)),
+    a: range(2, 20, quantity(2)),
   },
-  [quantity(() => randomInt(2, 6))],
+  // [quantity(() => randomInt(1, 3))],
 );
 
-console.log(build(buildable));
-console.log();
+const X = extend(buildable, {});
+
+const output = build(use(X, quantity(3)));
+console.log(JSON.stringify(output, null, 2));

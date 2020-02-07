@@ -11,7 +11,8 @@ export function quantity(n: Quantity, ...attachedFns: AttachedFn[]): any {
     const amount = resolveQuantity(n);
 
     for (let i = 0; i < amount; i++) {
-      const cloned = clone(value);
+      // functions cannot be cloned, so skip them. https://lodash.com/docs/4.17.15#clone
+      const cloned = typeof value === 'function' ? value : clone(value);
       const withAttachedFns = attachedFns.length > 0 ? asBuildable(cloned, attachedFns) : cloned;
       result.push(withAttachedFns);
     }
