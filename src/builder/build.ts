@@ -53,19 +53,14 @@ function prebuild(node: FaketasticNode<Buildable>): void {
   const buildable = node.value;
 
   buildable.attachedFns.filter(fn => isReaderFn(fn)).forEach(readerFn => readerFn(node));
+
   buildable.attachedFns
     .filter(fn => isArchitectFn(fn))
-    .forEach(architectFn => {
-      buildable.value = architectFn(buildable.value);
-      node.setValue(buildable);
-    });
+    .forEach(architectFn => runAttachedFn(architectFn, buildable, node));
 
   buildable.attachedFns
     .filter(fn => isProcessorFn(fn, 'prebuild'))
-    .forEach(prebuildProcessor => {
-      buildable.value = prebuildProcessor(buildable.value);
-      node.setValue(buildable);
-    });
+    .forEach(prebuildProcessor => runAttachedFn(prebuildProcessor, buildable, node));
 }
 
 function postbuild(buildable: Buildable): any {
@@ -79,4 +74,9 @@ function postbuild(buildable: Buildable): any {
     });
 
   return currentValue;
+}
+
+function runAttachedFn(fn: Function, buildable: Buildable, node: FaketasticNode) {
+  buildable.value = fn(buildable.value);
+  node.setValue(buildable);
 }
