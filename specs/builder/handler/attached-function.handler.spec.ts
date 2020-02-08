@@ -192,4 +192,17 @@ describe('AttachedFunctionHandler', () => {
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(42);
   });
+
+  it('should throw if an unknown ReadType was passed in', () => {
+    // arrange
+    const unknownType = 'my-type';
+    const attachedFnWithUnknownReadType = createArchitectFn(() => {}, unknownType as any);
+    const buildable = createBuildable(null, [attachedFnWithUnknownReadType]);
+    const handler = createHandler(buildable);
+
+    // act, assert
+    expect(() => handler.runArchitectFns()).toThrowMatching(
+      (err: Error) => err.message.indexOf(unknownType) >= 0,
+    );
+  });
 });
