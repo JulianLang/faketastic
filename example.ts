@@ -1,7 +1,9 @@
-import { quantity } from './src/attached-fns';
+import { attach, quantity } from './src/attached-fns';
 import { createBuildable } from './src/buildable';
 import { build } from './src/builder';
+import attachedProperties from './src/constants/attached.properties';
 import { extend, range, use } from './src/property-fns';
+import { random } from './src/value-fns';
 
 /*
   Playground. You can try out faketastic here when developing your own functionality.
@@ -20,7 +22,9 @@ import { extend, range, use } from './src/property-fns';
     $ npm start
 */
 const pet = createBuildable({ age: range(1, 15) });
-const dog = extend(pet, { paws: range(0, 4) });
+const dog = extend(pet, {
+  paws: range(0, 4, attach(attachedProperties.range.strategy, random)),
+});
 
 const output = build(use(dog, quantity(3)));
 console.log(JSON.stringify(output, null, 2));
