@@ -98,6 +98,34 @@ describe('build', () => {
     expect(result).toEqual(expectedValue);
   });
 
+  it('should pass the value into architects that desire this type', () => {
+    // arrange
+    const value = 42;
+    const spyArchitect = jasmine.createSpy();
+    const architect = createArchitectFn(spyArchitect, 'value');
+    const buildable = createBuildable(value, [architect]);
+
+    // act
+    build(buildable);
+
+    // assert
+    expect(spyArchitect).toHaveBeenCalledWith(value);
+  });
+
+  it('should pass the buildable into architects that desire this type', () => {
+    // arrange
+    const value = 42;
+    const spyArchitect = jasmine.createSpy();
+    const architect = createArchitectFn(spyArchitect, 'buildable');
+    const buildable = createBuildable(value, [architect]);
+
+    // act
+    build(buildable);
+
+    // assert
+    expect(spyArchitect).toHaveBeenCalledWith(jasmine.any(Object));
+  });
+
   it('should eagerly/recursively build properties', () => {
     // arrange
     const expectedValue = 0;
