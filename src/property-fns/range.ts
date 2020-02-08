@@ -1,6 +1,6 @@
 import { AttachedFn } from '../attached-fns';
 import { Buildable, createBuildable } from '../buildable';
-import { AttachedProperties } from '../constants/attached.properties';
+import AP from '../constants/attached.properties';
 import { Func } from '../types';
 import { createValueFn, randomInt, ValueFn } from '../value-fns';
 
@@ -18,7 +18,7 @@ export function range(
 ): Buildable<ValueFn<number>> {
   const valueFn = createValueFn((buildable: Buildable) => {
     const strategy: Func<number[], number> =
-      buildable.attachedProperties[AttachedProperties.range.strategy] || randomInt;
+      buildable.attachedProperties[AP.range.strategy] || randomInt;
 
     return strategy(min, max);
   });
