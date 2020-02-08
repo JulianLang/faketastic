@@ -1,5 +1,6 @@
 import { AttachedFn } from '../attached-fns';
 import { Buildable, createBuildable } from '../buildable';
+import { AttachedProperties } from '../constants/attached.properties';
 import { Func } from '../types';
 import { createValueFn, randomInt, ValueFn } from '../value-fns';
 
@@ -16,10 +17,10 @@ export function range(
   ...attachedFns: AttachedFn[]
 ): Buildable<ValueFn<number>> {
   const valueFn = createValueFn((buildable: Buildable) => {
-    const impl: Func<number[], number> =
-      buildable.attachedProperties['faketastic:range:strategy'] || randomInt;
+    const strategy: Func<number[], number> =
+      buildable.attachedProperties[AttachedProperties.range.strategy] || randomInt;
 
-    return impl(min, max);
+    return strategy(min, max);
   });
 
   return createBuildable(valueFn, attachedFns);
