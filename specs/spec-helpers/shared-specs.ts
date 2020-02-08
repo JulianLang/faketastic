@@ -1,8 +1,9 @@
 import { Type } from '../../src/constants';
 import { AnyFn, Func } from '../../src/types';
 
+type HasTypeSymbol = Record<typeof Type, string>;
 type TypeCheckFn = Func<[any, string], boolean>;
-type FnFactory = Func<[AnyFn, any?], Record<typeof Type, string>>;
+type FnFactory = Func<[AnyFn, any?], Partial<HasTypeSymbol>>;
 
 export const TypeCheckFnSpecs = {
   returnTrueForTypeMatches: (fn: TypeCheckFn, expectedType: string) =>
