@@ -74,8 +74,8 @@ function postbuild(buildable: Buildable): any {
 
   buildable.attachedFns
     .filter(fn => isProcessorFn(fn, 'postbuild'))
-    .forEach(prebuildProcessor => {
-      currentValue = prebuildProcessor(currentValue);
+    .forEach(postProcessor => {
+      currentValue = postProcessor(currentValue);
     });
 
   return currentValue;
