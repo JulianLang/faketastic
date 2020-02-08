@@ -74,8 +74,8 @@ describe('AttachedFunctionHandler', () => {
   it('should pass the value into architects that desire this type', () => {
     // arrange
     const value = 42;
-    const spyArchitect = jasmine.createSpy();
-    const architect = createArchitectFn(spyArchitect, 'value');
+    const spy = jasmine.createSpy();
+    const architect = createArchitectFn(spy, 'value');
     const buildable = createBuildable(value, [architect]);
     const handler = createHandler(buildable);
 
@@ -83,14 +83,14 @@ describe('AttachedFunctionHandler', () => {
     handler.runArchitectFns();
 
     // assert
-    expect(spyArchitect).toHaveBeenCalledWith(value);
+    expect(spy).toHaveBeenCalledWith(value);
   });
 
   it('should pass the buildable into architects that desire this type', () => {
     // arrange
     const value = 42;
-    const spyArchitect = jasmine.createSpy();
-    const architect = createArchitectFn(spyArchitect, 'buildable');
+    const spy = jasmine.createSpy();
+    const architect = createArchitectFn(spy, 'buildable');
     const buildable = createBuildable(value, [architect]);
     const handler = createHandler(buildable);
 
@@ -98,7 +98,7 @@ describe('AttachedFunctionHandler', () => {
     handler.runArchitectFns();
 
     // assert
-    expect(spyArchitect).toHaveBeenCalledWith(jasmine.any(Object));
+    expect(spy).toHaveBeenCalledWith(jasmine.any(Object));
   });
 
   it('should run all preprocessor functions of the node`s buildable', () => {
@@ -130,6 +130,36 @@ describe('AttachedFunctionHandler', () => {
     // assert
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(42);
+  });
+
+  it('should pass the value into preprocessors that desire this type', () => {
+    // arrange
+    const value = 42;
+    const spy = jasmine.createSpy();
+    const preprocessor = createProcessorFn(spy, 'prebuild', 'value');
+    const buildable = createBuildable(value, [preprocessor]);
+    const handler = createHandler(buildable);
+
+    // act
+    handler.runPreprocessorFns();
+
+    // assert
+    expect(spy).toHaveBeenCalledWith(value);
+  });
+
+  it('should pass the buildable into preprocessors that desire this type', () => {
+    // arrange
+    const value = 42;
+    const spy = jasmine.createSpy();
+    const preprocessor = createProcessorFn(spy, 'prebuild', 'buildable');
+    const buildable = createBuildable(value, [preprocessor]);
+    const handler = createHandler(buildable);
+
+    // act
+    handler.runPreprocessorFns();
+
+    // assert
+    expect(spy).toHaveBeenCalledWith(jasmine.any(Object));
   });
 
   it('should run all postprocessor functions of the node`s buildable', () => {
