@@ -1,5 +1,5 @@
 import { createBuildable } from '../../src/buildable';
-import { AttachedProperties } from '../../src/constants/attached.properties';
+import AttachedProperties from '../../src/constants/attached.properties';
 import { range } from '../../src/property-fns';
 import * as spyable from '../../src/value-fns';
 
