@@ -1,9 +1,4 @@
-import {
-  createArchitectFn,
-  createProcessorFn,
-  createReaderFn,
-  ExecutionTime,
-} from '../../src/attached-fns';
+import { createArchitectFn, createProcessorFn, createReaderFn } from '../../src/attached-fns';
 import { createBuildable } from '../../src/buildable';
 import { build } from '../../src/builder';
 import { createValueFn } from '../../src/value-fns';
@@ -98,34 +93,6 @@ describe('build', () => {
     expect(result).toEqual(expectedValue);
   });
 
-  it('should pass the value into architects that desire this type', () => {
-    // arrange
-    const value = 42;
-    const spyArchitect = jasmine.createSpy();
-    const architect = createArchitectFn(spyArchitect, 'value');
-    const buildable = createBuildable(value, [architect]);
-
-    // act
-    build(buildable);
-
-    // assert
-    expect(spyArchitect).toHaveBeenCalledWith(value);
-  });
-
-  it('should pass the buildable into architects that desire this type', () => {
-    // arrange
-    const value = 42;
-    const spyArchitect = jasmine.createSpy();
-    const architect = createArchitectFn(spyArchitect, 'buildable');
-    const buildable = createBuildable(value, [architect]);
-
-    // act
-    build(buildable);
-
-    // assert
-    expect(spyArchitect).toHaveBeenCalledWith(jasmine.any(Object));
-  });
-
   it('should eagerly/recursively build properties', () => {
     // arrange
     const expectedValue = 0;
@@ -174,38 +141,6 @@ describe('build', () => {
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(42);
   });
-
-  it('should set the return value of architect functions', () => {
-    // arrange
-    const spy = jasmine.createSpy('architectFn');
-    const spyArchitect = createArchitectFn(spy);
-    const setValueArchitect = createArchitectFn(() => 42);
-    const buildable = createBuildable(null, [setValueArchitect, spyArchitect]);
-
-    // act
-    build(buildable);
-
-    // assert
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith(42);
-  });
-
-  (['prebuild', 'postbuild'] as ExecutionTime[]).forEach(processorType =>
-    it('should set the return value of processor functions', () => {
-      // arrange
-      const spy = jasmine.createSpy('processorFn');
-      const spyProcessor = createProcessorFn(spy, processorType);
-      const setValueProcessor = createArchitectFn(() => 42);
-      const buildable = createBuildable(null, [setValueProcessor, spyProcessor]);
-
-      // act
-      build(buildable);
-
-      // assert
-      expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith(42);
-    }),
-  );
 
   it('should call preprocessor functions', () => {
     // arrange
