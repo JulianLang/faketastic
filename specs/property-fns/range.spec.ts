@@ -4,7 +4,7 @@ import { range } from '../../src/property-fns';
 import * as spyable from '../../src/value-fns';
 
 describe('range', () => {
-  it('should call the default implementation when no "strategy" attached-property is set', () => {
+  it('should call the randomInt-implementation when no "strategy" attached-property is set', () => {
     // arrange
     const buildable = createBuildable({});
     spyOn(spyable, 'randomInt');
