@@ -3,6 +3,7 @@ export * from './attached.fn';
 export * from './execution.time';
 export * from './processors';
 export * from './quantity';
+export * from './read.type';
 export * from './util/create-architect.fn';
 export * from './util/create-processor.fn';
 export * from './util/create-reader.fn';
