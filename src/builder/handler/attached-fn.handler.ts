@@ -78,6 +78,6 @@ function getValueForReadTypeOf(fn: MutationFn, buildable: Buildable, value: any)
     case 'buildable':
       return buildable;
     default:
-      throw new Error(`faketastic: unknown read-type "${type}".`);
+      throw new Error(`faketastic: unknown ReadType "${type}".`);
   }
 }
