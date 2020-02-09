@@ -1,3 +1,3 @@
-export * from '../architects/quantity';
+export * from './attach';
 export * from './can-be';
 export * from './map';

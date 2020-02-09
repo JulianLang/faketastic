@@ -1,6 +1,6 @@
 import { TimeOfExecution, Types } from '../../constants';
-import { AnyFn } from '../../types';
 import { getSymbol, isDefined, isType } from '../../util';
+import { ProcessorFn } from '../attached.fn';
 import { ExecutionTime } from '../execution.time';
 
 /**
@@ -8,7 +8,7 @@ import { ExecutionTime } from '../execution.time';
  * @param fn The function to check if it is a `ProcessorFn`.
  * @param withTimeOfExecution (Optional) When provided, it checks if the time of execution matches the given value.
  */
-export function isProcessorFn(fn: AnyFn, withTimeOfExecution?: ExecutionTime): boolean {
+export function isProcessorFn(fn: any, withTimeOfExecution?: ExecutionTime): fn is ProcessorFn {
   if (!isType(fn, Types.ProcessorFn)) {
     return false;
   }

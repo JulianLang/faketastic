@@ -12,5 +12,6 @@ export function createBuildable(value: any, attachedFns: AttachedFn[] = []): Bui
     [Type]: Types.Buildable,
     value,
     attachedFns,
+    attachedProperties: {},
   };
 }

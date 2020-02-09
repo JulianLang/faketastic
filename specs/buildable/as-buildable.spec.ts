@@ -1,3 +1,4 @@
+import { createArchitectFn } from '../../src/attached-fns';
 import { asBuildable, createBuildable } from '../../src/buildable';
 import { Type, Types } from '../../src/constants';
 
@@ -23,5 +24,18 @@ describe('asBuildable', () => {
     // assert
     expect(result[Type]).toBe(Types.Buildable);
     expect(result.value).toBe(value);
+  });
+
+  [null, createBuildable(null)].forEach(value => {
+    it('should add the specified attached functions to both, (non-)buildables.', () => {
+      // arrange
+      const attachedFn = createArchitectFn(() => {});
+
+      // act
+      const result = asBuildable(value, [attachedFn]);
+
+      // assert
+      expect(result.attachedFns.length).toBe(1);
+    });
   });
 });

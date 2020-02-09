@@ -1,7 +1,8 @@
-import { quantity } from './src/attached-fns';
-import { createBuildable } from './src/buildable';
+import { attach, quantity } from './src/attached-fns';
 import { build } from './src/builder';
-import { createValueFn, randomInt } from './src/value-fns';
+import AP from './src/constants/attached.properties';
+import { extend, model, range, use } from './src/property-fns';
+import { random } from './src/value-fns';
 
 /*
   Playground. You can try out faketastic here when developing your own functionality.
@@ -19,12 +20,10 @@ import { createValueFn, randomInt } from './src/value-fns';
 
     $ npm start
 */
-const buildable = createBuildable(
-  {
-    a: createValueFn(() => randomInt(1, 10)),
-  },
-  [quantity(() => randomInt(2, 6))],
-);
+const pet = model({ age: range(1, 15) });
+const dog = extend(pet, {
+  paws: range(0, 4, attach(AP.range.strategy, random)),
+});
 
-console.log(build(buildable));
-console.log();
+const output = build(use(dog, quantity(3, quantity(2))));
+console.log(JSON.stringify(output, null, 2));

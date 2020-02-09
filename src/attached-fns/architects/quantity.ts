@@ -1,4 +1,4 @@
-import { Buildable, createBuildable, isBuildable } from '../../buildable';
+import { asBuildable } from '../../buildable';
 import { clone } from '../../util';
 import { AttachedFn } from '../attached.fn';
 import { Quantity } from '../quantity';
@@ -11,27 +11,13 @@ export function quantity(n: Quantity, ...attachedFns: AttachedFn[]): any {
     const amount = resolveQuantity(n);
 
     for (let i = 0; i < amount; i++) {
-      const cloned = clone(value);
-      const withAttachedFns = addAttachedFns(cloned);
+      // functions cannot be cloned, so skip them. https://lodash.com/docs/4.17.15#clone
+      const cloned = typeof value === 'function' ? value : clone(value);
+      const withAttachedFns = attachedFns.length > 0 ? asBuildable(cloned, attachedFns) : cloned;
       result.push(withAttachedFns);
     }
 
     return result;
-  }
-
-  /**
-   * Adds attached functions to the specified value, if any.
-   * @param value The value to add attached functions to.
-   */
-  function addAttachedFns(value: any): Buildable | any {
-    if (attachedFns.length === 0) {
-      return value;
-    }
-
-    const buildable = isBuildable(value) ? value : createBuildable(value);
-    buildable.attachedFns.push(...attachedFns);
-
-    return buildable;
   }
 
   return createArchitectFn(quantityImpl);

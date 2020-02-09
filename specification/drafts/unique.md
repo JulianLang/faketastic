@@ -15,3 +15,26 @@ reexecuting the value fn as long as it isn't unique.
 
 This should work as - even if quantity clones the wrapped buildable - the function/closure
 reference should remain the same. To be tested.
+
+```ts
+const model = {
+  name: oneOf(Names, unique),
+};
+
+function unique() {
+  function monitorValues(node) {
+    const parent = node.parent.value;
+    const cache = getSymbol(UniqueCache, parent);
+    const val = node.value();
+
+    cache.push(val);
+
+    return val;
+  }
+
+  return node => {
+    // wrap original valueFn
+    node.value = monitorValues;
+  };
+}
+```
