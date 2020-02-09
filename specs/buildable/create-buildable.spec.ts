@@ -1,5 +1,5 @@
 import { createBuildable } from '../../src/buildable';
-import { Type, Types } from '../../src/constants';
+import { DefaultConfig, Type, Types } from '../../src/constants';
 import { getSymbol } from '../../src/util';
 
 describe('createBuildable', () => {
@@ -10,5 +10,15 @@ describe('createBuildable', () => {
     // assert
     const type = getSymbol(Type, buildable);
     expect(type).toBe(Types.Buildable);
+  });
+
+  it('should include faketastics default config', () => {
+    // arrange
+    // act
+    const buildable = createBuildable(null);
+
+    // assert
+    expect(buildable.attachedProperties).toEqual(DefaultConfig);
+    expect(buildable.attachedProperties).not.toBe(DefaultConfig);
   });
 });

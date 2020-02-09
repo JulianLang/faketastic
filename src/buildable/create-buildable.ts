@@ -1,5 +1,5 @@
 import { AttachedFn } from '../attached-fns';
-import { Type, Types } from '../constants';
+import { DefaultConfig, Type, Types } from '../constants';
 import { Buildable } from './buildable';
 
 /**
@@ -12,6 +12,8 @@ export function createBuildable(value: any, attachedFns: AttachedFn[] = []): Bui
     [Type]: Types.Buildable,
     value,
     attachedFns,
-    attachedProperties: {},
+    attachedProperties: {
+      ...DefaultConfig,
+    },
   };
 }

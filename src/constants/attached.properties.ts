@@ -1,5 +1,8 @@
 /** The indentifiers for attached properties set by faketastic's attached functions. */
 export default {
+  strategies: {
+    probability: 'faketastic:strategies.probability',
+  },
   /** List of attached properties for faketastic's `range`-property function. */
   range: {
     /**
