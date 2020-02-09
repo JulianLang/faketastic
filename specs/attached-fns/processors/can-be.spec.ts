@@ -1,7 +1,7 @@
 import { canBe } from '../../../src/attached-fns';
 import { createBuildable } from '../../../src/buildable';
 import AP from '../../../src/constants/attached.properties';
-import { DefaultConfigSpecs } from '../../spec-helpers/shared-specs';
+import { AttachedPropertySpecs } from '../../spec-helpers/shared-specs';
 
 describe('canBe', () => {
   it('should return the alternative value when the processor applies', () => {
@@ -30,7 +30,7 @@ describe('canBe', () => {
     expect(result).toBe(original);
   });
 
-  DefaultConfigSpecs.retrieveImplementationFromDefaultConfig(
+  AttachedPropertySpecs.retrieveImplementationFromAttachedProperty(
     /** target */ canBe(null),
     /** retrieves from */ AP.strategies.probability,
     /** ...expected args */ 0.5,

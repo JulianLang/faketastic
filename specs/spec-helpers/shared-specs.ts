@@ -65,8 +65,8 @@ export const FnFactorySpecs = {
     }),
 };
 
-export const DefaultConfigSpecs = {
-  retrieveImplementationFromDefaultConfig: (
+export const AttachedPropertySpecs = {
+  retrieveImplementationFromAttachedProperty: (
     mutationFn: MutationFn,
     attachedProperty: string,
     ...expectedArgs: any[]
