@@ -34,7 +34,6 @@ function buildNode(node: FaketasticNode): void {
 
   if (isValueFn(buildable.value)) {
     buildable.value = buildable.value(buildable);
-    node.setValue(buildable);
 
     if (node.isBuildable()) {
       buildNode(node);
