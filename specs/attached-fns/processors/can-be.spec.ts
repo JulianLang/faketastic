@@ -1,6 +1,7 @@
 import { canBe } from '../../../src/attached-fns';
 import { createBuildable } from '../../../src/buildable';
 import AP from '../../../src/constants/attached.properties';
+import { DefaultConfigSpecs } from '../../spec-helpers/shared-specs';
 
 describe('canBe', () => {
   it('should return the alternative value when the processor applies', () => {
@@ -29,17 +30,9 @@ describe('canBe', () => {
     expect(result).toBe(original);
   });
 
-  it('should take its probability implementation from attached properties', () => {
-    // arrange
-    const buildable = createBuildable(null);
-    const spy = jasmine.createSpy('strategy');
-    buildable.attachedProperties[AP.strategies.probability] = spy;
-
-    // act
-    canBe(null)(buildable);
-
-    // assert
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith(0.5);
-  });
+  DefaultConfigSpecs.retrieveImplementationFromDefaultConfig(
+    /** target */ canBe(null),
+    /** retrieves from */ AP.strategies.probability,
+    /** ...expected args */ 0.5,
+  );
 });

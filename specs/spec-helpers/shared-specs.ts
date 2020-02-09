@@ -1,3 +1,5 @@
+import { createBuildable } from '../../src/buildable';
+import { MutationFn } from '../../src/builder';
 import { Type } from '../../src/constants';
 import { AnyFn, Func } from '../../src/types';
 
@@ -60,5 +62,28 @@ export const FnFactorySpecs = {
 
       // assert
       expect(valueFn[Type]).toBe(type);
+    }),
+};
+
+export const DefaultConfigSpecs = {
+  retrieveImplementationFromDefaultConfig: (
+    mutationFn: MutationFn,
+    attachedProperty: string,
+    ...expectedArgs: any[]
+  ) =>
+    it('should take its probability implementation from attached properties', () => {
+      // arrange
+      const buildable = createBuildable(null);
+      const spy = jasmine.createSpy('strategy');
+      buildable.attachedProperties[attachedProperty] = spy;
+
+      // act
+      mutationFn(buildable);
+
+      // assert
+      expect(spy).toHaveBeenCalledTimes(1);
+      expectedArgs.forEach(arg => {
+        expect(spy).toHaveBeenCalledWith(arg);
+      });
     }),
 };
