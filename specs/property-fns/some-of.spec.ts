@@ -1,8 +1,16 @@
 import { createArchitectFn } from '../../src/attached-fns';
+import AP from '../../src/constants/attached.properties';
 import { someOf } from '../../src/property-fns';
+import { AttachedPropertySpecs } from '../spec-helpers/shared-specs';
 
 describe('someOf', () => {
-  it('should sort parameters correctly by types (any | AttachedFn)', () => {
+  AttachedPropertySpecs.retrieveImplementationFromAttachedProperty(
+    someOf([1, 2]).value,
+    AP.strategies.randomItems,
+    [],
+  );
+
+  it('should sort parameters correctly by type (any | AttachedFn)', () => {
     // arrange
     const attachedFn = createArchitectFn(() => {});
 

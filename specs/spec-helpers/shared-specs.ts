@@ -71,12 +71,13 @@ export const AttachedPropertySpecs = {
   retrieveImplementationFromAttachedProperty: (
     mutationFn: MutationFn,
     attachedProperty: string,
+    returnValue: any,
     ...expectedArgs: any[]
   ) =>
     it('should take its probability implementation from attached properties', () => {
       // arrange
       const buildable = createBuildable(null);
-      const spy = jasmine.createSpy('strategy');
+      const spy = jasmine.createSpy('strategy').and.returnValue(returnValue);
       buildable.attachedProperties[attachedProperty] = spy;
 
       // act
