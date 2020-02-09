@@ -14,4 +14,16 @@ describe('attach', () => {
     // assert
     expect(buildable.attachedProperties[property]).toBe(value);
   });
+
+  it('should return the buildable value untouched', () => {
+    // arrange
+    const obj = {};
+    const buildable = createBuildable(obj);
+
+    // act
+    attach('property', 'value')(buildable);
+
+    // assert
+    expect(buildable.value).toBe(obj);
+  });
 });
