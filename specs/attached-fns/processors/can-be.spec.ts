@@ -4,6 +4,12 @@ import AP from '../../../src/constants/attached.properties';
 import { AttachedPropertySpecs } from '../../spec-helpers/shared-specs';
 
 describe('canBe', () => {
+  AttachedPropertySpecs.retrieveImplementationFromAttachedProperty(
+    /** target */ canBe(null),
+    /** retrieves from */ AP.strategies.probability,
+    /** ...expected args */ 0.5,
+  );
+
   it('should return the alternative value when the processor applies', () => {
     // arrange
     const value = 42;
@@ -29,10 +35,4 @@ describe('canBe', () => {
     // assert
     expect(result).toBe(original);
   });
-
-  AttachedPropertySpecs.retrieveImplementationFromAttachedProperty(
-    /** target */ canBe(null),
-    /** retrieves from */ AP.strategies.probability,
-    /** ...expected args */ 0.5,
-  );
 });
