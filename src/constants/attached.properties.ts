@@ -9,6 +9,10 @@ export default {
     probability: 'faketastic:strategies.probability',
     /** Attached property identifier for the randomItems implementation. */
     randomItems: 'faketastic:strategies.randomItems',
+    /** Attached property identifier for the random (type: double) implementation. */
+    random: 'faketastic:strategies.random',
+    /** Attached property identifier for the random (type: int) implementation. */
+    randomInt: 'faketastic:strategies.randomInt',
   },
   /** List of attached properties for faketastic's `range`-property function. */
   range: {
@@ -27,5 +31,10 @@ export default {
      * ```
      */
     strategy: 'faketastic:range.strategy',
+  },
+  /** Provides attached property identifiers used by the ref property function. */
+  ref: {
+    /** Attached property identifier for the resolved value of a reference. */
+    resolvedValue: 'faketastic:ref.resolvedValue',
   },
 };
