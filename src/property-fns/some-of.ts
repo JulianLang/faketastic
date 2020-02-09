@@ -1,5 +1,6 @@
 import { AttachedFn } from '../../src/attached-fns';
-import { createBuildable } from '../buildable';
+import { Buildable, createBuildable } from '../buildable';
+import AP from '../constants/attached.properties';
 import { cloneItems, sortArgsByType } from '../util';
 import { createValueFn } from '../value-fns';
 import { randomItems } from '../value-fns/random-items-value.fn';
@@ -23,7 +24,7 @@ export function someOf(
 ) {
   const { args, attached } = sortArgsByType({ options, attachedFns });
 
-  function someOfImpl(): any[] {
+  function someOfImpl(buildable: Buildable): any[] {
     args.options = {
       ...someOfDefaultOpts,
       ...args.options,
@@ -31,7 +32,8 @@ export function someOf(
 
     const min = args.options?.minItems ?? 0;
     const max = args.options?.maxItems ?? values.length;
-    const result = randomItems(values, min, max, args.options?.allowDuplicates ?? true);
+    const strategy = buildable?.attachedProperties?.[AP.strategies.randomItems] ?? randomItems;
+    const result = strategy(values, min, max, args.options?.allowDuplicates ?? true);
 
     return cloneItems(result);
   }
