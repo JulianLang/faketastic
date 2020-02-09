@@ -40,7 +40,7 @@ function isContainer(node: ObjectTreeNode): boolean {
 }
 
 function setValue(value: any, node: FaketasticNode) {
-  const childTree = treeOf(value, getRawValue);
+  const childTree = treeOf(value, getRawValue, node);
   const faketasticTree = toFaketasticNode(childTree)!;
 
   node.children = faketasticTree.children;
