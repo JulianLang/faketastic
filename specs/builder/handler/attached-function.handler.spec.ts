@@ -193,6 +193,37 @@ describe('AttachedFunctionHandler', () => {
     expect(spy).toHaveBeenCalledWith(42);
   });
 
+  it('should pass the raw-value into postprocessors that desire this type', () => {
+    // arrange
+    const rawValue = 42;
+    const buildableValue = createBuildable(rawValue);
+    const spy = jasmine.createSpy();
+    const postprocessor = createProcessorFn(spy, 'postbuild', 'value');
+    const buildable = createBuildable(buildableValue, [postprocessor]);
+    const handler = createHandler(buildable);
+
+    // act
+    handler.runPostprocessorFns();
+
+    // assert
+    expect(spy).toHaveBeenCalledWith(rawValue);
+  });
+
+  it('should pass the buildable into postprocessors that desire this type', () => {
+    // arrange
+    const value = 42;
+    const spy = jasmine.createSpy();
+    const postprocessor = createProcessorFn(spy, 'postbuild', 'buildable');
+    const buildable = createBuildable(value, [postprocessor]);
+    const handler = createHandler(buildable);
+
+    // act
+    handler.runPostprocessorFns();
+
+    // assert
+    expect(spy).toHaveBeenCalledWith(jasmine.any(Object));
+  });
+
   it('should throw if an unknown ReadType was passed in', () => {
     // arrange
     const unknownType = 'my-type';

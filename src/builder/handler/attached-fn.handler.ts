@@ -45,6 +45,7 @@ export function handleAttachedFns(node: FaketasticNode<Buildable>): AttachedFunc
     let value = getRawValue(buildable.value);
 
     postprocessors.forEach(fn => {
+      value = getValueForReadTypeOf(fn, buildable, value);
       value = fn(value);
       value = getRawValue(value);
     });
