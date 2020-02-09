@@ -1,3 +1,5 @@
+import { Buildable } from '../../buildable';
+import AP from '../../constants/attached.properties';
 import { probability } from '../../value-fns';
 import { createProcessorFn } from '../util/create-processor.fn';
 
@@ -8,10 +10,12 @@ import { createProcessorFn } from '../util/create-processor.fn';
  * @param likelihood The likelihood with which to set the specified value. Defaults to "0.5" (50% chance).
  */
 export function canBe(value: any, likelihood: number = 0.5) {
-  function canBeImpl(original: any) {
-    const apply = probability(likelihood);
-    return apply ? value : original;
+  function canBeImpl(original: Buildable) {
+    const strategy = original?.attachedProperties?.[AP.strategies.probability] ?? probability;
+    const apply = strategy(likelihood);
+
+    return apply ? value : original.value;
   }
 
-  return createProcessorFn(canBeImpl, 'prebuild');
+  return createProcessorFn(canBeImpl, 'prebuild', 'buildable');
 }
