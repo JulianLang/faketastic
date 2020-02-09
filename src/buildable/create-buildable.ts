@@ -1,5 +1,5 @@
 import { AttachedFn } from '../attached-fns';
-import { DefaultConfig, Type, Types } from '../constants';
+import { defaultAttachedProperties, Type, Types } from '../constants';
 import { Buildable } from './buildable';
 
 /**
@@ -13,7 +13,7 @@ export function createBuildable(value: any, attachedFns: AttachedFn[] = []): Bui
     value,
     attachedFns,
     attachedProperties: {
-      ...DefaultConfig,
+      ...defaultAttachedProperties,
     },
   };
 }

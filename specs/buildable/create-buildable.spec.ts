@@ -1,5 +1,5 @@
 import { createBuildable } from '../../src/buildable';
-import { DefaultConfig, Type, Types } from '../../src/constants';
+import { defaultAttachedProperties, Type, Types } from '../../src/constants';
 import { getSymbol } from '../../src/util';
 
 describe('createBuildable', () => {
@@ -18,7 +18,7 @@ describe('createBuildable', () => {
     const buildable = createBuildable(null);
 
     // assert
-    expect(buildable.attachedProperties).toEqual(DefaultConfig);
-    expect(buildable.attachedProperties).not.toBe(DefaultConfig);
+    expect(buildable.attachedProperties).toEqual(defaultAttachedProperties);
+    expect(buildable.attachedProperties).not.toBe(defaultAttachedProperties);
   });
 });
