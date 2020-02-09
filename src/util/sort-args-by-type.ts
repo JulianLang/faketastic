@@ -1,7 +1,10 @@
+import { AttachedFn } from '../attached-fns';
 import { isAttachedFn } from '../attached-fns/util/is-attached.fn';
 import { SortedArguments } from '../types';
 
-export function sortArgsByType<T>(args: T): SortedArguments<Partial<T>> {
+type AttachableArgument<T> = { [P in keyof T]: T[P] | AttachedFn };
+
+export function sortArgsByType<T>(args: AttachableArgument<T>): SortedArguments<Partial<T>> {
   const result: SortedArguments = { args, attached: [] };
 
   for (const argKey of Object.keys(args)) {
