@@ -1,8 +1,6 @@
-import { attach, quantity } from './src/attached-fns';
+import { quantity } from './src/attached-fns';
 import { build } from './src/builder';
-import AP from './src/constants/attached.properties';
-import { extend, model, range, use } from './src/property-fns';
-import { random } from './src/value-fns';
+import { model, oneOf, range, ref, use } from './src/property-fns';
 
 /*
   Playground. You can try out faketastic here when developing your own functionality.
@@ -20,10 +18,13 @@ import { random } from './src/value-fns';
 
     $ npm start
 */
-const pet = model({ age: range(1, 15) });
-const dog = extend(pet, {
-  paws: range(0, 4, attach(AP.range.strategy, random)),
+const ParentModel = model({
+  name: oneOf(['Hans', 'Pete', 'Sara']),
+  born: range(1990, 2003),
+  email: {
+    name: ref('name'),
+  },
 });
 
-const output = build(use(dog, quantity(3, quantity(2))));
+const output = build(use(ParentModel, quantity(2)));
 console.log(JSON.stringify(output, null, 2));
