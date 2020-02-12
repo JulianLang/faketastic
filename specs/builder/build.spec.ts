@@ -1,6 +1,8 @@
 import { createArchitectFn, createProcessorFn, createReaderFn } from '../../src/attached-fns';
 import { createBuildable } from '../../src/buildable';
 import { build } from '../../src/builder';
+import { Types } from '../../src/constants';
+import { setType } from '../../src/util';
 import { createValueFn } from '../../src/value-fns';
 
 describe('build', () => {
@@ -187,5 +189,18 @@ describe('build', () => {
 
     // assert
     expect(spy).toHaveBeenCalledWith(42);
+  });
+
+  it('should call reference functions', () => {
+    // arrange
+    const spy = jasmine.createSpy('refSpy');
+    const refFn = setType(Types.ReferenceFn, spy);
+    const buildable = createBuildable(refFn);
+
+    // act
+    build(buildable);
+
+    // assert
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });
