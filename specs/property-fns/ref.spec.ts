@@ -5,7 +5,7 @@ import AP from '../../src/constants/attached.properties';
 import { ref } from '../../src/property-fns';
 import { isType } from '../../src/util';
 
-fdescribe('ref', () => {
+describe('ref', () => {
   it('should store a reference function inside its host buildables attached property', () => {
     // arrange
     const parent = createNode('parent', null);
