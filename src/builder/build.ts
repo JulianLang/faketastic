@@ -1,4 +1,4 @@
-import { ObjectTreeNode, printSubtree, toValue, traverse, treeOf } from 'treelike';
+import { ObjectTreeNode, toValue, traverse, treeOf } from 'treelike';
 import { asBuildable, stripBuildable } from '../buildable';
 import { FaketasticNode } from '../types';
 import { toFaketasticNode } from '../util';
@@ -28,8 +28,6 @@ function buildData(tree: ObjectTreeNode): ObjectTreeNode {
 function buildNode(node: FaketasticNode): void {
   const buildable = asBuildable(node.value);
   node.setValue(buildable);
-
-  printSubtree(node);
 
   const attachedFnHandler = handleAttachedFns(node);
   prebuild(attachedFnHandler);
