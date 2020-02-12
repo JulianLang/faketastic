@@ -36,5 +36,12 @@ export default {
   ref: {
     /** Attached property identifier for the resolved value of a reference. */
     resolvedValue: 'faketastic:ref.resolvedValue',
+    /**
+     * Attached property identifier for the function selecting the node to use as ref-target.
+     * By default the function compares the node's name with the given target string.
+     */
+    targetSelector: 'faketastic:ref.targetSelector',
+    /** Attached property identifier for the traversing strategy to be used for finding the targeted node. */
+    traversingStrategy: 'faketastic:ref.traversingStrategy',
   },
 };

@@ -1,5 +1,5 @@
-import { createNode } from 'treelike';
-import { createBuildable } from '../../src/buildable';
+import { createNode, ObjectTreeNode } from 'treelike';
+import { createBuildable, getAttachedProperty, setAttachedProperty } from '../../src/buildable';
 import { Types } from '../../src/constants';
 import AP from '../../src/constants/attached.properties';
 import { ref } from '../../src/property-fns';
@@ -55,5 +55,40 @@ describe('ref', () => {
     // assert
     const attachedProperty = buildable.attachedProperties[AP.ref.resolvedValue];
     expect(attachedProperty()).toBe(rawValue);
+  });
+
+  it('should use the targetSelectorFn attached property', () => {
+    // arrange
+    const value = 42;
+    const parent = createNode('custom', value);
+    const buildable = createBuildable(null);
+    const node = createNode('host', buildable, [], parent);
+    const readerFn = ref('parent').attachedFns[0];
+
+    const customTargetFn = (n: ObjectTreeNode) => n.value === value;
+    setAttachedProperty(AP.ref.targetSelector, customTargetFn, buildable);
+
+    // act
+    readerFn(node);
+
+    // assert
+    const resolveFn = getAttachedProperty(AP.ref.resolvedValue, buildable);
+    expect(resolveFn()).toBe(value);
+  });
+
+  it('should use the targetSelectorFn attached property', () => {
+    // arrange
+    const strategy = jasmine.createSpy('traversingStrategy');
+    const buildable = createBuildable(null);
+    const node = createNode('host', buildable);
+    const readerFn = ref('parent').attachedFns[0];
+
+    setAttachedProperty(AP.ref.traversingStrategy, strategy, buildable);
+
+    // act
+    readerFn(node);
+
+    // assert
+    expect(strategy).toHaveBeenCalledTimes(1);
   });
 });
