@@ -1,4 +1,5 @@
 import { ObjectTreeNode, ObjectTreeNodeType } from 'treelike';
+import { Buildable } from '../buildable';
 import { Type, Types } from '../constants';
 
 export interface FaketasticNode<T = any> extends ObjectTreeNode<T> {
@@ -6,7 +7,7 @@ export interface FaketasticNode<T = any> extends ObjectTreeNode<T> {
 
   /** Container nodes contain nested `Buildable`s within their value property. */
   isContainer: () => boolean;
-  isBuildable: () => boolean;
+  isBuildable: () => this is FaketasticNode<Buildable>;
   setValue: (value: any) => void;
   currentValue: () => T;
   currentType: () => ObjectTreeNodeType;

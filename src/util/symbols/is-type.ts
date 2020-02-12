@@ -1,5 +1,5 @@
-import { getSymbol } from '.';
 import { Type } from '../../constants';
+import { getSymbol } from './get-symbol';
 
 /**
  * Determines whether a given value is of a specified type.
@@ -7,6 +7,6 @@ import { Type } from '../../constants';
  * @param type The type-identifier to match.
  * @returns `true` if the value's type-identifier matches the specified one, `false` otherwise.
  */
-export function isType(value: any, type: string): boolean {
+export function isType<T = any>(value: any, type: string): value is T {
   return getSymbol(Type, value) === type;
 }
