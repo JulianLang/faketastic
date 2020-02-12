@@ -22,7 +22,7 @@ const ParentModel = model({
   name: oneOf(['Hans', 'Pete', 'Sara', 'Sabine']),
   born: range(1990, 2003),
   email: {
-    ref: ref('name'),
+    name: ref('name'),
   },
 });
 
