@@ -9,13 +9,7 @@ import { createValueFn } from '../value-fns';
 
 export function ref(property: string, ...attachedFns: AttachedFn[]) {
   function refReader(node: ObjectTreeNode) {
-    let result = findNode(
-      node,
-      n => {
-        return n.name === property;
-      },
-      parentTraverser,
-    );
+    let result = findNode(node, n => n.name === property, parentTraverser);
 
     if (isDefined(result)) {
       const buildable: Buildable = node.value;
