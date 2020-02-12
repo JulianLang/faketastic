@@ -19,12 +19,12 @@ import { model, oneOf, range, ref, use } from './src/property-fns';
     $ npm start
 */
 const ParentModel = model({
-  name: oneOf(['Hans', 'Pete', 'Sara']),
+  name: oneOf(['Hans', 'Pete', 'Sara', 'Sabine']),
   born: range(1990, 2003),
   email: {
     ref: ref('name'),
   },
 });
 
-const output = build(use(ParentModel, quantity(2)));
+const output = build(use(ParentModel, quantity(3)));
 console.log(JSON.stringify(output, null, 2));
