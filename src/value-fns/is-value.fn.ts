@@ -8,5 +8,5 @@ import { ValueFn } from './value.fn';
  * @returns `true` if the given value is a `ValueFn`, `false` otherwise.
  */
 export function isValueFn(value: any): value is ValueFn {
-  return isType(value, Types.ValueFn);
+  return isType(Types.ValueFn, value);
 }

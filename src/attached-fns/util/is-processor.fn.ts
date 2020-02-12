@@ -9,7 +9,7 @@ import { ExecutionTime } from '../execution.time';
  * @param withTimeOfExecution (Optional) When provided, it checks if the time of execution matches the given value.
  */
 export function isProcessorFn(fn: any, withTimeOfExecution?: ExecutionTime): fn is ProcessorFn {
-  if (!isType(fn, Types.ProcessorFn)) {
+  if (!isType(Types.ProcessorFn, fn)) {
     return false;
   }
 

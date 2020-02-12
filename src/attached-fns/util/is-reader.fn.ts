@@ -8,5 +8,5 @@ import { ReaderFn } from '../attached.fn';
  * @returns `true` if the given value is a `ReaderFn`, `false` otherwise.
  */
 export function isReaderFn(fn: any): fn is ReaderFn {
-  return isType(fn, Types.ReaderFn);
+  return isType(Types.ReaderFn, fn);
 }

@@ -7,5 +7,5 @@ import { Buildable } from './buildable';
  * @param value The value to check if it is a `Buildable`.
  */
 export function isBuildable(value: any): value is Buildable {
-  return isType(value, Types.Buildable);
+  return isType(Types.Buildable, value);
 }

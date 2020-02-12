@@ -62,7 +62,7 @@ function postbuild(attachedFnHandler: AttachedFunctionHandler): void {
 }
 
 function resolveIfReference(node: FaketasticNode): void {
-  if (!isType(node.value, Types.ReferenceFn)) {
+  if (!isType(Types.ReferenceFn, node.value)) {
     return;
   }
 

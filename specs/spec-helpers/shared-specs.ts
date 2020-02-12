@@ -6,7 +6,7 @@ import { use } from '../../src/property-fns';
 import { AnyFn, AnyObject, Func } from '../../src/types';
 
 type HasTypeSymbol = Record<typeof Type, string>;
-type TypeCheckFn = Func<[any, string], boolean>;
+type TypeCheckFn = Func<[any, string?], boolean>;
 type FnFactory = Func<[AnyFn, any?], Partial<HasTypeSymbol>>;
 
 export const TypeCheckFnSpecs = {
@@ -16,7 +16,7 @@ export const TypeCheckFnSpecs = {
       const value = { [Type]: expectedType };
 
       // act
-      const result = fn(value, expectedType);
+      const result = fn(value);
 
       // assert
       expect(result).toBe(true);
@@ -24,11 +24,10 @@ export const TypeCheckFnSpecs = {
   returnFalseForNonMatches: (fn: TypeCheckFn) =>
     it('should return false if the type does not match', () => {
       // arrange
-      const expectedType = 'test-type';
       const value = { [Type]: 'other-type' };
 
       // act
-      const result = fn(value, expectedType);
+      const result = fn(value);
 
       // assert
       expect(result).toBe(false);
@@ -36,11 +35,10 @@ export const TypeCheckFnSpecs = {
   returnFalseForValueWithoutType: (fn: TypeCheckFn) =>
     it('should return false if the value does not have a type-identifier', () => {
       // arrange
-      const expectedType = 'test-type';
       const value = {};
 
       // act
-      const result = fn(value, expectedType);
+      const result = fn(value);
 
       // assert
       expect(result).toBe(false);
@@ -48,8 +46,8 @@ export const TypeCheckFnSpecs = {
   returnFalseForNonDefined: (fn: TypeCheckFn) =>
     it('should return false if the value is null or undefined', () => {
       // arrange, act, assert
-      expect(fn(null, 'type-id')).toBe(false);
-      expect(fn(undefined, 'type-id')).toBe(false);
+      expect(fn(null)).toBe(false);
+      expect(fn(undefined)).toBe(false);
     }),
 };
 

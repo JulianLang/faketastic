@@ -8,5 +8,5 @@ import { ArchitectFn } from '../attached.fn';
  * @returns `true` if the given value is an `ArchitectFn`, `false` otherwise.
  */
 export function isArchitectFn(fn: any): fn is ArchitectFn {
-  return isType(fn, Types.ArchitectFn);
+  return isType(Types.ArchitectFn, fn);
 }

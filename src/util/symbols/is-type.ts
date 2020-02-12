@@ -7,6 +7,6 @@ import { getSymbol } from './get-symbol';
  * @param type The type-identifier to match.
  * @returns `true` if the value's type-identifier matches the specified one, `false` otherwise.
  */
-export function isType<T = any>(value: any, type: string): value is T {
+export function isType<T = any>(type: string, value: any): value is T {
   return getSymbol(Type, value) === type;
 }
