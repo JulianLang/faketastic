@@ -1,7 +1,8 @@
 import { ObjectTreeNode, toValue, traverse, treeOf } from 'treelike';
 import { asBuildable, stripBuildable } from '../buildable';
+import { Types } from '../constants';
 import { FaketasticNode } from '../types';
-import { toFaketasticNode } from '../util';
+import { isType, toFaketasticNode } from '../util';
 import { isValueFn } from '../value-fns';
 import { BuilderFn } from './builder.fn';
 import { handleAttachedFns } from './handler/attached-fn.handler';
@@ -21,6 +22,7 @@ function buildData(tree: ObjectTreeNode): ObjectTreeNode {
   const faketasticTree = toFaketasticNode(tree)!;
 
   traverse(faketasticTree, node => buildNode(node));
+  traverse(faketasticTree, node => resolveReference(node));
 
   return faketasticTree;
 }
@@ -57,4 +59,13 @@ function prebuild(attachedFnHandler: AttachedFunctionHandler): void {
 
 function postbuild(attachedFnHandler: AttachedFunctionHandler): void {
   attachedFnHandler.runPostprocessorFns();
+}
+
+function resolveReference(node: FaketasticNode): void {
+  if (!isType(node.value, Types.ReferenceFn)) {
+    return;
+  }
+
+  const value = node.value();
+  node.setValue(value);
 }

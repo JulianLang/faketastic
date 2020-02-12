@@ -11,5 +11,7 @@ export const Types = {
   /** The type-identifier for processor functions. */
   ProcessorFn: 'faketastic.types.processor-fn',
   /** The type-identifier for faketastic nodes. */
+  ReferenceFn: 'faketastic.types.reference-fn',
+  /** The type-identifier for faketastic nodes. */
   FaketasticNode: 'faketastic.types.faketastic-node',
 };
