@@ -22,7 +22,7 @@ function buildData(tree: ObjectTreeNode): ObjectTreeNode {
   const faketasticTree = toFaketasticNode(tree)!;
 
   traverse(faketasticTree, node => buildNode(node));
-  traverse(faketasticTree, node => resolveReference(node));
+  traverse(faketasticTree, node => resolveIfReference(node));
 
   return faketasticTree;
 }
@@ -61,7 +61,7 @@ function postbuild(attachedFnHandler: AttachedFunctionHandler): void {
   attachedFnHandler.runPostprocessorFns();
 }
 
-function resolveReference(node: FaketasticNode): void {
+function resolveIfReference(node: FaketasticNode): void {
   if (!isType(node.value, Types.ReferenceFn)) {
     return;
   }
