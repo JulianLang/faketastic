@@ -110,7 +110,7 @@ describe('toFaketasticNode', () => {
     // pre-condition
     expect(faketasticNode.children.length).toBe(0);
     expect(faketasticNode.parent).toBeUndefined();
-    expect(faketasticNode.isRecursionRoot).toBe(false);
+    expect(faketasticNode.recursesTo).toBeUndefined();
     expect(faketasticNode.name).toBe(name);
     expect(faketasticNode.value).toBe(null);
     expect(faketasticNode.type).toBe('value');
@@ -121,7 +121,7 @@ describe('toFaketasticNode', () => {
     // assert: unchanged
     expect(faketasticNode.parent).toBeUndefined();
     expect(faketasticNode.name).toBe(name);
-    expect(faketasticNode.isRecursionRoot).toBe(false);
+    expect(faketasticNode.recursesTo).toBeUndefined();
     // assert: changed
     expect(faketasticNode.value).toEqual(newValue);
     expect(faketasticNode.type).toBe('object');
