@@ -16,9 +16,7 @@ export function toFaketasticNode(node?: ObjectTreeNode): FaketasticNode | undefi
     children: toFaketasticNodes(node.children),
   } as FaketasticNode;
 
-  faketasticNode.children.forEach(child => {
-    child.parent = faketasticNode;
-  });
+  updateChildrensParent(faketasticNode);
   faketasticNode.isBuildable = () => isBuildable(faketasticNode.value);
   faketasticNode.isContainer = () => isContainer(faketasticNode);
   faketasticNode.currentValue = () => faketasticNode.value;
@@ -26,6 +24,12 @@ export function toFaketasticNode(node?: ObjectTreeNode): FaketasticNode | undefi
   faketasticNode.setValue = (value: any) => setValue(value, faketasticNode);
 
   return faketasticNode;
+}
+
+function updateChildrensParent(faketasticNode: FaketasticNode<any>) {
+  faketasticNode.children.forEach(child => {
+    child.parent = faketasticNode;
+  });
 }
 
 function toFaketasticNodes(nodes: ObjectTreeNode[]): FaketasticNode[] {
@@ -47,6 +51,7 @@ function setValue(value: any, node: FaketasticNode) {
   const faketasticTree = toFaketasticNode(childTree)!;
 
   node.children = faketasticTree.children;
+  updateChildrensParent(node);
   node.value = value;
 
   const rawValue = getRawValue(value);
