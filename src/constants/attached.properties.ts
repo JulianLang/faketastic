@@ -34,8 +34,6 @@ export default {
   },
   /** Provides attached property identifiers used by the ref property function. */
   ref: {
-    /** Attached property identifier for the resolved value of a reference. */
-    resolvedValue: 'faketastic:ref.resolvedValue',
     /**
      * Attached property identifier for the function selecting the node to use as ref-target.
      * By default the function compares the node's name with the given target string.

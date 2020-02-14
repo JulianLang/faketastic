@@ -6,7 +6,6 @@ import { Types } from '../constants';
 import AP from '../constants/attached.properties';
 import { Func } from '../types';
 import { setType } from '../util';
-import { createValueFn } from '../value-fns';
 
 export function ref(target: any, ...attachedFns: AttachedFn[]) {
   function refReader(node: ObjectTreeNode) {
@@ -17,17 +16,12 @@ export function ref(target: any, ...attachedFns: AttachedFn[]) {
 
     if (isDefined(result)) {
       const referenceFn = setType(Types.ReferenceFn, () => getRawValue(result?.value));
-      buildable.attachedProperties[AP.ref.resolvedValue] = referenceFn;
+      buildable.value = referenceFn;
     }
   }
 
-  function refImpl(buildable: Buildable) {
-    return buildable.attachedProperties[AP.ref.resolvedValue];
-  }
-
   const readerFn = createReaderFn(refReader);
-  const valueFn = createValueFn(refImpl);
-  return createBuildable(valueFn, [readerFn, ...attachedFns]);
+  return createBuildable(undefined, [readerFn, ...attachedFns]);
 }
 
 function tryGetAttachedProperties(target: any, buildable: Buildable) {
