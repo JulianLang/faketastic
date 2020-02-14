@@ -1,6 +1,7 @@
 import { createNode, treeOf } from 'treelike';
 import { createBuildable } from '../../src/buildable';
-import { clone, toFaketasticNode } from '../../src/util';
+import { Types } from '../../src/constants';
+import { clone, setType, toFaketasticNode } from '../../src/util';
 
 describe('toFaketasticNode', () => {
   it('should be independent after cloning', () => {
@@ -131,6 +132,16 @@ describe('toFaketasticNode', () => {
     expect(child.type).toBe('value');
     expect(child.name).toBe('a');
     expect(child.value).toBe(42);
+  });
+
+  it('should have a working isRefDependent function', () => {
+    // arrange
+    const ref = setType(Types.ReferenceFn, () => null);
+    const node = createNode('dependent', ref);
+    const faketasticNode = toFaketasticNode(node);
+
+    // act, assert
+    expect(faketasticNode?.isRefDependent()).toBe(true);
   });
 
   it('should also convert child nodes', () => {

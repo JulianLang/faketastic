@@ -4,6 +4,7 @@ import { getRawValue } from '../builder/traverser';
 import { Type, Types } from '../constants';
 import { FaketasticNode } from '../types';
 import { isDefined } from './is-defined';
+import { isType } from './symbols';
 
 export function toFaketasticNode(node?: ObjectTreeNode): FaketasticNode | undefined {
   if (!isDefined(node)) {
@@ -22,6 +23,7 @@ export function toFaketasticNode(node?: ObjectTreeNode): FaketasticNode | undefi
   faketasticNode.currentValue = () => faketasticNode.value;
   faketasticNode.currentType = () => currentTypeOf(faketasticNode);
   faketasticNode.setValue = (value: any) => setValue(value, faketasticNode);
+  faketasticNode.isRefDependent = () => isType(Types.ReferenceFn, faketasticNode.value);
 
   return faketasticNode;
 }
