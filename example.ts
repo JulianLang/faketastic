@@ -27,4 +27,5 @@ const ParentModel = model({
 });
 
 const output = build(use(ParentModel, quantity(3)));
+// tslint:disable-next-line: no-console
 console.log(JSON.stringify(output, null, 2));
