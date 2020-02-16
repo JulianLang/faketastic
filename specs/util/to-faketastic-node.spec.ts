@@ -174,4 +174,20 @@ describe('toFaketasticNode', () => {
     expect(result.parent!.currentType).not.toBeDefined();
     expect(result.parent!.isContainer).not.toBeDefined();
   });
+
+  it('should correctly link children to parent', () => {
+    // arrange
+    const parent = { childA: {}, childB: {} };
+    const tree = treeOf(parent);
+
+    // act
+    const faketasticTree = toFaketasticNode(tree)!;
+
+    // assert
+    expect(faketasticTree.children.length).toBeGreaterThan(0);
+    expect(faketasticTree.children.length).toBe(Object.keys(parent).length);
+    faketasticTree.children.forEach(child => {
+      expect(child.parent).toBe(faketasticTree);
+    });
+  });
 });
