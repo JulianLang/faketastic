@@ -7,7 +7,7 @@ import { FaketasticNode } from '../../../src/types';
 function createHandler(buildable: Buildable<any>): AttachedFunctionHandler {
   const node = {
     value: buildable,
-    setValue: value => {},
+    setValue: _ => {},
   } as FaketasticNode;
 
   return handleAttachedFns(node);
