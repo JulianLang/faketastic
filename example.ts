@@ -18,7 +18,7 @@ import { model, oneOf, range, ref, use } from './src/property-fns';
 
     $ npm start
 */
-const ParentModel = model({
+const parentModel = model({
   name: oneOf(['Hans', 'Pete', 'Sara', 'Sabine']),
   born: range(1990, 2003),
   email: use(
@@ -36,6 +36,6 @@ const ParentModel = model({
   ),
 });
 
-const output = build(use(ParentModel, quantity(3)));
+const output = build(use(parentModel, quantity(3)));
 // tslint:disable-next-line: no-console
 console.log(JSON.stringify(output, null, 2));
