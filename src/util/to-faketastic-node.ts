@@ -23,7 +23,7 @@ export function toFaketasticNode(node?: ObjectTreeNode): FaketasticNode | undefi
   faketasticNode.currentValue = () => faketasticNode.value;
   faketasticNode.currentType = () => currentTypeOf(faketasticNode);
   faketasticNode.setValue = (value: any) => setValue(value, faketasticNode);
-  faketasticNode.isRefDependent = () => isType(Types.ReferenceFn, faketasticNode.value);
+  faketasticNode.isRefDependent = () => isRefDependent(faketasticNode);
 
   return faketasticNode;
 }
@@ -58,4 +58,12 @@ function setValue(value: any, node: FaketasticNode) {
 
   const rawValue = getRawValue(value);
   node.type = nodeTypeOf(rawValue);
+}
+
+function isRefDependent(node: FaketasticNode) {
+  const rawValue = getRawValue(node.value);
+  const hasRefFn = isType(Types.ReferenceFn, rawValue);
+  const isRefFnParent = isType(Types.ReferenceDependent, node);
+
+  return hasRefFn || isRefFnParent;
 }

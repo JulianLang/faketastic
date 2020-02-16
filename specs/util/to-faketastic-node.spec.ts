@@ -191,3 +191,26 @@ describe('toFaketasticNode', () => {
     });
   });
 });
+
+describe('toFaketasticNode.isRefDependent', () => {
+  it('should detect a ReferenceFn nested within a buildable', () => {
+    // arrange
+    const ref = setType(Types.ReferenceFn, () => null);
+    const buildable = createBuildable(ref);
+    const node = createNode('dependent', buildable);
+    const faketasticNode = toFaketasticNode(node);
+
+    // act, assert
+    expect(faketasticNode?.isRefDependent()).toBe(true);
+  });
+
+  it('should return true for a node that is marked as ref-dependent', () => {
+    // arrange
+    const node = createNode('dependent', null);
+    const faketasticNode = toFaketasticNode(node);
+    setType(Types.ReferenceDependent, faketasticNode);
+
+    // act, assert
+    expect(faketasticNode?.isRefDependent()).toBe(true);
+  });
+});
