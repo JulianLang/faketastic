@@ -7,7 +7,7 @@ describe('toFaketasticNode', () => {
   it('should be independent after cloning', () => {
     // arrange
     const node = createNode('a', null);
-    const faketasticNode = toFaketasticNode(node)!;
+    const faketasticNode = toFaketasticNode(node);
     const cloneNode = clone(faketasticNode);
 
     // act
@@ -18,12 +18,11 @@ describe('toFaketasticNode', () => {
     expect(cloneNode.value).toBe(null);
   });
 
-  it('should return undefined when "undefined" was passed as input', () => {
-    // arrange, act
-    const result = toFaketasticNode(undefined);
-
-    // assert
-    expect(result).toBe(undefined);
+  it('should return throw when "undefined" was passed as input', () => {
+    // arrange, act, assert
+    expect(() => toFaketasticNode(undefined as any)).toThrowMatching((err: Error) =>
+      err.message.includes('convert "undefined"'),
+    );
   });
 
   it('should convert an ObjectTreeNode into a FaketasticTreeNode', () => {
@@ -31,7 +30,7 @@ describe('toFaketasticNode', () => {
     const node = createNode('name', 0);
 
     // act
-    const faketasticNode = toFaketasticNode(node)!;
+    const faketasticNode = toFaketasticNode(node);
 
     // assert
     expect(faketasticNode.children.length).toBe(node.children.length);
@@ -43,7 +42,7 @@ describe('toFaketasticNode', () => {
   it('should have a working isContainer function', () => {
     // arrange
     const node = createNode('name', 0);
-    const faketasticNode = toFaketasticNode(node)!;
+    const faketasticNode = toFaketasticNode(node);
 
     // pre-condition
     expect(faketasticNode.isContainer()).toBe(false);
@@ -59,7 +58,7 @@ describe('toFaketasticNode', () => {
   it('should have a working isBuildable function', () => {
     // arrange
     const node = createNode('name', 0);
-    const faketasticNode = toFaketasticNode(node)!;
+    const faketasticNode = toFaketasticNode(node);
 
     // pre-condition
     expect(faketasticNode.isBuildable()).toBe(false);
@@ -74,7 +73,7 @@ describe('toFaketasticNode', () => {
   it('should have a working currentValue function', () => {
     // arrange
     const node = createNode('name', 0);
-    const faketasticNode = toFaketasticNode(node)!;
+    const faketasticNode = toFaketasticNode(node);
 
     // pre-condition
     expect(faketasticNode.currentValue()).toBe(0);
@@ -89,7 +88,7 @@ describe('toFaketasticNode', () => {
   it('should have a working currentType function', () => {
     // arrange
     const node = createNode('name', 0);
-    const faketasticNode = toFaketasticNode(node)!;
+    const faketasticNode = toFaketasticNode(node);
 
     // pre-condition
     expect(faketasticNode.currentType()).toBe('value');
@@ -105,7 +104,7 @@ describe('toFaketasticNode', () => {
     // arrange
     const name = 'name';
     const node = createNode(name, null);
-    const faketasticNode = toFaketasticNode(node)!;
+    const faketasticNode = toFaketasticNode(node);
     const newValue = { a: 42 };
 
     // pre-condition
@@ -153,7 +152,7 @@ describe('toFaketasticNode', () => {
     });
 
     // act
-    const result = toFaketasticNode(tree)!;
+    const result = toFaketasticNode(tree);
 
     // assert
     expect(result.children[0]).toBeDefined();
@@ -167,7 +166,7 @@ describe('toFaketasticNode', () => {
     const child = createNode('child', 0, [], parent);
 
     // act
-    const result = toFaketasticNode(child)!;
+    const result = toFaketasticNode(child);
 
     // assert
     expect(result.parent!.currentValue).not.toBeDefined();
@@ -181,7 +180,7 @@ describe('toFaketasticNode', () => {
     const tree = treeOf(parent);
 
     // act
-    const faketasticTree = toFaketasticNode(tree)!;
+    const faketasticTree = toFaketasticNode(tree);
 
     // assert
     expect(faketasticTree.children.length).toBeGreaterThan(0);

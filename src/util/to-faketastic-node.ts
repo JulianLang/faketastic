@@ -6,9 +6,11 @@ import { FaketasticNode } from '../types';
 import { isDefined } from './is-defined';
 import { isType } from './symbols';
 
-export function toFaketasticNode(node?: ObjectTreeNode): FaketasticNode | undefined {
+export function toFaketasticNode(node: ObjectTreeNode): FaketasticNode {
   if (!isDefined(node)) {
-    return node;
+    throw new Error(
+      `faketastic: toFaketasticNode: cannot convert "${node}" into a faketastic-node.`,
+    );
   }
 
   const faketasticNode = {
@@ -50,7 +52,7 @@ function isContainer(node: ObjectTreeNode): boolean {
 
 function setValue(value: any, node: FaketasticNode) {
   const childTree = treeOf(value, getRawValue);
-  const faketasticTree = toFaketasticNode(childTree)!;
+  const faketasticTree = toFaketasticNode(childTree);
 
   node.children = faketasticTree.children;
   updateChildrensParent(node);
