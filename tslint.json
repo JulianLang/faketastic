@@ -1,5 +1,11 @@
 {
   "extends": "tslint:recommended",
+  "linterOptions": {
+    "exclude": [
+      "./dist/**",
+      "./specs/**"
+    ]
+  },
   "rules": {
     "max-line-length": {
       "options": [
