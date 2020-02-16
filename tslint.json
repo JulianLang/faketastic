@@ -12,6 +12,10 @@
         140
       ]
     },
+    "variable-name": [
+      true,
+      "allow-leading-underscore"
+    ],
     "new-parens": true,
     "no-arg": true,
     "no-bitwise": true,
