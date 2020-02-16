@@ -275,7 +275,7 @@ describe('build: markBranchRefDependent', () => {
   });
 });
 
-fdescribe('build: resolveReference', () => {
+describe('build: resolveReference', () => {
   it('should call the reference fn if it the value of the given node', () => {
     // arrange
     const expectedValue = 42;
