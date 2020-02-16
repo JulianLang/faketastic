@@ -1,5 +1,5 @@
 import { isArchitectFn, isProcessorFn, isReaderFn } from '../../attached-fns';
-import { Buildable } from '../../buildable';
+import { asBuildable, Buildable } from '../../buildable';
 import { MutationFnReadType } from '../../constants';
 import { FaketasticNode } from '../../types';
 import { getSymbol } from '../../util';
@@ -8,14 +8,19 @@ import { AttachedFunctionHandler } from './attached-function.handler';
 import { MutationFn } from './mutation.fn';
 
 export function handleAttachedFns(node: FaketasticNode<Buildable>): AttachedFunctionHandler {
-  const buildable = node.value;
+  const currentValueAsBuildable = () => asBuildable(node.value);
   const attachedFns = {
-    getReaderFns: () => buildable.attachedFns.filter(isReaderFn),
-    getArchitectFns: () => buildable.attachedFns.filter(isArchitectFn) as MutationFn[],
+    getReaderFns: () => currentValueAsBuildable().attachedFns.filter(isReaderFn),
+    getArchitectFns: () =>
+      currentValueAsBuildable().attachedFns.filter(isArchitectFn) as MutationFn[],
     getPreprocessors: () =>
-      buildable.attachedFns.filter(fn => isProcessorFn(fn, 'prebuild')) as MutationFn[],
+      currentValueAsBuildable().attachedFns.filter(fn =>
+        isProcessorFn(fn, 'prebuild'),
+      ) as MutationFn[],
     getPostprocessors: () =>
-      buildable.attachedFns.filter(fn => isProcessorFn(fn, 'postbuild')) as MutationFn[],
+      currentValueAsBuildable().attachedFns.filter(fn =>
+        isProcessorFn(fn, 'postbuild'),
+      ) as MutationFn[],
   };
 
   return {
@@ -32,16 +37,19 @@ export function handleAttachedFns(node: FaketasticNode<Buildable>): AttachedFunc
 
   function runArchitectFns() {
     const architectFns = attachedFns.getArchitectFns();
+    const buildable = currentValueAsBuildable();
     runPrebuildMutations(architectFns, buildable, node);
   }
 
   function runPreprocessorFns() {
     const preprocessors = attachedFns.getPreprocessors();
+    const buildable = currentValueAsBuildable();
     runPrebuildMutations(preprocessors, buildable, node);
   }
 
   function runPostprocessorFns() {
     const postprocessors = attachedFns.getPostprocessors();
+    const buildable = currentValueAsBuildable();
     let value = getRawValue(buildable.value);
 
     postprocessors.forEach(fn => {
