@@ -76,14 +76,18 @@ describe('build', () => {
 
   it('should call attached fns from nested buildables', () => {
     // arrange
-    const someValue = 42;
-    const otherValue = 4711;
-    const expectedValue = [someValue, otherValue];
+    const value1 = 42;
+    const value2 = 4711;
+    const expectedValue = [value1, value2];
+
     const spy = jasmine.createSpy('fn', value => [value]).and.callThrough();
     const toArray = createArchitectFn(spy);
-    const addOtherValue = createProcessorFn((v: any[]) => v.push(otherValue), 'postbuild');
+    const addOtherValue = createProcessorFn((v: any[]) => {
+      v.push(value2);
+      return v;
+    }, 'postbuild');
 
-    const nestedLevel2 = createBuildable(someValue);
+    const nestedLevel2 = createBuildable(value1);
     const nestedLevel1 = createBuildable(nestedLevel2, [toArray, addOtherValue]);
     const buildable = createBuildable(nestedLevel1);
 
