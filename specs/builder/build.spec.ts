@@ -1,8 +1,11 @@
+import { createNode } from 'treelike';
 import { createArchitectFn, createProcessorFn, createReaderFn } from '../../src/attached-fns';
-import { createBuildable } from '../../src/buildable';
-import { build } from '../../src/builder';
-import { Types } from '../../src/constants';
-import { setType } from '../../src/util';
+import { createBuildable, isBuildable } from '../../src/buildable';
+import { build, _forTestsOnly } from '../../src/builder';
+import { AttachedFunctionHandler } from '../../src/builder/handler/attached-function.handler';
+import { Type, Types } from '../../src/constants';
+import { FaketasticNode } from '../../src/types';
+import { setType, toFaketasticNode } from '../../src/util';
 import { createValueFn } from '../../src/value-fns';
 
 describe('build', () => {
@@ -208,3 +211,119 @@ describe('build', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('build: createAttachedFnHandler', () => {
+  it('should convert a node`s value into a buildable', () => {
+    // arrange
+    const node = createNode('', null);
+    const faketasticNode = toFaketasticNode(node);
+
+    // act
+    _forTestsOnly.createAttachedFnHandler(faketasticNode);
+
+    // assert
+    expect(isBuildable(faketasticNode.value)).toBe(true);
+  });
+
+  it('should return the handler', () => {
+    // arrange
+    const node = createNode('', null);
+    const faketasticNode = toFaketasticNode(node);
+
+    // act
+    const handler = _forTestsOnly.createAttachedFnHandler(faketasticNode);
+
+    // assert
+    expect(handler).toBeTruthy();
+  });
+});
+
+describe('build: markBranchRefDependent', () => {
+  it('should mark the node it is called on and its parents as ref-dependent', () => {
+    /*
+      test tree looks like:
+
+       (parent2)
+           |
+       (parent1)
+           |
+       (parent)
+           |
+        (node)
+    */
+    // arrange
+    const node = createNode('node', null);
+    const parent = createNode('parent', null, [node]);
+    const parent1 = createNode('parent1', null, [parent]);
+    const parent2 = createNode('parent2', null, [parent1]);
+    node.parent = parent;
+    parent.parent = parent1;
+    parent1.parent = parent2;
+    const faketasticNode = toFaketasticNode(parent2);
+    const faketasticLeafNode = faketasticNode.children[0].children[0].children[0];
+
+    // act
+    _forTestsOnly.markBranchRefDependent(faketasticLeafNode);
+
+    // assert
+    let current: FaketasticNode | undefined = faketasticLeafNode;
+
+    while (current) {
+      expect(current[Type]).toBe(Types.ReferenceDependent);
+      current = current.parent;
+    }
+  });
+});
+
+fdescribe('build: resolveReference', () => {
+  it('should call the reference fn if it the value of the given node', () => {
+    // arrange
+    const expectedValue = 42;
+    const refFn = setType(Types.ReferenceFn, () => expectedValue);
+    const node = createNode('refNode', refFn);
+    const faketasticNode = toFaketasticNode(node);
+
+    // act
+    _forTestsOnly.resolveReference(faketasticNode);
+
+    // assert
+    expect(faketasticNode.value).toBe(expectedValue);
+  });
+
+  it('should find and call the reference fn within a builable', () => {
+    // arrange
+    const expectedValue = 42;
+    const refFn = setType(Types.ReferenceFn, () => expectedValue);
+    const buildable = createBuildable(refFn);
+
+    const node = createNode('node > Buildable > RefFn', buildable);
+    const faketasticNode = toFaketasticNode(node);
+
+    // act
+    _forTestsOnly.resolveReference(faketasticNode);
+
+    // assert
+    expect(faketasticNode.value).toBe(buildable);
+    expect(buildable.value).toBe(expectedValue);
+  });
+});
+
+describe('build: resolveIfReference', () => {
+  it('should call postprocessors', () => {
+    // arrange
+    const mockHandler = ({
+      runPostprocessorFns: jasmine.createSpy(),
+    } as unknown) as AttachedFunctionHandler;
+    const node = createNode('node', null);
+    const faketasticNode = toFaketasticNode(node);
+    setType(Types.ReferenceDependent, faketasticNode);
+
+    // act
+    _forTestsOnly.resolveIfReference(faketasticNode, mockHandler);
+
+    // assert
+    expect(mockHandler.runPostprocessorFns).toHaveBeenCalledTimes(1);
+  });
+});
+
+// TODO: langju: how to test caching of AttachedFnHandler in build.buildData()
