@@ -1,4 +1,4 @@
-import { quantity } from './src/attached-fns';
+import { map, quantity } from './src/attached-fns';
 import { build } from './src/builder';
 import { model, oneOf, range, ref, use } from './src/property-fns';
 
@@ -21,9 +21,19 @@ import { model, oneOf, range, ref, use } from './src/property-fns';
 const ParentModel = model({
   name: oneOf(['Hans', 'Pete', 'Sara', 'Sabine']),
   born: range(1990, 2003),
-  email: {
-    name: ref('name'),
-  },
+  email: use(
+    {
+      name: ref(
+        'name',
+        map(s => {
+          return s.toUpperCase();
+        }),
+      ),
+    },
+    map(v => {
+      return v;
+    }),
+  ),
 });
 
 const output = build(use(ParentModel, quantity(3)));
