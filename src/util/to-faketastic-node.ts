@@ -22,7 +22,7 @@ export function toFaketasticNode(node: ObjectTreeNode): FaketasticNode {
   updateChildrensParent(faketasticNode);
   faketasticNode.isBuildable = () => isBuildable(faketasticNode.value);
   faketasticNode.isContainer = () => isContainer(faketasticNode);
-  faketasticNode.currentValue = () => faketasticNode.value;
+  faketasticNode.getValue = () => getValue(faketasticNode);
   faketasticNode.currentType = () => currentTypeOf(faketasticNode);
   faketasticNode.setValue = (value: any) => setValue(value, faketasticNode);
   faketasticNode.isRefDependent = () => isRefDependent(faketasticNode);
@@ -41,8 +41,7 @@ function toFaketasticNodes(nodes: ObjectTreeNode[]): FaketasticNode[] {
 }
 
 function currentTypeOf(node: ObjectTreeNode): ObjectTreeNodeType {
-  const significantValue = isBuildable(node.value) ? node.value.value : node.value;
-
+  const significantValue = getRawValue(node.value);
   return nodeTypeOf(significantValue);
 }
 
@@ -60,6 +59,43 @@ function setValue(value: any, node: FaketasticNode) {
 
   const rawValue = getRawValue(value);
   node.type = nodeTypeOf(rawValue);
+}
+
+function getValue(node: FaketasticNode): any {
+  let result: any;
+
+  if (node.currentType() === 'value') {
+    result = node.value;
+  } else {
+    result = computeValue(node);
+  }
+
+  return result;
+}
+
+function computeValue(node: FaketasticNode): any {
+  return node.type === 'array' ? fromArray(node) : fromObject(node);
+}
+
+function fromArray(node: FaketasticNode): any[] {
+  const value: any[] = [];
+
+  for (const child of node.children) {
+    value.push(child.getValue());
+  }
+
+  return value;
+}
+
+function fromObject(node: FaketasticNode): any {
+  const value: any = {};
+
+  for (const child of node.children) {
+    const name = child.name;
+    value[name] = child.getValue();
+  }
+
+  return value;
 }
 
 function isRefDependent(node: FaketasticNode) {

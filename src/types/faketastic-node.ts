@@ -10,6 +10,6 @@ export interface FaketasticNode<T = any> extends ObjectTreeNode<T> {
   isBuildable: () => this is FaketasticNode<Buildable>;
   isRefDependent: () => boolean;
   setValue: (value: any) => void;
-  currentValue: () => T;
+  getValue: () => T;
   currentType: () => ObjectTreeNodeType;
 }

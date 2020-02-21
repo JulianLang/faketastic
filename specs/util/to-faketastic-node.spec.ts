@@ -36,7 +36,7 @@ describe('toFaketasticNode', () => {
     expect(faketasticNode.children.length).toBe(node.children.length);
     expect(faketasticNode.parent).toBeUndefined();
     expect(faketasticNode.isContainer).toBeDefined();
-    expect(faketasticNode.currentValue).toBeDefined();
+    expect(faketasticNode.getValue).toBeDefined();
   });
 
   it('should have a working isContainer function', () => {
@@ -68,21 +68,6 @@ describe('toFaketasticNode', () => {
 
     // assert
     expect(faketasticNode.isBuildable()).toBe(true);
-  });
-
-  it('should have a working currentValue function', () => {
-    // arrange
-    const node = createNode('name', 0);
-    const faketasticNode = toFaketasticNode(node);
-
-    // pre-condition
-    expect(faketasticNode.currentValue()).toBe(0);
-
-    // act
-    faketasticNode.value = 42;
-
-    // assert
-    expect(faketasticNode.currentValue()).toBe(42);
   });
 
   it('should have a working currentType function', () => {
@@ -157,7 +142,7 @@ describe('toFaketasticNode', () => {
     // assert
     expect(result.children[0]).toBeDefined();
     expect(result.children[0].children[0]).toBeDefined();
-    expect(result.children[0].children[0].currentValue()).toBe(42);
+    expect(result.children[0].children[0].getValue()).toBe(42);
   });
 
   it('should not touch any parents of the passed-in node', () => {
@@ -169,7 +154,7 @@ describe('toFaketasticNode', () => {
     const result = toFaketasticNode(child);
 
     // assert
-    expect(result.parent!.currentValue).not.toBeDefined();
+    expect(result.parent!.getValue).not.toBeDefined();
     expect(result.parent!.currentType).not.toBeDefined();
     expect(result.parent!.isContainer).not.toBeDefined();
   });
@@ -211,5 +196,81 @@ describe('toFaketasticNode.isRefDependent', () => {
 
     // act, assert
     expect(faketasticNode?.isRefDependent()).toBe(true);
+  });
+});
+
+describe('faketasticNode: getValue', () => {
+  it('[valueNode] should have a working getValue function', () => {
+    // arrange
+    const node = createNode('name', 0);
+    const faketasticNode = toFaketasticNode(node);
+
+    // pre-condition
+    expect(faketasticNode.getValue()).toBe(0);
+
+    // act
+    faketasticNode.value = 42;
+
+    // assert
+    expect(faketasticNode.getValue()).toBe(42);
+  });
+
+  [
+    ['arrayNode', [], [42, null]],
+    ['objectNode', {}, { child1: 42, child2: null }],
+  ].forEach(params => {
+    it(`[${params[0]}] should have a working getValue function`, () => {
+      // arrange
+      const initialValue = params[1];
+      const child1 = createNode('child1', 42);
+      const child2 = createNode('child2', null);
+      const node = createNode('node', initialValue, [child1, child2]);
+      const faketasticNode = toFaketasticNode(node);
+
+      // act, assert
+      const expected = params[2];
+      expect(faketasticNode.getValue()).toEqual(expected);
+    });
+  });
+
+  [
+    ['arrayNode', [], [[42]]],
+    ['objectNode', {}, { child2: { child1: 42 } }],
+  ].forEach(params => {
+    it(`[${params[0]}] should also resolve nested children`, () => {
+      // arrange
+      const initialValue = params[1];
+      const child1 = createNode('child1', 42);
+      const child2 = createNode('child2', initialValue, [child1]);
+      const node = createNode('node', initialValue, [child2]);
+      const faketasticNode = toFaketasticNode(node);
+
+      // act, assert
+      const expected = params[2];
+      expect(faketasticNode.getValue()).toEqual(expected);
+    });
+  });
+
+  it('should resolve mixed node types', () => {
+    // arrange
+    const original = {
+      a: [
+        42,
+        {
+          b: 4711,
+        },
+      ],
+      c: {
+        d: [42, { e: null }],
+      },
+    };
+    const tree = treeOf(original);
+    const faketasticTree = toFaketasticNode(tree);
+
+    // act
+    const result = faketasticTree.getValue();
+
+    // assert
+    expect(result).toEqual(original);
   });
 });
