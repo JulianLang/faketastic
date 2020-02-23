@@ -1,4 +1,4 @@
-import { leafTraverser, ObjectTreeNode, toValue, traverse, treeOf } from 'treelike';
+import { ObjectTreeNode, toValue, traverse, treeOf } from 'treelike';
 import {
   asBuildable,
   Buildable,
@@ -18,7 +18,7 @@ import { getRawValue } from './traverser';
 /** Do NOT use any of these functions in production code. This export is made for test purposes only. */
 export const _forTestsOnly = {
   buildData,
-  buildNode,
+  buildNode: buildValueNode,
   resolveIfReference,
   resolveReference,
   createAttachedFnHandler,
@@ -43,22 +43,24 @@ function buildData(tree: ObjectTreeNode): ObjectTreeNode {
   traverse(faketasticTree, node => {
     const handler = createAttachedFnHandler(node);
     cachedHandlers.set(node, handler);
-
-    buildNode(node, handler);
   });
-  traverse(
-    faketasticTree,
-    node => {
+
+  traverse(faketasticTree, node => {
+    if (node.currentType() === 'value') {
       const handler = cachedHandlers.get(node)!;
-      resolveIfReference(node, handler);
-    },
-    leafTraverser,
-  );
+      buildValueNode(node, handler);
+    }
+  });
+
+  traverse(faketasticTree, node => {
+    const handler = cachedHandlers.get(node)!;
+    resolveIfReference(node, handler);
+  });
 
   return faketasticTree;
 }
 
-function buildNode(node: FaketasticNode<Buildable>, handler: AttachedFunctionHandler): void {
+function buildValueNode(node: FaketasticNode<Buildable>, handler: AttachedFunctionHandler): void {
   const buildable = node.value;
 
   prebuild(handler);
@@ -68,14 +70,17 @@ function buildNode(node: FaketasticNode<Buildable>, handler: AttachedFunctionHan
     node.setValue(buildable);
 
     if (node.isBuildable()) {
-      buildNode(node, handler);
+      buildValueNode(node, handler);
     }
   }
 
   if (node.isContainer()) {
-    copyPostprocessors(node.value, node.value.value);
+    copyPostprocessors(
+      /* container buildable */ node.value,
+      /* inner buildable */ node.value.value,
+    );
     node.value = stripBuildable(node.value);
-    buildNode(node, handler);
+    buildValueNode(node, handler);
   }
 
   if (node.isRefDependent()) {
